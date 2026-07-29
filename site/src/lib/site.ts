@@ -15,13 +15,18 @@ export interface NavItem {
   anchor?: boolean;
 }
 
-/** Sticky-Anker-Navbar der Startseite + Deep-Link-Routen. */
+/**
+ * Sticky-Anker-Navbar der Startseite (One-Pager). Die Items scrollen zu den
+ * Teaser-Sektionen; die „ganze Liste"-Buttons IN den Teasern führen dann auf
+ * die Deep-Link-Routen (/line-up, /timetable, …). Von Unterseiten aus springt
+ * z. B. `/#lineup` zurück auf die Startseite und scrollt zur Sektion.
+ */
 export const primaryNav: NavItem[] = [
   { key: 'intro', label: 'Über', href: '/#intro', anchor: true },
-  { key: 'lineup', label: 'Line-Up', href: '/line-up' },
-  { key: 'timetable', label: 'Timetable', href: '/timetable' },
-  { key: 'lageplan', label: 'Lageplan', href: '/lageplan' },
-  { key: 'awareness', label: 'Awareness', href: '/awareness' },
+  { key: 'lineup', label: 'Line-Up', href: '/#lineup', anchor: true },
+  { key: 'timetable', label: 'Timetable', href: '/#timetable', anchor: true },
+  { key: 'lageplan', label: 'Lageplan', href: '/#lageplan', anchor: true },
+  { key: 'awareness', label: 'Awareness', href: '/#awareness', anchor: true },
 ];
 
 export interface FooterLink {

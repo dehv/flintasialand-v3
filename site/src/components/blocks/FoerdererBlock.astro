@@ -1,0 +1,51 @@
+---
+/**
+ * FoerdererBlock — Förderer-/Sponsoren-Logoleiste (light-Sektion).
+ *
+ * WICHTIG (Nutzungsvorgaben): Öffentliche Förderer wie BKM und Initiative Musik
+ * verlangen unveränderte, farbige Darstellung mit Schutzraum — daher KEINE
+ * Graustufen/Verfremdung. Alle Logos sitzen einheitlich auf weißen Kacheln
+ * (neutraler Hintergrund unabhängig von Transparenz/Eigenfarbe des Logos),
+ * gleich hoch, mit Abstand. Alt-Texte für Barrierefreiheit.
+ */
+import { Image } from 'astro:assets';
+import Section from '@ui/Section.astro';
+import Heading from '@ui/Heading.astro';
+import { sponsors } from '@content/foerderer';
+---
+
+<Section theme="light" id="foerderer" spacing="lg">
+  <div class="text-center">
+    <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
+      Mit freundlicher Unterstützung
+    </p>
+    <Heading level={2} size="md" class="mt-3">
+      Unsere Förderer & Partner
+    </Heading>
+  </div>
+
+  <ul class="mx-auto mt-12 flex max-w-5xl flex-wrap items-stretch justify-center gap-4 sm:gap-5">
+    {
+      sponsors.map((s) => (
+        <li>
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={s.name}
+            class="flex h-full min-h-[5.5rem] min-w-[9rem] items-center justify-center rounded-xl bg-white px-5 py-4 ring-1 ring-hairline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5"
+          >
+            <Image
+              src={s.logo}
+              alt={`Logo ${s.name}`}
+              class="max-h-11 w-auto object-contain"
+              widths={[120, 180, 240]}
+              sizes="180px"
+              loading="lazy"
+            />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
