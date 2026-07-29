@@ -1,0 +1,192 @@
+---
+/**
+ * MapBlock — interaktive OSM-Karte (MapLibre GL) als eigenständige Island.
+ *
+ * Das clientseitige <script> wird von Astro gebündelt und NUR auf Seiten
+ * geladen, die diese Komponente einbinden (also nur /lageplan) → keine
+ * Karten-Last auf der Startseite. Datensparsam: freie OSM-Raster-Tiles,
+ * keine Third-Party-Cookies. Zoom via Buttons / cooperativeGestures
+ * (zwei Finger bzw. Strg+Scroll), damit die Karte den Seiten-Scroll nicht kapert.
+ */
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { pinCategories, type MapPin } from '@content/lageplan';
+
+interface Props {
+  center: { lat: number; lng: number };
+  zoom: number;
+  pins: MapPin[];
+  tileUrl?: string;
+  class?: string;
+}
+
+const {
+  center,
+  zoom,
+  pins,
+  tileUrl = import.meta.env.MAP_TILE_URL ||
+    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  class: className,
+} = Astro.props;
+
+const config = { center, zoom, pins, categories: pinCategories, tileUrl };
+---
+
+<div class:list={['not-prose', className]}>
+  <div
+    id="lageplan-map"
+    class="h-[62vh] min-h-[420px] w-full overflow-hidden rounded-lg ring-1 ring-hairline"
+    role="application"
+    aria-label="Interaktive Karte: Lageplan Speicher 100, Dortmund"
+  >
+  </div>
+
+  <!-- Legende -->
+  <ul
+    class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-on-surface-muted"
+    aria-label="Legende"
+  >
+    {
+      Object.entries(pinCategories).map(([key, cat]) => (
+        <li class="inline-flex items-center gap-2">
+          <span
+            class="inline-block h-3.5 w-3.5 rounded-full ring-1 ring-black/10"
+            style={`background:${cat.color}`}
+          />
+          {cat.label}
+        </li>
+      ))
+    }
+  </ul>
+
+  <script type="application/json" set:html={JSON.stringify(config)} id="lageplan-config"
+  ></script>
+</div>
+
+<script>
+  // maplibre-gl v6 hat KEINEN default-Export mehr -> benannte Imports.
+  import { Map as MlMap, Marker, Popup, NavigationControl } from 'maplibre-gl';
+
+  const mapEl = document.getElementById('lageplan-map');
+  const cfgEl = document.getElementById('lageplan-config');
+
+  if (mapEl && cfgEl?.textContent) {
+    const cfg = JSON.parse(cfgEl.textContent) as {
+      center: { lat: number; lng: number };
+      zoom: number;
+      tileUrl: string;
+      pins: Array<{
+        id: string;
+        title: string;
+        category: string;
+        lat: number;
+        lng: number;
+        description?: string;
+      }>;
+      categories: Record<string, { label: string; color: string }>;
+    };
+
+    const map = new MlMap({
+      container: mapEl,
+      style: {
+        version: 8,
+        sources: {
+          osm: {
+            type: 'raster',
+            tiles: [cfg.tileUrl],
+            tileSize: 256,
+            attribution:
+              '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende',
+          },
+        },
+        layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+      },
+      center: [cfg.center.lng, cfg.center.lat],
+      zoom: cfg.zoom,
+      cooperativeGestures: true,
+      attributionControl: { compact: true },
+    });
+
+    map.addControl(
+      new NavigationControl({ showCompass: false }),
+      'top-right',
+    );
+    map.keyboard.enable();
+
+    map.on('load', () => {
+      for (const pin of cfg.pins) {
+        const color = cfg.categories[pin.category]?.color ?? '#5d3e51';
+
+        const el = document.createElement('div');
+        el.className = 'lp-marker';
+        el.style.setProperty('--c', color);
+        el.innerHTML =
+          '<span class="lp-dot"></span>' +
+          `<span class="lp-label">${pin.title}</span>`;
+
+        const popupHtml =
+          `<strong>${pin.title}</strong>` +
+          (pin.description ? `<br><span>${pin.description}</span>` : '');
+
+        new Marker({ element: el, anchor: 'bottom' })
+          .setLngLat([pin.lng, pin.lat])
+          .setPopup(new Popup({ offset: 24 }).setHTML(popupHtml))
+          .addTo(map);
+      }
+    });
+  }
+</script>
+
+<style>
+  /* Marker: farbiger Punkt + kleines Label-Pill (CI). */
+  :global(.lp-marker) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    transform: translateY(4px);
+  }
+  :global(.lp-marker .lp-dot) {
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    background: var(--c);
+    border: 2px solid #edf5ed;
+    box-shadow: 0 1px 4px rgba(51, 30, 44, 0.45);
+  }
+  :global(.lp-marker .lp-label) {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 1;
+    white-space: nowrap;
+    color: #edf5ed;
+    background: #5d3e51;
+    padding: 3px 7px;
+    border-radius: 9999px;
+    box-shadow: 0 1px 4px rgba(51, 30, 44, 0.35);
+  }
+</style>
+
+<!-- Popup-/Control-Styling in CI (global, da MapLibre außerhalb des Scopes rendert). -->
+<style is:global>
+  .maplibregl-popup-content {
+    font-family: var(--font-body);
+    color: #5d3e51;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 8px 24px rgba(51, 30, 44, 0.25);
+  }
+  .maplibregl-popup-content strong {
+    font-family: var(--font-display);
+  }
+  .maplibregl-popup-close-button {
+    font-size: 1.1rem;
+    padding: 0 0.35rem;
+    color: #5d3e51;
+  }
+  .maplibregl-ctrl-group {
+    border-radius: 9999px !important;
+    overflow: hidden;
+  }
+</style>
