@@ -1,0 +1,88 @@
+---
+/**
+ * HeroVideoBackground — Video-Hintergrund für den Hero (Version 1).
+ *
+ * Genderstern-Animationsvideo (Querformat), muted/loop/playsinline. Das Video
+ * liegt in public/media/hero (kein Astro-Processing, direkt ausgeliefert).
+ *
+ * WICHTIG (Reduced-Motion & Performance): Das <video> trägt bewusst KEIN
+ * `autoplay`-Attribut. Ein winziges Skript startet die Wiedergabe nur, wenn
+ * `prefers-reduced-motion` NICHT gesetzt ist — sonst bleibt das Poster-Standbild
+ * stehen. So gibt es kein Flackern und Reduced-Motion-User bekommen ein ruhiges
+ * Bild statt Bewegung.
+ */
+interface Props {
+  mp4?: string;
+  poster?: string;
+}
+const {
+  mp4 = '/media/hero/hero.mp4',
+  poster = '/media/hero/hero-poster.jpg',
+} = Astro.props;
+---
+
+<div class="hero-bg" data-hero-variant="video">
+  <video
+    class="hero-bg__video"
+    poster={poster}
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <source src={mp4} type="video/mp4" />
+  </video>
+  <!-- Scrim: leichte Berry-Abdunklung für Kontrast von Logo/Datum über hellen
+       Videostellen; nach unten etwas dichter (Übergang in die nächste Sektion). -->
+  <div class="hero-bg__scrim" aria-hidden="true"></div>
+</div>
+
+<style>
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: var(--color-berry);
+  }
+  .hero-bg__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-bg__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--color-berry) 30%, transparent) 0%,
+        color-mix(in srgb, var(--color-berry) 22%, transparent) 45%,
+        color-mix(in srgb, var(--color-berry) 62%, transparent) 100%
+      );
+  }
+</style>
+
+<script>
+  // Wiedergabe nur bei erlaubter Bewegung starten (sonst Poster-Standbild).
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const video = document.querySelector<HTMLVideoElement>('.hero-bg__video');
+
+  function apply() {
+    if (!video) return;
+    if (reduce.matches) {
+      video.pause();
+      video.currentTime = 0;
+    } else {
+      video.play().catch(() => {
+        /* Autoplay blockiert -> Poster bleibt, kein Fehler. */
+      });
+    }
+  }
+
+  apply();
+  reduce.addEventListener('change', apply);
+</script>

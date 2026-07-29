@@ -1,0 +1,263 @@
+---
+/**
+ * Hero — Startseiten-Hero (dark-Zone).
+ *
+ * Aufbau: Logo groß & zentral (das Lockup enthält bereits die Tagline rechts
+ * versetzt), darunter das Datum-Wortbild. Dahinter der Bewegt-Hintergrund.
+ *
+ * `variant`:
+ *   - 'video' (Default, Version 1): Genderstern-Animationsvideo.
+ *   - 'webgl'  (Version 2, vorbereitet/deaktiviert): später Three.js-Wasser-
+ *     Island; rendert aktuell nur das Poster-Standbild. So kann der Video-Hero
+ *     ohne Layout-Umbau gegen die 3D-Island getauscht werden.
+ *
+ * Motion: Das Logo „wabert" sanft (CSS-Keyframes) und reagiert dezent auf die
+ * Maus (Parallax via JS). Waber und Parallax sitzen auf getrennten Ebenen,
+ * damit sie sich nicht überschreiben. Touch ohne Maus ⇒ nur Waber.
+ * `prefers-reduced-motion` schaltet Waber (global.css) und Parallax (Skript) ab.
+ */
+import { Image } from 'astro:assets';
+import DateWordmark from '@ui/DateWordmark.astro';
+import HeroVideoBackground from '@components/hero/HeroVideoBackground.astro';
+import HeroWebglBackground from '@components/hero/HeroWebglBackground.astro';
+import logoMint from '@assets/logo/logo-light-mint.svg';
+
+interface Props {
+  variant?: 'video' | 'webgl';
+  /** Sichtbares/sr-Datum (maschinenlesbar). */
+  dateLabel?: string;
+  /** Ankerziel des Scroll-Hinweises. */
+  scrollTo?: string;
+}
+
+const {
+  variant = 'video',
+  dateLabel = '15. August 2026',
+  scrollTo = '#intro',
+} = Astro.props;
+---
+
+<section
+  class="hero"
+  data-theme="dark"
+  data-hero-root
+  aria-label="Flinta*sialand — Start"
+>
+  {
+    variant === 'webgl' ? (
+      <HeroWebglBackground />
+    ) : (
+      <HeroVideoBackground />
+    )
+  }
+
+  <div class="hero__inner u-container">
+    <h1 class="hero__title">
+      <span class="hero__logo-parallax" data-hero-parallax>
+        <span class="hero__logo-waber">
+          <Image
+            src={logoMint}
+            alt="Flinta*sialand"
+            class="hero__logo"
+            loading="eager"
+          />
+        </span>
+      </span>
+      <span class="sr-only">
+        Flinta*sialand — Festival für Sichtbarkeit und Empowerment von
+        FLINTA*-Künstler*innen
+      </span>
+    </h1>
+
+    <p class="hero__date">
+      <span class="sr-only">Am {dateLabel}</span>
+      <DateWordmark class="hero__date-mark" />
+    </p>
+  </div>
+
+  <a class="hero__scroll" href={scrollTo}>
+    <span class="sr-only">Weiter zum Inhalt</span>
+    <svg
+      class="hero__scroll-icon"
+      viewBox="0 0 24 24"
+      width="28"
+      height="28"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M6 9l6 6 6-6"></path>
+    </svg>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    min-height: 100svh;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--color-berry);
+    color: var(--color-mint);
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-block: clamp(6rem, 18vh, 10rem);
+  }
+
+  .hero__title {
+    margin: 0;
+    width: 100%;
+  }
+
+  /* Ebene 1: Maus-Parallax (JS setzt --px/--py in Pixeln). */
+  .hero__logo-parallax {
+    display: block;
+    transform: translate3d(var(--px, 0px), var(--py, 0px), 0);
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  /* Ebene 2: sanftes „Wabern" (unabhängig vom Parallax). */
+  .hero__logo-waber {
+    display: block;
+    transform-origin: center;
+    animation: hero-waber 9s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .hero__logo {
+    width: min(88vw, 42rem);
+    height: auto;
+    margin-inline: auto;
+    filter: drop-shadow(0 8px 28px color-mix(in srgb, var(--color-berry) 65%, transparent));
+  }
+
+  .hero__date {
+    margin: clamp(1.5rem, 4vh, 2.75rem) 0 0;
+    color: var(--color-mint);
+  }
+  .hero__date-mark {
+    width: min(72vw, 26rem);
+    /* eigener, langsamerer Waber-Takt mit Versatz -> lebendig, nicht synchron */
+    animation: hero-waber-soft 11s ease-in-out infinite;
+    animation-delay: -3s;
+    will-change: transform;
+  }
+
+  .hero__scroll {
+    position: absolute;
+    bottom: clamp(1rem, 3.5vh, 2rem);
+    left: 50%;
+    z-index: 1;
+    transform: translateX(-50%);
+    color: var(--color-mint);
+    opacity: 0.85;
+    animation: hero-bob 2.4s ease-in-out infinite;
+  }
+  .hero__scroll:hover {
+    opacity: 1;
+  }
+
+  @keyframes hero-waber {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(-0.6deg) scale(1);
+    }
+    33% {
+      transform: translate3d(0, -0.9%, 0) rotate(0.5deg) scale(1.012);
+    }
+    66% {
+      transform: translate3d(0, 0.7%, 0) rotate(0.7deg) scale(0.995);
+    }
+  }
+
+  @keyframes hero-waber-soft {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(0.5deg);
+    }
+    50% {
+      transform: translate3d(0, -0.6%, 0) rotate(-0.5deg);
+    }
+  }
+
+  @keyframes hero-bob {
+    0%,
+    100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(6px);
+    }
+  }
+</style>
+
+<script>
+  // Dezenter Maus-Parallax für die Logo-Ebene. Nur auf feinen Zeigern (Maus)
+  // und wenn Bewegung erlaubt ist; Touch/Reduced-Motion bleibt beim Waber.
+  const root = document.querySelector<HTMLElement>('[data-hero-root]');
+  const layer = document.querySelector<HTMLElement>('[data-hero-parallax]');
+  const finePointer = window.matchMedia('(pointer: fine)');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const MAX = 16; // px maximale Verschiebung
+  let targetX = 0,
+    targetY = 0,
+    curX = 0,
+    curY = 0,
+    raf = 0,
+    bound = false;
+
+  function onMove(e: PointerEvent) {
+    const r = root!.getBoundingClientRect();
+    const nx = (e.clientX - r.left) / r.width - 0.5; // -0.5..0.5
+    const ny = (e.clientY - r.top) / r.height - 0.5;
+    targetX = -nx * 2 * MAX;
+    targetY = -ny * 2 * MAX;
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+
+  function tick() {
+    curX += (targetX - curX) * 0.08;
+    curY += (targetY - curY) * 0.08;
+    layer!.style.setProperty('--px', `${curX.toFixed(2)}px`);
+    layer!.style.setProperty('--py', `${curY.toFixed(2)}px`);
+    if (Math.abs(targetX - curX) > 0.1 || Math.abs(targetY - curY) > 0.1) {
+      raf = requestAnimationFrame(tick);
+    } else {
+      raf = 0;
+    }
+  }
+
+  function enable() {
+    if (bound || !root || !layer || reduce.matches || !finePointer.matches)
+      return;
+    window.addEventListener('pointermove', onMove, { passive: true });
+    bound = true;
+  }
+  function disable() {
+    if (!bound) return;
+    window.removeEventListener('pointermove', onMove);
+    if (raf) cancelAnimationFrame(raf), (raf = 0);
+    targetX = targetY = 0;
+    layer?.style.removeProperty('--px');
+    layer?.style.removeProperty('--py');
+    bound = false;
+  }
+
+  enable();
+  reduce.addEventListener('change', (e) => (e.matches ? disable() : enable()));
+  finePointer.addEventListener('change', (e) => (e.matches ? enable() : disable()));
+</script>
