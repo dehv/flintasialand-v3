@@ -2,31 +2,27 @@
 /**
  * Hero — Startseiten-Hero (dark-Zone).
  *
- * Aufbau: Logo groß & zentral (das Lockup enthält bereits die Tagline rechts
- * versetzt), darunter das Datum-Wortbild. Dahinter der Bewegt-Hintergrund.
+ * Aufbau: textloser Logo-Mark groß & zentral, die Tagline separat & bewusst
+ * STARR nach rechts versetzt, darunter das Datum-Wortbild. Dahinter der
+ * Bewegt-Hintergrund (Video bzw. später WebGL-Island).
  *
- * `variant`:
- *   - 'video' (Default, Version 1): Genderstern-Animationsvideo.
- *   - 'webgl'  (Version 2, vorbereitet/deaktiviert): später Three.js-Wasser-
- *     Island; rendert aktuell nur das Poster-Standbild. So kann der Video-Hero
- *     ohne Layout-Umbau gegen die 3D-Island getauscht werden.
- *
- * Motion: Das Logo „wabert" sanft (CSS-Keyframes) und reagiert dezent auf die
- * Maus (Parallax via JS). Waber und Parallax sitzen auf getrennten Ebenen,
- * damit sie sich nicht überschreiben. Touch ohne Maus ⇒ nur Waber.
- * `prefers-reduced-motion` schaltet Waber (global.css) und Parallax (Skript) ab.
+ * Motion — „lebende Ränder" statt reiner Parallaxe:
+ *   - Logo-Mark & Datum tragen einen animierten SVG-Verzerrfilter
+ *     (feTurbulence + feDisplacementMap): die Buchstabenränder selbst wabern
+ *     leicht. Beide haben eigenen Takt/Seed -> nicht synchron.
+ *   - Ein rosa (accent-pink) Shimmer-Halo pulsiert im selben Filter um die Formen.
+ *   - Die Tagline bewegt sich NICHT (starrer Ankerpunkt).
+ *   - Zusätzlich dezenter Maus-Parallax auf der Logo-Ebene (nur feiner Zeiger).
+ * `prefers-reduced-motion` schaltet Verzerrung/Halo (filter:none) und Parallax ab.
  */
-import { Image } from 'astro:assets';
 import DateWordmark from '@ui/DateWordmark.astro';
 import HeroVideoBackground from '@components/hero/HeroVideoBackground.astro';
 import HeroWebglBackground from '@components/hero/HeroWebglBackground.astro';
-import logoMint from '@assets/logo/logo-light-mint.svg';
+import logoMarkRaw from '@assets/logo/logo-mark.svg?raw';
 
 interface Props {
   variant?: 'video' | 'webgl';
-  /** Sichtbares/sr-Datum (maschinenlesbar). */
   dateLabel?: string;
-  /** Ankerziel des Scroll-Hinweises. */
   scrollTo?: string;
 }
 
@@ -35,6 +31,15 @@ const {
   dateLabel = '15. August 2026',
   scrollTo = '#intro',
 } = Astro.props;
+
+// Logo-Mark inline aufbereiten (fill=currentColor, feste Maße raus -> CSS-Breite).
+const logoMark = logoMarkRaw
+  .replace(/<\?xml[\s\S]*?\?>/, '')
+  .replace(/<!DOCTYPE[\s\S]*?>/, '')
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/<svg([^>]*?)\swidth="[^"]*"/, '<svg$1')
+  .replace(/<svg([^>]*?)\sheight="[^"]*"/, '<svg$1')
+  .replace('<svg', '<svg fill="currentColor" aria-hidden="true" focusable="false"');
 ---
 
 <section
@@ -43,24 +48,112 @@ const {
   data-hero-root
   aria-label="Flinta*sialand — Start"
 >
-  {
-    variant === 'webgl' ? (
-      <HeroWebglBackground />
-    ) : (
-      <HeroVideoBackground />
-    )
-  }
+  {variant === 'webgl' ? <HeroWebglBackground /> : <HeroVideoBackground />}
+
+  <!-- Verzerr-/Shimmer-Filter (unsichtbar). Getrennte Filter für Logo & Datum,
+       damit sie mit eigenem Takt/Seed asynchron wabern. -->
+  <svg class="hero__defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <filter
+        id="hero-warp-logo"
+        x="-25%"
+        y="-30%"
+        width="150%"
+        height="160%"
+        color-interpolation-filters="sRGB"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.011"
+          numOctaves="2"
+          seed="7"
+          result="noise"
+        >
+          <animate
+            attributeName="baseFrequency"
+            dur="12s"
+            values="0.010;0.015;0.009;0.010"
+            repeatCount="indefinite"
+          ></animate>
+        </feTurbulence>
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="noise"
+          scale="5"
+          xChannelSelector="R"
+          yChannelSelector="G"
+          result="warp"
+        ></feDisplacementMap>
+        <!-- rosa Shimmer-Halo aus der verzerrten Form -->
+        <feGaussianBlur in="warp" stdDeviation="7" result="halo"></feGaussianBlur>
+        <feFlood flood-color="#dc95bb" result="pink">
+          <animate
+            attributeName="flood-opacity"
+            dur="3.8s"
+            values="0.22;0.6;0.22"
+            repeatCount="indefinite"
+          ></animate>
+        </feFlood>
+        <feComposite in="pink" in2="halo" operator="in" result="glow"></feComposite>
+        <feMerge>
+          <feMergeNode in="glow"></feMergeNode>
+          <feMergeNode in="warp"></feMergeNode>
+        </feMerge>
+      </filter>
+
+      <filter
+        id="hero-warp-date"
+        x="-20%"
+        y="-40%"
+        width="140%"
+        height="180%"
+        color-interpolation-filters="sRGB"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.016"
+          numOctaves="2"
+          seed="3"
+          result="noise"
+        >
+          <animate
+            attributeName="baseFrequency"
+            dur="9s"
+            values="0.015;0.021;0.014;0.015"
+            repeatCount="indefinite"
+          ></animate>
+        </feTurbulence>
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="noise"
+          scale="4"
+          xChannelSelector="R"
+          yChannelSelector="G"
+          result="warp"
+        ></feDisplacementMap>
+        <feGaussianBlur in="warp" stdDeviation="4" result="halo"></feGaussianBlur>
+        <feFlood flood-color="#dc95bb" result="pink">
+          <animate
+            attributeName="flood-opacity"
+            dur="4.6s"
+            values="0.18;0.5;0.18"
+            repeatCount="indefinite"
+          ></animate>
+        </feFlood>
+        <feComposite in="pink" in2="halo" operator="in" result="glow"></feComposite>
+        <feMerge>
+          <feMergeNode in="glow"></feMergeNode>
+          <feMergeNode in="warp"></feMergeNode>
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
 
   <div class="hero__inner u-container">
     <h1 class="hero__title">
       <span class="hero__logo-parallax" data-hero-parallax>
-        <span class="hero__logo-waber">
-          <Image
-            src={logoMint}
-            alt="Flinta*sialand"
-            class="hero__logo"
-            loading="eager"
-          />
+        <span class="hero__logo-warp">
+          <span class="hero__logo" set:html={logoMark} />
         </span>
       </span>
       <span class="sr-only">
@@ -68,6 +161,12 @@ const {
         FLINTA*-Künstler*innen
       </span>
     </h1>
+
+    <!-- Tagline: separat & STARR (kein Warp, kein Parallax). Gendersterne in Pink. -->
+    <p class="hero__tagline" aria-hidden="true">
+      Festival für Sichtbarkeit und Empowerment<br />
+      von FLINTA<span class="stern">*</span>-Künstler<span class="stern">*</span>innen
+    </p>
 
     <p class="hero__date">
       <span class="sr-only">Am {dateLabel}</span>
@@ -105,6 +204,12 @@ const {
     background: var(--color-berry);
     color: var(--color-mint);
   }
+  .hero__defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
 
   .hero__inner {
     position: relative;
@@ -119,29 +224,49 @@ const {
   .hero__title {
     margin: 0;
     width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
-  /* Ebene 1: Maus-Parallax (JS setzt --px/--py in Pixeln). */
+  /* Ebene 1: Maus-Parallax (JS setzt --px/--py). */
   .hero__logo-parallax {
     display: block;
+    width: min(88vw, 44rem);
     transform: translate3d(var(--px, 0px), var(--py, 0px), 0);
     transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform;
   }
 
-  /* Ebene 2: sanftes „Wabern" (unabhängig vom Parallax). */
-  .hero__logo-waber {
+  /* Ebene 2: Kanten-Warp + rosa Shimmer via SVG-Filter. */
+  .hero__logo-warp {
     display: block;
-    transform-origin: center;
-    animation: hero-waber 9s ease-in-out infinite;
-    will-change: transform;
+    filter: url(#hero-warp-logo);
+  }
+  .hero__logo {
+    display: block;
+    width: 100%;
+  }
+  .hero__logo :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
-  .hero__logo {
-    width: min(88vw, 42rem);
-    height: auto;
-    margin-inline: auto;
-    filter: drop-shadow(0 8px 28px color-mix(in srgb, var(--color-berry) 65%, transparent));
+  /* Tagline: starr, nach rechts versetzt (unter dem Logo rechtsbündig). */
+  .hero__tagline {
+    margin: clamp(0.9rem, 2.4vh, 1.6rem) 0 0;
+    width: min(88vw, 44rem);
+    text-align: right;
+    padding-right: clamp(0.25rem, 3vw, 2.5rem);
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.12;
+    font-size: clamp(1rem, 1rem + 1.1vw, 1.6rem);
+    color: var(--color-mint);
+    text-wrap: balance;
+  }
+  .hero__tagline .stern {
+    color: var(--color-accent-pink);
   }
 
   .hero__date {
@@ -149,11 +274,9 @@ const {
     color: var(--color-mint);
   }
   .hero__date-mark {
+    display: block;
     width: min(72vw, 26rem);
-    /* eigener, langsamerer Waber-Takt mit Versatz -> lebendig, nicht synchron */
-    animation: hero-waber-soft 11s ease-in-out infinite;
-    animation-delay: -3s;
-    will-change: transform;
+    filter: url(#hero-warp-date);
   }
 
   .hero__scroll {
@@ -170,29 +293,6 @@ const {
     opacity: 1;
   }
 
-  @keyframes hero-waber {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0) rotate(-0.6deg) scale(1);
-    }
-    33% {
-      transform: translate3d(0, -0.9%, 0) rotate(0.5deg) scale(1.012);
-    }
-    66% {
-      transform: translate3d(0, 0.7%, 0) rotate(0.7deg) scale(0.995);
-    }
-  }
-
-  @keyframes hero-waber-soft {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0) rotate(0.5deg);
-    }
-    50% {
-      transform: translate3d(0, -0.6%, 0) rotate(-0.5deg);
-    }
-  }
-
   @keyframes hero-bob {
     0%,
     100% {
@@ -202,17 +302,27 @@ const {
       transform: translateX(-50%) translateY(6px);
     }
   }
+
+  /* Reduced-Motion: keine Verzerrung/kein Halo, kein Bob. Ruhiges Standbild. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__logo-warp,
+    .hero__date-mark {
+      filter: none;
+    }
+    .hero__scroll {
+      animation: none;
+    }
+  }
 </style>
 
 <script>
-  // Dezenter Maus-Parallax für die Logo-Ebene. Nur auf feinen Zeigern (Maus)
-  // und wenn Bewegung erlaubt ist; Touch/Reduced-Motion bleibt beim Waber.
+  // Dezenter Maus-Parallax für die Logo-Ebene. Nur feiner Zeiger + Motion erlaubt.
   const root = document.querySelector<HTMLElement>('[data-hero-root]');
   const layer = document.querySelector<HTMLElement>('[data-hero-parallax]');
   const finePointer = window.matchMedia('(pointer: fine)');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  const MAX = 16; // px maximale Verschiebung
+  const MAX = 14; // px maximale Verschiebung
   let targetX = 0,
     targetY = 0,
     curX = 0,
@@ -221,8 +331,9 @@ const {
     bound = false;
 
   function onMove(e: PointerEvent) {
-    const r = root!.getBoundingClientRect();
-    const nx = (e.clientX - r.left) / r.width - 0.5; // -0.5..0.5
+    if (!root) return;
+    const r = root.getBoundingClientRect();
+    const nx = (e.clientX - r.left) / r.width - 0.5;
     const ny = (e.clientY - r.top) / r.height - 0.5;
     targetX = -nx * 2 * MAX;
     targetY = -ny * 2 * MAX;
@@ -260,4 +371,20 @@ const {
   enable();
   reduce.addEventListener('change', (e) => (e.matches ? disable() : enable()));
   finePointer.addEventListener('change', (e) => (e.matches ? enable() : disable()));
+
+  // Perf: den animierten Verzerr-Filter (SMIL) pausieren, sobald der Hero aus
+  // dem Viewport ist — sonst rechnet feTurbulence im Hintergrund weiter.
+  const defs = document.querySelector<SVGSVGElement>('.hero__defs');
+  if (defs && root && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) defs.unpauseAnimations();
+          else defs.pauseAnimations();
+        }
+      },
+      { threshold: 0 },
+    );
+    io.observe(root);
+  }
 </script>
