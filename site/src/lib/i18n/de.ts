@@ -17,6 +17,7 @@ export const de = {
     menu: 'Menü',
     open: 'Menü öffnen',
     close: 'Menü schließen',
+    closeShort: 'Schließen',
     skipToContent: 'Zum Inhalt springen',
     home: 'Start',
     intro: 'Über',
