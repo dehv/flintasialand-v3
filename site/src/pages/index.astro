@@ -1,0 +1,101 @@
+---
+/**
+ * Startseite — PHASE 1: Verifikationsstand.
+ *
+ * Zeigt Basis-Layout, Navbar/Footer und die Theme-Zonen (dark/light) mit den
+ * CI-Akzentfarben. Der echte Hero (Video + wabernde Logo-Ebene) und die
+ * Teaser-Sektionen kommen in Phase 3/4 und ersetzen den Platzhalter unten.
+ */
+import { Image } from 'astro:assets';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@ui/Section.astro';
+import Heading from '@ui/Heading.astro';
+import Button from '@ui/Button.astro';
+import logoMint from '@assets/logo/logo-light-mint.svg';
+import datumBerry from '@assets/brand/datum-berry.svg';
+import stern1 from '@assets/sterne/stern-01.png';
+import stern2 from '@assets/sterne/stern-02.png';
+---
+
+<BaseLayout title="Festival">
+  <!-- HERO-PLATZHALTER (dark) — echter Video-Hero folgt in Phase 3 -->
+  <Section theme="dark" spacing="none" container={false}>
+    <div
+      class="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden px-6 py-24 text-center"
+    >
+      <Image
+        src={logoMint}
+        alt="Flinta*sialand"
+        class="w-full max-w-2xl"
+        loading="eager"
+      />
+      <Image src={datumBerry} alt="" class="mt-8 w-full max-w-md opacity-90" />
+      <p class="mt-6 max-w-md text-on-surface-muted">
+        Platzhalter-Hero (Phase 1). In Phase 3 folgt hier das
+        Genderstern-Animationsvideo mit wabernder, maus-reaktiver Logo-Ebene.
+      </p>
+    </div>
+  </Section>
+
+  <!-- INTRO (light) -->
+  <Section theme="light" id="intro">
+    <div class="grid items-center gap-8 md:grid-cols-2">
+      <div>
+        <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
+          Was ist Flinta*sialand?
+        </p>
+        <Heading level={2} class="mt-3">
+          Ein Festival als sicherer Raum — von und für FLINTA*.
+        </Heading>
+        <p class="mt-5 max-w-prose text-on-surface-muted">
+          Platzhalter-Text. Musik, Awareness und Community stehen im Zentrum.
+          Die Inhalte kommen später über das CMS und lassen sich von Laien
+          pflegen, ohne das Design zu brechen.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <Button href="/line-up">Line-Up entdecken</Button>
+          <Button href="/awareness" variant="outline">Awareness-Konzept</Button>
+        </div>
+      </div>
+      <div class="flex justify-center gap-4">
+        <Image src={stern1} alt="" class="w-32 md:w-40" />
+        <Image src={stern2} alt="" class="mt-10 w-24 md:w-32" />
+      </div>
+    </div>
+  </Section>
+
+  <!-- THEME-DEMO (dark) — belegt die Zonen-Umschaltung + Akzentfarben -->
+  <Section theme="dark">
+    <Heading level={2}>Theme-Demo: dark-Zone</Heading>
+    <p class="mt-3 max-w-prose text-on-surface-muted">
+      Diese Sektion trägt <code>data-theme="dark"</code>: Hintergrund berry,
+      Text mint, UI-Akzent teal. Buttons und Links ziehen den Akzent automatisch.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <Button href="#">Solid-Button (teal)</Button>
+      <Button href="#" variant="outline">Outline-Button</Button>
+    </div>
+
+    <!-- Farb-Swatches zur CI-Kontrolle -->
+    <div class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div class="rounded-md bg-berry p-4 text-mint ring-1 ring-hairline">berry</div>
+      <div class="rounded-md bg-mint p-4 text-berry">mint</div>
+      <div class="rounded-md bg-accent-teal p-4 text-berry">teal</div>
+      <div class="rounded-md bg-accent-green p-4 text-mint">green</div>
+      <div class="rounded-md bg-accent-pink p-4 text-berry">pink</div>
+    </div>
+  </Section>
+
+  <!-- THEME-DEMO (light) -->
+  <Section theme="light">
+    <Heading level={2}>Theme-Demo: light-Zone</Heading>
+    <p class="mt-3 max-w-prose text-on-surface-muted">
+      Gleiche Komponenten, <code>data-theme="light"</code>: Hintergrund mint,
+      Text berry, UI-Akzent green — ohne dass die Komponenten die Zone kennen.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <Button href="#">Solid-Button (green)</Button>
+      <Button href="#" variant="outline">Outline-Button</Button>
+    </div>
+  </Section>
+</BaseLayout>

@@ -1,0 +1,181 @@
+---
+/**
+ * Sticky-Navbar (One-Pager-Anker + Deep-Link-Routen).
+ * Desktop: schlanke Leiste. Mobil: Burger -> Off-Canvas-Panel.
+ *
+ * Bewusst dark-Zone (steht über/nach dem dark Hero). Minimales Vanilla-JS
+ * nur für das Burger-Toggle — kein Framework, kein schweres JS auf der Startseite.
+ */
+import { Image } from 'astro:assets';
+import logoMint from '@assets/logo/logo-light-mint.svg';
+import { primaryNav } from '@lib/site';
+import { t } from '@lib/i18n';
+
+// TODO: Ticket-Link von Alia; bis dahin ausgeblendet, wenn leer.
+const ticketHref = '';
+---
+
+<header
+  data-theme="dark"
+  class="sticky top-0 z-50 border-b border-hairline bg-surface/85 backdrop-blur-md"
+>
+  <nav
+    aria-label={t.nav.menu}
+    class="u-container flex items-center justify-between"
+    style={`height: var(--nav-height)`}
+  >
+    <!-- Logo -->
+    <a href="/" class="flex items-center" aria-label={t.a11y.logo}>
+      <Image
+        src={logoMint}
+        alt="Flinta*sialand"
+        class="h-9 w-auto md:h-10"
+        loading="eager"
+      />
+    </a>
+
+    <!-- Desktop-Navigation -->
+    <ul class="hidden items-center gap-7 lg:flex">
+      {
+        primaryNav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="font-display text-sm font-bold text-on-surface/90 transition-colors hover:text-accent"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      {
+        ticketHref && (
+          <li>
+            <a
+              href={ticketHref}
+              class="inline-flex items-center rounded-full bg-accent px-5 py-2 font-display text-sm font-bold text-accent-on transition-transform hover:scale-105"
+            >
+              {t.actions.tickets}
+            </a>
+          </li>
+        )
+      }
+    </ul>
+
+    <!-- Burger (mobil) -->
+    <button
+      type="button"
+      id="nav-toggle"
+      class="inline-flex h-11 w-11 items-center justify-center rounded-full text-on-surface lg:hidden"
+      aria-label={t.nav.open}
+      aria-expanded="false"
+      aria-controls="nav-panel"
+    >
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        aria-hidden="true"
+        data-icon="open"
+      >
+        <line x1="3" y1="7" x2="21" y2="7"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="17" x2="21" y2="17"></line>
+      </svg>
+      <svg
+        width="26"
+        height="26"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        aria-hidden="true"
+        data-icon="close"
+        class="hidden"
+      >
+        <line x1="5" y1="5" x2="19" y2="19"></line>
+        <line x1="19" y1="5" x2="5" y2="19"></line>
+      </svg>
+    </button>
+  </nav>
+</header>
+
+<!-- Off-Canvas-Panel (mobil).
+     Bewusst AUSSERHALB von <header>: der backdrop-blur des Headers erzeugt sonst
+     einen Containing-Block, gegen den `position: fixed` positioniert würde. -->
+<div
+  id="nav-panel"
+  data-theme="dark"
+  hidden
+  class="fixed inset-x-0 bottom-0 z-40 overflow-y-auto bg-surface lg:hidden"
+  style={`top: var(--nav-height)`}
+>
+    <ul class="u-container flex flex-col gap-1 py-6">
+      {
+        primaryNav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="block border-b border-hairline py-4 font-display text-2xl font-bold text-on-surface transition-colors hover:text-accent"
+              data-nav-link
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      {
+        ticketHref && (
+          <li class="pt-4">
+            <a
+              href={ticketHref}
+              class="inline-flex w-full items-center justify-center rounded-full bg-accent px-6 py-4 font-display text-lg font-bold text-accent-on"
+              data-nav-link
+            >
+              {t.actions.tickets}
+            </a>
+          </li>
+        )
+      }
+    </ul>
+</div>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('nav-panel');
+  const openIcon = toggle?.querySelector('[data-icon="open"]');
+  const closeIcon = toggle?.querySelector('[data-icon="close"]');
+
+  function setOpen(open: boolean) {
+    if (!toggle || !panel) return;
+    panel.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    openIcon?.classList.toggle('hidden', open);
+    closeIcon?.classList.toggle('hidden', !open);
+    // Scroll sperren, solange das Off-Canvas offen ist.
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+  }
+
+  toggle?.addEventListener('click', () => {
+    setOpen(panel?.hidden ?? true);
+  });
+
+  // Panel schließen bei Klick auf einen Link oder Escape.
+  panel?.querySelectorAll('[data-nav-link]').forEach((link) => {
+    link.addEventListener('click', () => setOpen(false));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
+
+  // Beim Wechsel auf Desktop sicher zurücksetzen.
+  const mq = window.matchMedia('(min-width: 1024px)');
+  mq.addEventListener('change', (e) => {
+    if (e.matches) setOpen(false);
+  });
+</script>
