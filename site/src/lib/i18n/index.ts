@@ -1,24 +1,49 @@
 /**
  * i18n-Einstiegspunkt.
  *
- * v1: nur Deutsch. Der `t`-Helfer und `useTranslations(locale)` sind bereits
- * locale-fähig aufgesetzt, damit Englisch später ohne Umbau ergänzt werden kann:
- *   1. `en.ts` anlegen (gleiche Struktur wie `de.ts`)
- *   2. hier in `dictionaries` registrieren
+ * Deutsch (unter /) ist Primärsprache, Englisch (unter /en/) die Zweitsprache.
+ * `t` ist der Default (Deutsch); locale-abhängige Komponenten holen ihr
+ * Wörterbuch über `useTranslations(localeFromPath(...))`.
+ *
+ * Weitere Sprache ergänzen:
+ *   1. `xx.ts` anlegen (gleiche Struktur wie `de.ts`)
+ *   2. hier in `dictionaries` + `locales` registrieren
  *   3. `locales` in astro.config.mjs erweitern
  */
 import { de, type Dict } from './de';
+import { en } from './en';
 
 export const defaultLocale = 'de' as const;
-export type Locale = 'de'; // später: 'de' | 'en'
+export const locales = ['de', 'en'] as const;
+export type Locale = (typeof locales)[number];
 
 const dictionaries: Record<Locale, Dict> = {
   de,
+  en,
 };
 
 export function useTranslations(locale: Locale = defaultLocale): Dict {
   return dictionaries[locale] ?? dictionaries[defaultLocale];
 }
 
-/** Bequemer Default-Export der aktiven Sprache. */
+/** Aktive Sprache robust aus dem Pfad ableiten (unabhängig von Astro.currentLocale). */
+export function localeFromPath(pathname: string): Locale {
+  return pathname === '/en' || pathname.startsWith('/en/') ? 'en' : 'de';
+}
+
+/**
+ * Denselben Inhalt in der Zielsprache verlinken:
+ *   ('/lageplan', 'en')     -> '/en/lageplan'
+ *   ('/en/lageplan', 'de')  -> '/lageplan'
+ */
+export function switchLocalePath(pathname: string, target: Locale): string {
+  const bare =
+    pathname === '/en' || pathname.startsWith('/en/')
+      ? pathname.replace(/^\/en/, '') || '/'
+      : pathname;
+  if (target === 'de') return bare;
+  return bare === '/' ? '/en/' : `/en${bare}`;
+}
+
+/** Bequemer Default-Export der Primärsprache (Deutsch). */
 export const t: Dict = useTranslations(defaultLocale);

@@ -1,0 +1,123 @@
+---
+/**
+ * Startseite — One-Pager (Phase 4).
+ *
+ * Vollwertiger One-Pager mit Hero, Intro, Line-Up-Teaser (Auto-Marquee aller
+ * Acts + Link auf die kombinierte Line-Up/Timetable-Seite), Lageplan-Teaser,
+ * Awareness-Teaser und Förderer-Logoleiste.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Hero from '@components/hero/Hero.astro';
+import Section from '@ui/Section.astro';
+import Heading from '@ui/Heading.astro';
+import Button from '@ui/Button.astro';
+import StarScrollDeco from '@ui/StarScrollDeco.astro';
+import LineupTeaser from '@blocks/LineupTeaser.astro';
+import LageplanTeaser from '@blocks/LageplanTeaser.astro';
+import AwarenessTeaser from '@blocks/AwarenessTeaser.astro';
+import FoerdererBlock from '@blocks/FoerdererBlock.astro';
+
+import texGruen from '@assets/demo/tex-gruen.jpg';
+---
+
+<BaseLayout title="Festival">
+  <!-- 1. HERO (dark) — Video-Hintergrund + wabernde, maus-reaktive Logo-Ebene + Datum -->
+  <Hero variant="video" scrollTo="#intro" />
+
+  <!-- 2. INTRO (light) — Was ist Flinta*sialand? -->
+  <Section theme="light" id="intro" class="relative overflow-hidden">
+    <!-- Ein großer, beim Scrollen rotierender & (kräftig) wabernder Deko-Stern,
+         bewusst am rechten Rand abgeschnitten und im Hintergrund. -->
+    <div class="intro-deco" aria-hidden="true">
+      <StarScrollDeco
+        src={texGruen}
+        shape="1"
+        accent="green"
+        speed={60}
+        class="intro-deco__a"
+      />
+    </div>
+
+    <div class="relative z-10 grid items-center gap-8 md:grid-cols-2">
+      <div class="intro-copy">
+        <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
+          Was ist Flinta*sialand?
+        </p>
+        <Heading level={2} class="mt-3">
+          Ein Festival als sicherer Raum — von und für FLINTA*.
+        </Heading>
+        <p class="mt-5 max-w-prose text-on-surface-muted">
+          Flinta*sialand ist ein Tagesfestival für Sichtbarkeit und Empowerment
+          von FLINTA*-Künstler*innen. Musik, Awareness und Community stehen im
+          Zentrum — in einem safer space, der Platz für alle schafft.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <Button href="/line-up">Line-Up entdecken</Button>
+          <Button href="/awareness" variant="outline">Awareness-Konzept</Button>
+        </div>
+      </div>
+      <!-- rechte Spalte bleibt frei: die Deko-Sterne füllen sie im Hintergrund -->
+      <div class="hidden md:block" aria-hidden="true"></div>
+    </div>
+  </Section>
+
+  <!-- 3. LINE-UP-TEASER (dark) — Auto-Marquee aller Acts + Line-Up/Timetable -->
+  <LineupTeaser />
+
+  <!-- 4. LAGEPLAN-TEASER (light) -->
+  <LageplanTeaser />
+
+  <!-- 5. AWARENESS-TEASER (dark) -->
+  <AwarenessTeaser />
+
+  <!-- 6. FÖRDERER (light) -->
+  <FoerdererBlock />
+</BaseLayout>
+
+<style>
+  /* Intro-Deko: EIN großer Stern, rechts angeschnitten, im Hintergrund. */
+  .intro-deco {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .intro-deco :global(.intro-deco__a) {
+    position: absolute;
+    width: clamp(30rem, 55vw, 58rem);
+    /* bewusst über den rechten Rand hinaus → angeschnitten */
+    right: clamp(-20rem, -14vw, -8rem);
+    top: 50%;
+    translate: 0 -50%;
+    opacity: 0.7;
+  }
+
+  /* Mint-Schimmer hinter dem Text: hebt ihn vom Stern ab (Lesbarkeit). */
+  .intro-copy {
+    position: relative;
+    z-index: 0;
+  }
+  .intro-copy::before {
+    content: '';
+    position: absolute;
+    inset: -2.5rem -4rem;
+    z-index: -1;
+    background: radial-gradient(
+      70% 65% at 32% 50%,
+      var(--color-mint) 45%,
+      color-mix(in srgb, var(--color-mint) 55%, transparent) 68%,
+      transparent 100%
+    );
+    filter: blur(18px);
+    pointer-events: none;
+  }
+
+  /* Mobil: Stern dezenter (Textur zeigt sich trotzdem hinter dem Mint-Schimmer). */
+  @media (max-width: 767px) {
+    .intro-deco :global(.intro-deco__a) {
+      width: 26rem;
+      right: -11rem;
+      opacity: 0.5;
+    }
+  }
+</style>

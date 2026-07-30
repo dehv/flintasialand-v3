@@ -8,7 +8,7 @@ import Navbar from '@ui/Navbar.astro';
 import Footer from '@ui/Footer.astro';
 import WaberDefs from '@ui/WaberDefs.astro';
 import LogoMark from '@ui/LogoMark.astro';
-import { t } from '@lib/i18n';
+import { useTranslations, localeFromPath } from '@lib/i18n';
 
 interface Props {
   title?: string;
@@ -17,6 +17,8 @@ interface Props {
   ogImage?: string;
   /** Navbar/Footer ausblenden (z. B. für Fehlerseiten). */
   bare?: boolean;
+  /** DE-only-Seite (Impressum/Datenschutz): kein Sprachumschalter. */
+  deOnly?: boolean;
 }
 
 const {
@@ -24,7 +26,13 @@ const {
   description = 'Flinta*sialand — ein Festival vom Flinta*sia Kollektiv. Musik, Awareness und Community.',
   ogImage = '/og-default.png',
   bare = false,
+  deOnly = false,
 } = Astro.props;
+
+const path = Astro.url.pathname;
+const locale = localeFromPath(path);
+const t = useTranslations(locale);
+const homeHref = locale === 'en' ? '/en/' : '/';
 
 const siteName = t.meta.siteName;
 const fullTitle = title ? `${title} — ${siteName}` : `${siteName} Festival`;
@@ -33,13 +41,15 @@ const fullTitle = title ? `${title} — ${siteName}` : `${siteName} Festival`;
  * Bewusst `absolute` statt `fixed`: es sitzt am Seitenanfang und scrollt mit
  * weg — im Gegensatz zu den fixierten Navigations-Pillen.
  */
-const showBrand = !bare && Astro.url.pathname !== '/';
-const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const isHome = path === '/' || path === '/en' || path === '/en/';
+const showBrand = !bare && !isHome;
+const canonical = new URL(path, Astro.site).toString();
 const ogImageUrl = new URL(ogImage, Astro.site).toString();
+const ogLocale = locale === 'en' ? 'en_GB' : 'de_DE';
 ---
 
 <!doctype html>
-<html lang="de">
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -54,7 +64,7 @@ const ogImageUrl = new URL(ogImage, Astro.site).toString();
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:locale" content="de_DE" />
+    <meta property="og:locale" content={ogLocale} />
     <meta name="twitter:card" content="summary_large_image" />
 
     <meta name="theme-color" content="#5d3e51" />
@@ -64,15 +74,15 @@ const ogImageUrl = new URL(ogImage, Astro.site).toString();
   <body class="flex min-h-screen flex-col">
     <a href="#main" class="skip-link">{t.nav.skipToContent}</a>
     <WaberDefs />
-    {!bare && <Navbar />}
+    {!bare && <Navbar deOnly={deOnly} />}
     {
       showBrand && (
         <div class="pointer-events-none absolute inset-x-0 top-0 z-40">
           <div class="u-container py-3 md:py-4">
             <a
-              href="/"
+              href={homeHref}
               class="pointer-events-auto inline-flex text-berry transition-opacity hover:opacity-80"
-              aria-label="Zur Startseite"
+              aria-label={t.a11y.logo}
             >
               <LogoMark class="h-12 md:h-14" />
             </a>

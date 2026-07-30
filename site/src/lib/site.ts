@@ -32,12 +32,14 @@ export interface FooterLink {
   label: string;
   href: string;
   external?: boolean;
+  /** Nur auf Deutsch verfügbar → Link bleibt auch auf /en auf der DE-Route. */
+  deOnly?: boolean;
 }
 
 export const footerLinks = {
   legal: [
-    { label: 'Impressum', href: '/impressum' },
-    { label: 'Datenschutz', href: '/datenschutz' },
+    { label: 'Impressum', href: '/impressum', deOnly: true },
+    { label: 'Datenschutz', href: '/datenschutz', deOnly: true },
     { label: 'Code of Conduct', href: '/code-of-conduct' },
     { label: 'Awareness', href: '/awareness' },
   ] as FooterLink[],

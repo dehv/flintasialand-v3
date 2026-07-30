@@ -20,6 +20,7 @@ export const de = {
     closeShort: 'Schließen',
     skipToContent: 'Zum Inhalt springen',
     home: 'Start',
+    language: 'Sprache',
     intro: 'Über',
     lineup: 'Line-Up',
     timetable: 'Timetable',
@@ -38,6 +39,7 @@ export const de = {
     back: 'Zurück',
   },
   footer: {
+    info: 'Info',
     imprint: 'Impressum',
     privacy: 'Datenschutz',
     codeOfConduct: 'Code of Conduct',

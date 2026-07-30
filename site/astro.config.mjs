@@ -12,10 +12,10 @@ const SITE_URL = process.env.SITE_URL ?? 'https://flintasialand.de';
 // https://astro.build/config
 export default defineConfig({
   site: SITE_URL,
-  // Deutsch als Primärsprache; i18n-ready (Englisch später ohne Umbau ergänzbar).
+  // Deutsch als Primärsprache (unter /), Englisch unter /en/.
   i18n: {
     defaultLocale: 'de',
-    locales: ['de'],
+    locales: ['de', 'en'],
     routing: { prefixDefaultLocale: false },
   },
   // /timetable lebt jetzt als Umschalt-Ansicht auf /line-up.
