@@ -27,6 +27,9 @@
 
   --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
   --font-sans: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  /* Die CI kennt keine Monospace — `font-mono` (z. B. Timetable-Zeiten) soll
+     ebenfalls Bricolage nutzen. tabular-nums hält Zahlen dennoch bündig. */
+  --font-mono: 'Bricolage Grotesque Variable', system-ui, sans-serif;
 
   --default-transition-duration: 200ms;
 }
@@ -132,6 +135,12 @@
     max-width: var(--container-max);
     margin-inline: auto;
     padding-inline: 1.25rem;
+  }
+
+  /* `font-mono` nutzt jetzt Bricolage (siehe --font-mono) — tabular-nums hält
+     Uhrzeiten/Zahlen trotzdem sauber in Spalten. */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
   }
   @media (min-width: 768px) {
     .u-container {

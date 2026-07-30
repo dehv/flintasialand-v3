@@ -98,6 +98,8 @@ const pillTicket = 'bg-accent-teal text-berry hover:bg-mint';
     <button
       type="button"
       id="nav-close"
+      data-nav-item
+      style="--i:0"
       class:list={[pillBase, pillIdle]}
       aria-label={t.nav.close}
     >
@@ -105,10 +107,12 @@ const pillTicket = 'bg-accent-teal text-berry hover:bg-mint';
     </button>
 
     {
-      primaryNav.map((item) => (
+      primaryNav.map((item, i) => (
         <a
           href={item.href}
           data-nav-link
+          data-nav-item
+          style={`--i:${i + 1}`}
           aria-current={isActive(item.href, item.anchor) ? 'page' : undefined}
           class:list={[
             pillBase,
@@ -125,6 +129,8 @@ const pillTicket = 'bg-accent-teal text-berry hover:bg-mint';
         <a
           href={ticketHref}
           data-nav-link
+          data-nav-item
+          style={`--i:${primaryNav.length + 1}`}
           class:list={[pillBase, pillTicket, 'px-6 py-3 text-lg']}
         >
           {t.actions.tickets}
@@ -134,28 +140,66 @@ const pillTicket = 'bg-accent-teal text-berry hover:bg-mint';
   </div>
 </div>
 
+<style>
+  /* Smoothe Auf-/Zu-Animation: Overlay faded, Pillen fliegen gestaffelt ein.
+     (Reduced-Motion wird global entschärft -> Transitions ~instant.) */
+  #nav-panel {
+    opacity: 0;
+    transition: opacity 240ms ease;
+  }
+  #nav-panel.is-open {
+    opacity: 1;
+  }
+  #nav-panel [data-nav-item] {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+    transition:
+      opacity 320ms ease,
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--i, 0) * 45ms);
+  }
+  #nav-panel.is-open [data-nav-item] {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+
 <script>
   const toggle = document.getElementById('nav-toggle');
   const closeBtn = document.getElementById('nav-close');
   const panel = document.getElementById('nav-panel');
+  let isOpen = false;
+  let closeTimer = 0;
 
   function setOpen(open: boolean) {
-    if (!toggle || !panel) return;
-    panel.hidden = !open;
+    if (!toggle || !panel || open === isOpen) return;
+    isOpen = open;
     toggle.setAttribute('aria-expanded', String(open));
-    // Scroll sperren, solange das Overlay offen ist.
     document.documentElement.style.overflow = open ? 'hidden' : '';
-    if (open) closeBtn?.focus();
-    else toggle.focus();
+
+    if (open) {
+      window.clearTimeout(closeTimer);
+      panel.hidden = false;
+      void panel.offsetWidth; // Reflow erzwingen, damit die Transition greift
+      panel.classList.add('is-open');
+      closeBtn?.focus();
+    } else {
+      panel.classList.remove('is-open');
+      // Nach der Ausblend-Transition wirklich aus dem Fluss nehmen.
+      closeTimer = window.setTimeout(() => {
+        if (!isOpen) panel.hidden = true;
+      }, 320);
+      toggle.focus();
+    }
   }
 
-  toggle?.addEventListener('click', () => setOpen(panel?.hidden ?? true));
+  toggle?.addEventListener('click', () => setOpen(!isOpen));
   closeBtn?.addEventListener('click', () => setOpen(false));
   panel
     ?.querySelectorAll('[data-nav-link]')
     .forEach((link) => link.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && panel && !panel.hidden) setOpen(false);
+    if (e.key === 'Escape' && isOpen) setOpen(false);
   });
 
   // Beim Wechsel auf Desktop sicher zurücksetzen.

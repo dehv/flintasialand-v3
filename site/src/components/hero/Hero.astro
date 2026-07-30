@@ -15,10 +15,10 @@
  *   - Zusätzlich dezenter Maus-Parallax auf der Logo-Ebene (nur feiner Zeiger).
  * `prefers-reduced-motion` schaltet Verzerrung/Halo (filter:none) und Parallax ab.
  */
-import DateWordmark from '@ui/DateWordmark.astro';
 import HeroVideoBackground from '@components/hero/HeroVideoBackground.astro';
 import HeroWebglBackground from '@components/hero/HeroWebglBackground.astro';
 import logoMarkRaw from '@assets/logo/logo-mark.svg?raw';
+import datumRaw from '@assets/brand/datum-berry.svg?raw';
 
 interface Props {
   variant?: 'video' | 'webgl';
@@ -39,6 +39,16 @@ const logoMark = logoMarkRaw
   .replace(/<!--[\s\S]*?-->/g, '')
   .replace(/<svg([^>]*?)\swidth="[^"]*"/, '<svg$1')
   .replace(/<svg([^>]*?)\sheight="[^"]*"/, '<svg$1')
+  .replace('<svg', '<svg fill="currentColor" aria-hidden="true" focusable="false"');
+
+// Datum-Wortbild inline (wie das Logo), damit Scope + Warp-Filter + Sizing greifen.
+const dateMark = datumRaw
+  .replace(/<\?xml[\s\S]*?\?>/, '')
+  .replace(/<!DOCTYPE[\s\S]*?>/, '')
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/<svg([^>]*?)\swidth="[^"]*"/, '<svg$1')
+  .replace(/<svg([^>]*?)\sheight="[^"]*"/, '<svg$1')
+  .replace(/fill:\s*#673b50/gi, 'fill: currentColor')
   .replace('<svg', '<svg fill="currentColor" aria-hidden="true" focusable="false"');
 ---
 
@@ -64,28 +74,28 @@ const logoMark = logoMarkRaw
       >
         <feTurbulence
           type="fractalNoise"
-          baseFrequency="0.011"
+          baseFrequency="0.008"
           numOctaves="2"
           seed="7"
           result="noise"
         >
           <animate
             attributeName="baseFrequency"
-            dur="12s"
-            values="0.010;0.015;0.009;0.010"
+            dur="10s"
+            values="0.007;0.012;0.006;0.007"
             repeatCount="indefinite"
           ></animate>
         </feTurbulence>
         <feDisplacementMap
           in="SourceGraphic"
           in2="noise"
-          scale="5"
+          scale="12"
           xChannelSelector="R"
           yChannelSelector="G"
           result="warp"
         ></feDisplacementMap>
         <!-- rosa Shimmer-Halo aus der verzerrten Form -->
-        <feGaussianBlur in="warp" stdDeviation="7" result="halo"></feGaussianBlur>
+        <feGaussianBlur in="warp" stdDeviation="8" result="halo"></feGaussianBlur>
         <feFlood flood-color="#dc95bb" result="pink">
           <animate
             attributeName="flood-opacity"
@@ -111,27 +121,27 @@ const logoMark = logoMarkRaw
       >
         <feTurbulence
           type="fractalNoise"
-          baseFrequency="0.016"
+          baseFrequency="0.012"
           numOctaves="2"
           seed="3"
           result="noise"
         >
           <animate
             attributeName="baseFrequency"
-            dur="9s"
-            values="0.015;0.021;0.014;0.015"
+            dur="8s"
+            values="0.010;0.016;0.009;0.010"
             repeatCount="indefinite"
           ></animate>
         </feTurbulence>
         <feDisplacementMap
           in="SourceGraphic"
           in2="noise"
-          scale="4"
+          scale="7"
           xChannelSelector="R"
           yChannelSelector="G"
           result="warp"
         ></feDisplacementMap>
-        <feGaussianBlur in="warp" stdDeviation="4" result="halo"></feGaussianBlur>
+        <feGaussianBlur in="warp" stdDeviation="5" result="halo"></feGaussianBlur>
         <feFlood flood-color="#dc95bb" result="pink">
           <animate
             attributeName="flood-opacity"
@@ -164,13 +174,14 @@ const logoMark = logoMarkRaw
 
     <!-- Tagline: separat & STARR (kein Warp, kein Parallax). Gendersterne in Pink. -->
     <p class="hero__tagline" aria-hidden="true">
-      Festival für Sichtbarkeit und Empowerment<br />
+      Festival für Sichtbarkeit<br />
+      und Empowerment<br />
       von FLINTA<span class="stern">*</span>-Künstler<span class="stern">*</span>innen
     </p>
 
     <p class="hero__date">
       <span class="sr-only">Am {dateLabel}</span>
-      <DateWordmark class="hero__date-mark" />
+      <span class="hero__date-mark" set:html={dateMark} />
     </p>
   </div>
 
@@ -253,17 +264,18 @@ const logoMark = logoMarkRaw
   }
 
   /* Tagline: starr, nach rechts versetzt (unter dem Logo rechtsbündig). */
+  /* Tagline wie im Original-Lockup: 3 Zeilen, klein, rechtsbündig, dicht unter
+     dem Mark (leicht in dessen untere rechte Ecke gezogen). Bewusst STARR. */
   .hero__tagline {
-    margin: clamp(0.9rem, 2.4vh, 1.6rem) 0 0;
+    margin: clamp(-1.5rem, -2vh, -0.5rem) 0 0;
     width: min(88vw, 44rem);
     text-align: right;
-    padding-right: clamp(0.25rem, 3vw, 2.5rem);
+    padding-right: clamp(0.5rem, 4vw, 3rem);
     font-family: var(--font-display);
     font-weight: 700;
-    line-height: 1.12;
-    font-size: clamp(1rem, 1rem + 1.1vw, 1.6rem);
+    line-height: 1.1;
+    font-size: clamp(0.8rem, 0.62rem + 0.85vw, 1.15rem);
     color: var(--color-mint);
-    text-wrap: balance;
   }
   .hero__tagline .stern {
     color: var(--color-accent-pink);
@@ -276,7 +288,13 @@ const logoMark = logoMarkRaw
   .hero__date-mark {
     display: block;
     width: min(72vw, 26rem);
+    margin-inline: auto;
     filter: url(#hero-warp-date);
+  }
+  .hero__date-mark :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   .hero__scroll {

@@ -33,12 +33,12 @@ import { sponsors } from '@content/foerderer';
             target="_blank"
             rel="noopener noreferrer"
             title={s.name}
-            class="flex h-full min-h-[5.5rem] min-w-[9rem] items-center justify-center rounded-xl bg-white px-5 py-4 ring-1 ring-hairline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5"
+            class="foerderer-tile flex h-full min-h-[5.5rem] min-w-[9rem] items-center justify-center rounded-xl bg-white px-5 py-4 ring-1 ring-hairline transition-transform duration-200 hover:-translate-y-0.5 focus-visible:-translate-y-0.5"
           >
             <Image
               src={s.logo}
               alt={`Logo ${s.name}`}
-              class="max-h-11 w-auto object-contain"
+              class="foerderer-logo max-h-11 w-auto object-contain"
               widths={[120, 180, 240]}
               sizes="180px"
               loading="lazy"
@@ -49,3 +49,23 @@ import { sponsors } from '@content/foerderer';
     }
   </ul>
 </Section>
+
+<style>
+  /* Logos standardmäßig schwarz-weiß, färben sich beim Hover.
+     NUR auf Hover-fähigen Geräten (Maus): auf Touch bleiben sie farbig,
+     damit dort nichts dauerhaft verfremdet dargestellt wird. */
+  @media (hover: hover) {
+    .foerderer-logo {
+      filter: grayscale(1);
+      opacity: 0.82;
+      transition:
+        filter 300ms ease,
+        opacity 300ms ease;
+    }
+    .foerderer-tile:hover .foerderer-logo,
+    .foerderer-tile:focus-visible .foerderer-logo {
+      filter: grayscale(0);
+      opacity: 1;
+    }
+  }
+</style>
