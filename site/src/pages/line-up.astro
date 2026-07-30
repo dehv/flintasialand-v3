@@ -5,14 +5,13 @@
  * Zwei Ansichten auf einer Route, per Tab ohne Reload umschaltbar:
  *   - „Line-Up“ : Act-Profile (Bild/Bio/Links) als Konzept-2-Karten, jeweils
  *     mit Bühne + Uhrzeit. Acts ohne Pressefoto folgen als Text-Karten.
- *   - „Timetable“: klassischer Zeitplan nach Bühne + PDF-Download.
+ *   - „Timetable“: klassischer Zeitplan nach Bühne.
  * Die Ansicht ist per URL-Hash vorwählbar (#timetable) — so landet der
  * Timetable-Button vom Teaser bzw. der /timetable-Redirect direkt richtig.
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Section from '@ui/Section.astro';
 import Heading from '@ui/Heading.astro';
-import Button from '@ui/Button.astro';
 import StarCornerImage from '@ui/StarCornerImage.astro';
 import { acts, actsOhneFoto, STAGE_LABEL } from '@content/acts';
 import { timetable } from '@content/timetable';
@@ -26,7 +25,6 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
   { shape: '4', accent: 'pink', corner: 'tl' },
 ];
 
-const pdfHref = '/downloads/timetable-flintasialand-2026.pdf';
 ---
 
 <BaseLayout
@@ -159,9 +157,6 @@ const pdfHref = '/downloads/timetable-flintasialand-2026.pdf';
       data-panel="timetable"
       hidden
     >
-      <div class="mt-8">
-        <Button href={pdfHref} download>Timetable als PDF</Button>
-      </div>
       <div class="mt-12 grid gap-8 md:grid-cols-2">
         {
           timetable.map((stage) => (

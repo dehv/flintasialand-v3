@@ -11,6 +11,7 @@ import imgScherwin from '@assets/artists/scherwin_aliasshay.jpg';
 import imgScherwin2 from '@assets/artists/scherwin_aliasshay_2.jpg';
 import imgFloppyCorti from '@assets/artists/floppy_corti.jpg';
 import imgShaxtarKisya from '@assets/artists/shaxtar_kisya.jpg';
+import imgLilApple from '@assets/artists/lil_apple.jpg';
 
 /** Die beiden Bühnen des Festivals. */
 export type Stage = 'Kieselwiese' | 'Maschinerie';
@@ -183,6 +184,17 @@ export const acts: Act[] = [
     stage: 'Maschinerie',
     time: '16:30–18:15',
     focus: 'center 30%',
+  },
+  {
+    id: 'lil-apple',
+    name: 'lil apple',
+    image: imgLilApple,
+    genre: 'Synth Pop / Electroclash / House',
+    bio: 'Bei lil apple sind keine ausgefuchsten Übergänge oder epischen Drops zu erwarten – dafür ein Ort, an dem sie einfach Musik zeigt, zu der sie euch gerne tanzen sieht. Mit einem Faible für female voices und Sounds abseits dessen, was man sonst in Dortmunder Clubs hört, bringt sie einen Mix aus Synth Pop, Electroclash und House.',
+    links: [],
+    stage: 'Maschinerie',
+    time: '14:00–15:00',
+    focus: 'center 30%',
   }
 ];
 
@@ -203,11 +215,5 @@ export const actsOhneFoto: ActLite[] = [
     genre: 'Punk / Disco / SWANA Pop',
     stage: 'Maschinerie',
     time: '15:00–16:30',
-  },
-  {
-    name: 'lil apple',
-    genre: 'Synth Pop / Electroclash / House',
-    stage: 'Maschinerie',
-    time: '14:00–15:00',
   },
 ];

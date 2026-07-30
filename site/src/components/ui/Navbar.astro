@@ -23,8 +23,7 @@ interface Props {
 }
 const { deOnly = false } = Astro.props;
 
-// TODO: Ticket-Link von Alia; bis dahin ausgeblendet.
-const ticketHref = '';
+// Kein Ticket-Link: der Eintritt ist frei.
 
 const path = Astro.url.pathname;
 const locale = localeFromPath(path);
@@ -62,7 +61,6 @@ const pillBase =
   pillShadow;
 const pillIdle = 'bg-mint text-berry hover:bg-accent-teal';
 const pillActive = 'bg-accent-teal text-berry';
-const pillTicket = 'bg-accent-teal text-berry hover:bg-mint';
 ---
 
 <!-- Kein Balken, kein Logo: floatende Pillen oben rechts. pointer-events-none
@@ -93,15 +91,6 @@ const pillTicket = 'bg-accent-teal text-berry hover:bg-mint';
             </li>
           );
         })
-      }
-      {
-        ticketHref && (
-          <li>
-            <a href={ticketHref} class:list={[pillBase, pillTicket]}>
-              {t.actions.tickets}
-            </a>
-          </li>
-        )
       }
       {
         !deOnly && (
@@ -176,26 +165,13 @@ const pillTicket = 'bg-accent-teal text-berry hover:bg-mint';
       })
     }
     {
-      ticketHref && (
-        <a
-          href={ticketHref}
-          data-nav-link
-          data-nav-item
-          style={`--i:${primaryNav.length + 1}`}
-          class:list={[pillBase, pillTicket, 'px-6 py-3 text-lg']}
-        >
-          {t.actions.tickets}
-        </a>
-      )
-    }
-    {
       !deOnly && (
         <a
           href={otherPath}
           hreflang={otherLocale}
           data-nav-link
           data-nav-item
-          style={`--i:${primaryNav.length + 2}`}
+          style={`--i:${primaryNav.length + 1}`}
           class:list={[pillBase, pillIdle, 'px-6 py-3 text-lg']}
           aria-label={`${t.nav.language}: ${otherName}`}
         >

@@ -128,10 +128,9 @@ export const lageplan: VenueLageplan = {
   ],
 
   anreise: {
-    // TODO: exakte ÖPNV-Verbindung von Alia bestätigen lassen.
     oepnv:
-      'Der Dortmunder Hafen ist ab Dortmund Hbf mit Bus/U-Bahn in wenigen Minuten erreichbar. Die genaue Haltestelle geben wir noch bekannt.',
-    auto: 'Speicherstraße 100, 44147 Dortmund. Parkmöglichkeiten im Hafenareal sind begrenzt — bitte möglichst mit ÖPNV oder Rad anreisen.',
+      'Mit den Öffentlichen bis zur Haltestelle „Hafen“ — von dort sind es rund 15 Minuten zu Fuß zum Speicher 100.',
+    auto: 'Speicherstraße 100, 44147 Dortmund. Bitte möglichst mit ÖPNV oder Rad anreisen und Autos vermeiden — Parkmöglichkeiten im Hafenareal sind begrenzt.',
     barrierefreiheit:
       'Das Gelände liegt am Kai (teils Kopfsteinpflaster/unebener Untergrund). Angaben zu barrierefreien Zugängen und Toiletten ergänzen wir hier, sobald final.',
   },
