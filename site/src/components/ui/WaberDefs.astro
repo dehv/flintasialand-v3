@@ -1,0 +1,107 @@
+---
+/**
+ * WaberDefs — global bereitgestellte SVG-Verzerrfilter („Wabern wie das Logo“).
+ *
+ * Wird einmal pro Seite (via BaseLayout) eingebunden und per CSS
+ * `filter: url(#waber-…)` von Sternen/Bild-Masken referenziert.
+ *
+ *   #waber-logo : kräftiges, fließendes Kanten-Wabern wie der Hero-Logo-Mark
+ *                 (animierte baseFrequency). Für wenige, große Elemente
+ *                 (Intro-Deko-Sterne).
+ *   #waber-soft : dezentes Wabern für die vielen Bild-Masken. Bewusst günstig:
+ *                 das Rauschen ist STATISCH (einmal berechnet/gecached), nur die
+ *                 Displacement-`scale` atmet — so bleibt es auch bei vielen
+ *                 Portraits performant.
+ *
+ * `prefers-reduced-motion` und versteckte Tabs pausieren die SMIL-Animationen.
+ */
+---
+
+<svg class="waber-defs" width="0" height="0" aria-hidden="true" focusable="false" data-waber-defs>
+  <defs>
+    <!-- kräftig & fließend (Logo-Charakter) -->
+    <filter
+      id="waber-logo"
+      x="-20%"
+      y="-25%"
+      width="140%"
+      height="150%"
+      color-interpolation-filters="sRGB"
+    >
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.009"
+        numOctaves="2"
+        seed="7"
+        result="noise"
+      >
+        <animate
+          attributeName="baseFrequency"
+          dur="10s"
+          values="0.007;0.015;0.006;0.007"
+          repeatCount="indefinite"></animate>
+      </feTurbulence>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="noise"
+        scale="24"
+        xChannelSelector="R"
+        yChannelSelector="G"></feDisplacementMap>
+    </filter>
+
+    <!-- dezent & günstig (statisches Rauschen, nur Scale atmet) -->
+    <filter
+      id="waber-soft"
+      x="-12%"
+      y="-12%"
+      width="124%"
+      height="124%"
+      color-interpolation-filters="sRGB"
+    >
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.011"
+        numOctaves="1"
+        seed="4"
+        result="noise"></feTurbulence>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="noise"
+        scale="6"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      >
+        <animate
+          attributeName="scale"
+          dur="7.5s"
+          values="3.5;8;3.5"
+          repeatCount="indefinite"></animate>
+      </feDisplacementMap>
+    </filter>
+  </defs>
+</svg>
+
+<style>
+  .waber-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  // SMIL pausieren bei reduced-motion oder verstecktem Tab (Perf/Respekt).
+  const svg = document.querySelector<SVGSVGElement>('[data-waber-defs]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function sync() {
+    if (!svg) return;
+    if (reduce.matches || document.hidden) svg.pauseAnimations();
+    else svg.unpauseAnimations();
+  }
+
+  reduce.addEventListener('change', sync);
+  document.addEventListener('visibilitychange', sync);
+  sync();
+</script>

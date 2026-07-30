@@ -3,8 +3,7 @@
  * Footer — dark-Zone. Impressum/Datenschutz-Platzhalter, Social, Kontakt,
  * Hinweis aufs Kollektiv (Vorbereitung fürs spätere /kollektiv).
  */
-import { Image } from 'astro:assets';
-import logoMint from '@assets/logo/logo-light-mint.svg';
+import LogoMark from '@ui/LogoMark.astro';
 import { footerLinks, contactEmail } from '@lib/site';
 import { t } from '@lib/i18n';
 
@@ -15,7 +14,7 @@ const year = new Date().getFullYear();
   <div class="u-container grid gap-10 py-14 md:grid-cols-[1.5fr_1fr_1fr] md:py-16">
     <!-- Brand -->
     <div>
-      <Image src={logoMint} alt="Flinta*sialand" class="h-11 w-auto" />
+      <LogoMark class="h-10 text-on-surface" />
       <p class="mt-4 max-w-xs text-on-surface-muted">{t.footer.madeWith}</p>
     </div>
 

@@ -6,6 +6,8 @@
 import '@styles/global.css';
 import Navbar from '@ui/Navbar.astro';
 import Footer from '@ui/Footer.astro';
+import WaberDefs from '@ui/WaberDefs.astro';
+import LogoMark from '@ui/LogoMark.astro';
 import { t } from '@lib/i18n';
 
 interface Props {
@@ -26,6 +28,12 @@ const {
 
 const siteName = t.meta.siteName;
 const fullTitle = title ? `${title} — ${siteName}` : `${siteName} Festival`;
+/**
+ * Marken-Logo oben links auf allen Unterseiten (Startseite hat den Hero-Mark).
+ * Bewusst `absolute` statt `fixed`: es sitzt am Seitenanfang und scrollt mit
+ * weg — im Gegensatz zu den fixierten Navigations-Pillen.
+ */
+const showBrand = !bare && Astro.url.pathname !== '/';
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 const ogImageUrl = new URL(ogImage, Astro.site).toString();
 ---
@@ -53,10 +61,26 @@ const ogImageUrl = new URL(ogImage, Astro.site).toString();
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
-  <body>
+  <body class="flex min-h-screen flex-col">
     <a href="#main" class="skip-link">{t.nav.skipToContent}</a>
+    <WaberDefs />
     {!bare && <Navbar />}
-    <main id="main">
+    {
+      showBrand && (
+        <div class="pointer-events-none absolute inset-x-0 top-0 z-40">
+          <div class="u-container py-3 md:py-4">
+            <a
+              href="/"
+              class="pointer-events-auto inline-flex text-berry transition-opacity hover:opacity-80"
+              aria-label="Zur Startseite"
+            >
+              <LogoMark class="h-12 md:h-14" />
+            </a>
+          </div>
+        </div>
+      )
+    }
+    <main id="main" class="flex-1">
       <slot />
     </main>
     {!bare && <Footer />}

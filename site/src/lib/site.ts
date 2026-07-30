@@ -16,17 +16,16 @@ export interface NavItem {
 }
 
 /**
- * Sticky-Anker-Navbar der Startseite (One-Pager). Die Items scrollen zu den
- * Teaser-Sektionen; die „ganze Liste"-Buttons IN den Teasern führen dann auf
- * die Deep-Link-Routen (/line-up, /timetable, …). Von Unterseiten aus springt
- * z. B. `/#lineup` zurück auf die Startseite und scrollt zur Sektion.
+ * Sticky-Navbar. Die meisten Items sind Anker auf den One-Pager (scrollen zu
+ * den Teaser-Sektionen); „Line-Up“ führt direkt auf die kombinierte Line-Up/
+ * Timetable-Seite (/line-up), da Timetable dort als Umschalt-Ansicht lebt.
+ * Von Unterseiten aus springt z. B. `/#lageplan` zurück auf die Startseite.
  */
 export const primaryNav: NavItem[] = [
   { key: 'intro', label: 'Über', href: '/#intro', anchor: true },
-  { key: 'lineup', label: 'Line-Up', href: '/#lineup', anchor: true },
-  { key: 'timetable', label: 'Timetable', href: '/#timetable', anchor: true },
-  { key: 'lageplan', label: 'Lageplan', href: '/#lageplan', anchor: true },
-  { key: 'awareness', label: 'Awareness', href: '/#awareness', anchor: true },
+  { key: 'lineup', label: 'Line-Up', href: '/line-up' },
+  { key: 'lageplan', label: 'Lageplan', href: '/lageplan' },
+  { key: 'awareness', label: 'Awareness', href: '/awareness' },
 ];
 
 export interface FooterLink {
@@ -42,11 +41,13 @@ export const footerLinks = {
     { label: 'Code of Conduct', href: '/code-of-conduct' },
     { label: 'Awareness', href: '/awareness' },
   ] as FooterLink[],
-  // TODO: finale Social-Links von Alia.
   social: [
-    { label: 'Instagram', href: 'https://instagram.com/', external: true },
+    {
+      label: 'Instagram',
+      href: 'https://instagram.com/flintasia_kollektiv',
+      external: true,
+    },
   ] as FooterLink[],
 };
 
-// TODO: finale Kontaktadresse von Alia.
-export const contactEmail = 'hallo@flintasialand.de';
+export const contactEmail = 'flintafestival.dortmund@gmail.com';

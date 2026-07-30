@@ -1,18 +1,21 @@
 ---
 /**
- * /line-up — vollständige Act-Liste.
+ * /line-up — kombinierte Line-Up- & Timetable-Seite mit Umschalter.
  *
- * Acts mit Profil (Bild/Bio/Links) als Konzept-2-Karten (StarCornerImage:
- * rechteckiges, gut lesbares Bild + solider Stern in der Ecke). Darunter das
- * restliche Programm nach Bühne — so ist die volle Besetzung sichtbar, ohne
- * fehlende Bios/Genres zu erfinden.
+ * Zwei Ansichten auf einer Route, per Tab ohne Reload umschaltbar:
+ *   - „Line-Up“ : Act-Profile (Bild/Bio/Links) als Konzept-2-Karten, jeweils
+ *     mit Bühne + Uhrzeit. Acts ohne Pressefoto folgen als Text-Karten.
+ *   - „Timetable“: klassischer Zeitplan nach Bühne + PDF-Download.
+ * Die Ansicht ist per URL-Hash vorwählbar (#timetable) — so landet der
+ * Timetable-Button vom Teaser bzw. der /timetable-Redirect direkt richtig.
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Section from '@ui/Section.astro';
 import Heading from '@ui/Heading.astro';
 import Button from '@ui/Button.astro';
 import StarCornerImage from '@ui/StarCornerImage.astro';
-import { acts } from '@content/acts';
+import { acts, actsOhneFoto, STAGE_LABEL } from '@content/acts';
+import { timetable } from '@content/timetable';
 import type { StarShape, StarAccent } from '@lib/sterne';
 
 type Corner = 'tl' | 'tr' | 'bl' | 'br';
@@ -23,109 +26,232 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
   { shape: '4', accent: 'pink', corner: 'tl' },
 ];
 
-// Restliches Programm (ohne die Acts mit eigenem Profil oben), nach Bühne.
-const weitere: { stage: string; names: string[] }[] = [
-  {
-    stage: 'Kieselwiese · Live',
-    names: ['Bärte mit Mädchen', 'Beste & Liv', 'FLouSe', 'Ideer'],
-  },
-  {
-    stage: 'Maschinerie · DJs',
-    names: [
-      'Scherwin Hosseini b2b Alias Shay',
-      'Floppy b2b Corti',
-      'Shaxtar & Kisya',
-      'canê b2b Schrotflinta',
-      'lil apple (Anni mit K)',
-    ],
-  },
-];
+const pdfHref = '/downloads/timetable-flintasialand-2026.pdf';
 ---
 
 <BaseLayout
-  title="Line-Up"
-  description="Das Line-Up des flinta*sialand 2026 — Live-Acts und DJs auf zwei Bühnen im Speicher 100, Dortmund."
+  title="Line-Up & Timetable"
+  description="Das komplette Line-Up des flinta*sialand 2026 mit Bühne und Uhrzeit — umschaltbar zur vollständigen Timetable. Speicher 100, Dortmund."
 >
   <Section theme="light" spacing="lg" class="pt-28 md:pt-32">
     <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-      Line-Up 2026
+      flinta*sialand 2026
     </p>
-    <Heading level={1} size="lg" class="mt-3">Wer spielt beim flinta*sialand</Heading>
+    <Heading level={1} size="lg" class="mt-3">Line-Up & Timetable</Heading>
     <p class="mt-4 max-w-2xl text-on-surface-muted">
-      Von treibenden Live-Performances bis zu tiefen elektronischen DJ-Sets — auf
-      zwei Bühnen im Speicher 100. Erste Künstler*innen im Detail:
+      Samstag, 15. August 2026 · Speicher 100, Dortmunder Hafen. Zwei Bühnen,
+      ein Tag. Wechsle zwischen den Act-Profilen und dem kompletten Zeitplan.
     </p>
 
-    <div class="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2">
-      {
-        acts.map((act, i) => {
-          const l = layouts[i % layouts.length];
-          return (
-            <article class="flex flex-col">
-              <StarCornerImage
-                src={act.image}
-                alt={`${act.name} — Portrait`}
-                ratio="4 / 5"
-                shape={l.shape}
-                accent={l.accent}
-                corner={l.corner}
-              />
-              <div class="mt-5">
-                <h2 class="font-display text-2xl font-bold tracking-tight">
-                  {act.name}
-                </h2>
-                <p class="mt-1 text-sm font-medium uppercase tracking-wider text-accent">
-                  {act.genre}
-                </p>
-                <p class="mt-3 text-on-surface-muted">{act.bio}</p>
-                {act.links.length > 0 && (
-                  <ul class="mt-4 flex flex-wrap gap-2">
-                    {act.links.map((link) => (
-                      <li>
-                        <a
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          class="inline-flex rounded-full px-3 py-1 text-sm font-bold text-accent ring-1 ring-hairline transition-colors hover:bg-accent hover:text-accent-on"
-                        >
-                          {link.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+    <!-- Umschalter -->
+    <div
+      class="mt-8 inline-flex rounded-full bg-surface-muted/60 p-1 ring-1 ring-hairline"
+      role="tablist"
+      aria-label="Ansicht wählen"
+      data-tabs
+    >
+      <button
+        type="button"
+        role="tab"
+        id="tab-lineup"
+        aria-controls="panel-lineup"
+        aria-selected="true"
+        data-tab="lineup"
+        class="tab-btn"
+      >
+        Line-Up
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tab-timetable"
+        aria-controls="panel-timetable"
+        aria-selected="false"
+        data-tab="timetable"
+        class="tab-btn"
+      >
+        Timetable
+      </button>
+    </div>
+
+    <!-- ANSICHT 1: LINE-UP -->
+    <div id="panel-lineup" role="tabpanel" aria-labelledby="tab-lineup" data-panel="lineup">
+      <div class="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2">
+        {
+          acts.map((act, i) => {
+            const l = layouts[i % layouts.length];
+            return (
+              <article class="flex flex-col">
+                <StarCornerImage
+                  src={act.image}
+                  alt={`${act.name} — Portrait`}
+                  ratio="4 / 5"
+                  shape={l.shape}
+                  accent={l.accent}
+                  corner={l.corner}
+                />
+                <div class="mt-5">
+                  <h2 class="font-display text-2xl font-bold tracking-tight">
+                    {act.name}
+                  </h2>
+                  <p class="mt-1 text-sm font-medium uppercase tracking-wider text-accent">
+                    {act.genre}
+                  </p>
+                  <p class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-on-surface-muted">
+                    <span>{STAGE_LABEL[act.stage]}</span>
+                    <span aria-hidden="true">·</span>
+                    <span class="font-mono tracking-tight text-accent">{act.time} Uhr</span>
+                  </p>
+                  <p class="mt-3 text-on-surface-muted">{act.bio}</p>
+                  {act.links.length > 0 && (
+                    <ul class="mt-4 flex flex-wrap gap-2">
+                      {act.links.map((link) => (
+                        <li>
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex rounded-full px-3 py-1 text-sm font-bold text-accent ring-1 ring-hairline transition-colors hover:bg-accent hover:text-accent-on"
+                          >
+                            {link.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+
+      <!-- Acts ohne Pressefoto -->
+      <div class="mt-14">
+        <h2 class="font-display text-lg font-bold text-accent">Außerdem an den Decks</h2>
+        <ul class="mt-5 grid gap-4 sm:grid-cols-2">
+          {
+            actsOhneFoto.map((act) => (
+              <li class="rounded-2xl bg-surface-muted/50 p-5 ring-1 ring-hairline">
+                <h3 class="font-display text-xl font-bold tracking-tight">{act.name}</h3>
+                {act.genre && (
+                  <p class="mt-1 text-sm font-medium uppercase tracking-wider text-accent">
+                    {act.genre}
+                  </p>
                 )}
-              </div>
-            </article>
-          );
-        })
-      }
+                <p class="mt-2 flex flex-wrap items-center gap-x-2 text-sm font-semibold text-on-surface-muted">
+                  <span>{STAGE_LABEL[act.stage]}</span>
+                  <span aria-hidden="true">·</span>
+                  <span class="font-mono tracking-tight text-accent">{act.time} Uhr</span>
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
-  </Section>
 
-  <!-- Restliches Programm -->
-  <Section theme="dark" spacing="lg">
-    <Heading level={2} size="md">Das komplette Programm</Heading>
-    <p class="mt-3 max-w-2xl text-on-surface-muted">
-      Weitere Acts – die Zeiten stehen in der Timetable.
-    </p>
-    <div class="mt-8 grid gap-8 md:grid-cols-2">
-      {
-        weitere.map((group) => (
-          <div>
-            <h3 class="font-display text-lg font-bold text-accent">{group.stage}</h3>
-            <ul class="mt-4 flex flex-wrap gap-2">
-              {group.names.map((name) => (
-                <li class="rounded-full bg-mint/10 px-4 py-2 font-display font-bold ring-1 ring-mint/15">
-                  {name}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
-    </div>
-    <div class="mt-12">
-      <Button href="/timetable" variant="outline">Zur Timetable</Button>
+    <!-- ANSICHT 2: TIMETABLE -->
+    <div
+      id="panel-timetable"
+      role="tabpanel"
+      aria-labelledby="tab-timetable"
+      data-panel="timetable"
+      hidden
+    >
+      <div class="mt-8">
+        <Button href={pdfHref} download>Timetable als PDF</Button>
+      </div>
+      <div class="mt-12 grid gap-8 md:grid-cols-2">
+        {
+          timetable.map((stage) => (
+            <div class="rounded-2xl bg-surface-muted/50 p-6 ring-1 ring-hairline md:p-8">
+              <h2 class="border-b border-hairline pb-4 font-display text-xl font-bold tracking-tight text-accent">
+                {stage.stageName}
+              </h2>
+              <ul class="mt-4 divide-y divide-hairline">
+                {stage.slots.map((slot) => (
+                  <li class="flex items-baseline justify-between gap-4 py-3">
+                    <span class="shrink-0 font-mono text-sm font-semibold tracking-tight text-accent">
+                      {slot.time}
+                    </span>
+                    <span class="text-right font-display font-bold text-on-surface">
+                      {slot.artist}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-8 text-sm text-on-surface-muted">Änderungen vorbehalten.</p>
     </div>
   </Section>
 </BaseLayout>
+
+<style>
+  .tab-btn {
+    border-radius: 9999px;
+    padding: 0.5rem 1.25rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--color-on-surface-muted);
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+  .tab-btn[aria-selected='true'] {
+    background: var(--color-accent);
+    color: var(--color-accent-on);
+  }
+  .tab-btn:hover:not([aria-selected='true']) {
+    color: var(--color-accent);
+  }
+</style>
+
+<script>
+  // Tab-Umschalter ohne Reload. Ansicht via #hash vorwählbar/teilbar.
+  const root = document.querySelector<HTMLElement>('[data-tabs]');
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+  const panels = new Map<string, HTMLElement>();
+  document.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => {
+    panels.set(p.dataset.panel!, p);
+  });
+
+  function activate(view: string, updateHash = true) {
+    if (!panels.has(view)) view = 'lineup';
+    buttons.forEach((b) => {
+      const selected = b.dataset.tab === view;
+      b.setAttribute('aria-selected', String(selected));
+      b.tabIndex = selected ? 0 : -1;
+    });
+    panels.forEach((panel, key) => {
+      panel.hidden = key !== view;
+    });
+    if (updateHash) {
+      const hash = view === 'timetable' ? '#timetable' : '';
+      history.replaceState(null, '', `${location.pathname}${hash}`);
+    }
+  }
+
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => activate(b.dataset.tab!)),
+  );
+
+  // Pfeiltasten-Navigation (Tablist-A11y).
+  root?.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const i = buttons.findIndex((b) => b.getAttribute('aria-selected') === 'true');
+    const next = e.key === 'ArrowRight' ? (i + 1) % buttons.length : (i - 1 + buttons.length) % buttons.length;
+    buttons[next].focus();
+    activate(buttons[next].dataset.tab!);
+  });
+
+  // Initiale Ansicht aus dem Hash.
+  activate(location.hash === '#timetable' ? 'timetable' : 'lineup', false);
+  window.addEventListener('hashchange', () =>
+    activate(location.hash === '#timetable' ? 'timetable' : 'lineup', false),
+  );
+</script>

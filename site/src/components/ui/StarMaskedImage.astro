@@ -8,11 +8,14 @@
  * Portraits und Highlights.
  *
  * Sternform (`shape`) und Akzent (`accent`) sind wählbar → verschiedene Sterne
- * dürfen verschiedene Akzentfarben tragen. Maske ist ein statisches PNG, kein
- * teurer Filter → performant, auch auf kleinen Screens / bei Reduced-Motion.
+ * dürfen verschiedene Akzentfarben tragen.
+ *
+ * Optional:
+ *   - `waber` : lässt die Sternkanten „wabern wie das Logo“ (SVG-Filter
+ *               #waber-soft aus WaberDefs).
  *
  * @example
- * <StarMaskedImage src={actImg} alt="DJ Foo" shape="2" accent="teal" />
+ * <StarMaskedImage src={actImg} alt="DJ Foo" shape="2" accent="teal" waber />
  */
 import { Image } from 'astro:assets';
 import { getStar, resolveAccent, type StarShape, type StarAccent } from '@lib/sterne';
@@ -29,6 +32,10 @@ interface Props {
   overlay?: number;
   /** Seitenverhältnis überschreiben (Default = natürliche Form-Ratio). */
   ratio?: number | string;
+  /** Bildausschnitt (CSS object-position), um z. B. Gesichter im Fokus zu halten. */
+  focus?: string;
+  /** Sternkanten „wabern“ lassen (SVG-Filter). */
+  waber?: boolean;
   /** Above-the-fold (Hero) ⇒ eager laden. */
   eager?: boolean;
   sizes?: string;
@@ -42,6 +49,8 @@ const {
   accent = 'auto',
   overlay = 0.28,
   ratio,
+  focus = 'center',
+  waber = false,
   eager = false,
   sizes = '(min-width: 768px) 33vw, 80vw',
   class: className,
@@ -54,6 +63,7 @@ const showOverlay = accentColor !== null && overlay > 0;
 const style = [
   `--star-mask: url("${star.src.src}")`,
   `--star-overlay-opacity: ${overlay}`,
+  `--star-focus: ${focus}`,
   `aspect-ratio: ${ratio ?? star.ratio}`,
   accentColor ? `--star-accent: ${accentColor}` : '',
 ]
@@ -61,7 +71,10 @@ const style = [
   .join('; ');
 ---
 
-<figure class:list={['star-masked', className]} style={style}>
+<figure
+  class:list={['star-masked', waber && 'star-masked--waber', className]}
+  style={style}
+>
   {
     typeof src === 'string' ? (
       <img
@@ -108,6 +121,7 @@ const style = [
 
   .star-masked__img {
     object-fit: cover;
+    object-position: var(--star-focus, center);
     display: block;
   }
 
@@ -116,5 +130,16 @@ const style = [
     mix-blend-mode: multiply;
     opacity: var(--star-overlay-opacity, 0.28);
     pointer-events: none;
+  }
+
+  /* „Wabern wie das Logo“ — verzerrt die gesamte (bereits maskierte) Fläche. */
+  .star-masked--waber {
+    filter: url(#waber-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star-masked--waber {
+      filter: none;
+    }
   }
 </style>

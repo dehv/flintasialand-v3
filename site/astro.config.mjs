@@ -18,6 +18,10 @@ export default defineConfig({
     locales: ['de'],
     routing: { prefixDefaultLocale: false },
   },
+  // /timetable lebt jetzt als Umschalt-Ansicht auf /line-up.
+  redirects: {
+    '/timetable': '/line-up#timetable',
+  },
   integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],

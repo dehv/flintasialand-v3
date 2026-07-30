@@ -1,0 +1,115 @@
+---
+/**
+ * StarScrollDeco — großer, „wabernder“ Genderstern mit Bildebene, der sich
+ * beim Scrollen dreht.
+ *
+ * Aufbau in zwei Ebenen, damit sich die beiden Bewegungen nicht ins Gehege
+ * kommen (die Rotation nutzt `transform`):
+ *   - äußere Ebene: Scroll-gekoppelte Rotation (JS setzt `--rot`).
+ *   - innere Ebene: Kanten-„Wabern wie das Logo“ via SVG-Filter (#waber-logo).
+ * Die Sternform kommt aus derselben Masken-Registry wie alle Sterne; darin
+ * sitzt das Bild (StarMaskedImage) als Bildebene.
+ *
+ * `speed` = Rotationsgrade über den sichtbaren Scroll-Weg (Vorzeichen = Richtung).
+ * `prefers-reduced-motion` schaltet Rotation UND Wabern ab (ruhiges Standbild).
+ */
+import StarMaskedImage from '@ui/StarMaskedImage.astro';
+import type { StarShape, StarAccent } from '@lib/sterne';
+
+interface Props {
+  src: ImageMetadata | string;
+  alt?: string;
+  shape?: StarShape;
+  accent?: StarAccent;
+  overlay?: number;
+  focus?: string;
+  /** Rotationsgrade über den sichtbaren Scroll-Weg. Negativ = gegenläufig. */
+  speed?: number;
+  class?: string;
+}
+
+const {
+  src,
+  alt = '',
+  shape = '1',
+  accent = 'auto',
+  overlay = 0.28,
+  focus = 'center',
+  speed = 60,
+  class: className,
+} = Astro.props;
+---
+
+<div
+  class:list={['scroll-star', className]}
+  data-scroll-star
+  data-speed={speed}
+  aria-hidden={alt === '' ? 'true' : undefined}
+>
+  <div class="scroll-star__waber">
+    <StarMaskedImage
+      src={src}
+      alt={alt}
+      shape={shape}
+      accent={accent}
+      overlay={overlay}
+      focus={focus}
+    />
+  </div>
+</div>
+
+<style>
+  .scroll-star {
+    /* Scroll-gekoppelte Rotation (JS füllt --rot). */
+    transform: rotate(var(--rot, 0deg));
+    will-change: transform;
+  }
+  /* Kanten-„Wabern wie das Logo“ (SVG-Displacement). */
+  .scroll-star__waber {
+    filter: url(#waber-logo);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-star {
+      transform: none;
+    }
+    .scroll-star__waber {
+      filter: none;
+    }
+  }
+</style>
+
+<script>
+  // Eine gemeinsame, rAF-gedrosselte Scroll-Schleife für ALLE Deko-Sterne.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const stars = Array.from(
+    document.querySelectorAll<HTMLElement>('[data-scroll-star]'),
+  );
+
+  if (stars.length && !reduce.matches) {
+    let ticking = false;
+
+    function update() {
+      ticking = false;
+      const vh = window.innerHeight || 1;
+      for (const el of stars) {
+        const r = el.getBoundingClientRect();
+        const center = r.top + r.height / 2;
+        // 0, wenn der Stern unten hereinkommt → wächst, während er nach oben zieht.
+        const progress = (vh - center) / (vh + r.height);
+        const speed = Number(el.dataset.speed) || 60;
+        el.style.setProperty('--rot', `${(progress * speed).toFixed(2)}deg`);
+      }
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  }
+</script>

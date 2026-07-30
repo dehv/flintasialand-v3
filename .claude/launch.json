@@ -4,7 +4,12 @@
     {
       "name": "flintasialand-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "site", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "site",
+        "run",
+        "dev"
+      ],
       "port": 4321
     }
   ]
