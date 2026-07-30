@@ -41,7 +41,7 @@ export interface Act {
 /** Sprechendes Label pro Bühne (für Badges/Untertitel). */
 export const STAGE_LABEL: Record<Stage, string> = {
   Kieselwiese: 'Kieselwiese · Live',
-  Maschinerie: 'Maschinerie · DJs',
+  Maschinerie: 'Maschinerie · DJ',
 };
 
 export const acts: Act[] = [
