@@ -9,7 +9,7 @@ import type { Dict } from './de';
 
 export const en: Dict = {
   meta: {
-    siteName: 'Flinta*sialand',
+    siteName: 'FLINTA*SIALAND',
     tagline: 'Festival',
   },
   nav: {
@@ -49,7 +49,7 @@ export const en: Dict = {
   },
   a11y: {
     starDecoration: 'Decorative gender star',
-    logo: 'Flinta*sialand — to the homepage',
+    logo: 'FLINTA*SIALAND — to the homepage',
     externalLink: 'Opens in a new tab',
   },
 };

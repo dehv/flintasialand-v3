@@ -30,6 +30,10 @@ interface Props {
   accent?: StarAccent;
   /** In welcher Ecke der Stern sitzt. */
   corner?: Corner;
+  /** Bildausschnitt (CSS object-position), um Gesichter im Fokus zu halten. */
+  focus?: string;
+  /** Zoom-Faktor (1 = kein Zoom). Skaliert das Bild um den Fokuspunkt. */
+  zoom?: number;
   /** Sterngröße als Anteil der Bildbreite (0–1). */
   starSize?: number;
   /** Abgerundete Bildecken. */
@@ -46,6 +50,8 @@ const {
   shape = '2',
   accent = 'pink',
   corner = 'br',
+  focus = 'center',
+  zoom = 1,
   starSize = 0.4,
   rounded = true,
   eager = false,
@@ -62,6 +68,8 @@ const style = [
   `--star-size: ${(starSize * 100).toFixed(2)}%`,
   `--star-ratio: ${star.ratio}`,
   `--img-ratio: ${ratio}`,
+  `--img-focus: ${focus}`,
+  `--img-zoom: ${zoom}`,
 ].join('; ');
 ---
 
@@ -70,26 +78,28 @@ const style = [
   data-corner={corner}
   style={style}
 >
-  {
-    typeof src === 'string' ? (
-      <img
-        class="star-corner__img"
-        src={src}
-        alt={alt}
-        loading={eager ? 'eager' : 'lazy'}
-        decoding="async"
-      />
-    ) : (
-      <Image
-        class="star-corner__img"
-        src={src}
-        alt={alt}
-        sizes={sizes}
-        widths={[320, 480, 640, 960]}
-        loading={eager ? 'eager' : 'lazy'}
-      />
-    )
-  }
+  <div class="star-corner__frame">
+    {
+      typeof src === 'string' ? (
+        <img
+          class="star-corner__img"
+          src={src}
+          alt={alt}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      ) : (
+        <Image
+          class="star-corner__img"
+          src={src}
+          alt={alt}
+          sizes={sizes}
+          widths={[320, 480, 640, 960]}
+          loading={eager ? 'eager' : 'lazy'}
+        />
+      )
+    }
+  </div>
   <span class="star-corner__star" aria-hidden="true"></span>
 </figure>
 
@@ -103,16 +113,25 @@ const style = [
     padding: calc(var(--star-size) * 0.28);
   }
 
+  /* Rahmen clippt das (ggf. gezoomte) Bild; der Eck-Stern liegt außerhalb und
+     bleibt unbeschnitten. */
+  .star-corner__frame {
+    aspect-ratio: var(--img-ratio);
+    overflow: hidden;
+  }
+
+  .star-corner--rounded .star-corner__frame {
+    border-radius: var(--radius-md);
+  }
+
   .star-corner__img {
     display: block;
     width: 100%;
     height: 100%;
-    aspect-ratio: var(--img-ratio);
     object-fit: cover;
-  }
-
-  .star-corner--rounded .star-corner__img {
-    border-radius: var(--radius-md);
+    object-position: var(--img-focus, center);
+    scale: var(--img-zoom, 1);
+    transform-origin: var(--img-focus, center);
   }
 
   .star-corner__star {

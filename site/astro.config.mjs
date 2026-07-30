@@ -1,10 +1,26 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import { fileURLToPath } from 'node:url';
+import { rm } from 'node:fs/promises';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 const r = (p) => fileURLToPath(new URL(p, import.meta.url));
+
+/**
+ * Dev-Tools unter /tools (Foto-Positionierer, Karten-Editor) sollen nur lokal
+ * im `astro dev` verfügbar sein, aber NICHT deployt werden. Nach dem Build wird
+ * das /tools-Verzeichnis wieder aus dist entfernt.
+ */
+const excludeDevTools = {
+  name: 'exclude-dev-tools',
+  hooks: {
+    'astro:build:done': async ({ dir, logger }) => {
+      await rm(new URL('./tools/', dir), { recursive: true, force: true });
+      logger.info('Dev-Tools (/tools) aus dem Build entfernt.');
+    },
+  },
+};
 
 // Domain wird später gesetzt (TODO: finale Domain von Alia).
 const SITE_URL = process.env.SITE_URL ?? 'https://flintasialand.de';
@@ -22,7 +38,10 @@ export default defineConfig({
   redirects: {
     '/timetable': '/line-up#timetable',
   },
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({ filter: (page) => !page.includes('/tools/') }),
+    excludeDevTools,
+  ],
   vite: {
     plugins: [tailwindcss()],
     resolve: {

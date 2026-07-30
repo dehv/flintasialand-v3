@@ -1,0 +1,330 @@
+---
+/**
+ * /tools/map — DEV-Tool zum Setzen/Verschieben der Lageplan-Pins.
+ *
+ * NICHT für Produktion. Zeigt die echte OSM-Karte (wie /lageplan) mit allen
+ * Pins als ziehbaren Markern. Ziehen = Position ändern, Klick auf die Karte =
+ * neuen Pin am Cursor, pro Zeile Titel/Kategorie editierbar. Unten kommt der
+ * fertige `pins`-Block für `content/lageplan.ts` raus.
+ *
+ * Aufruf: `npm --prefix site run dev` → http://localhost:4321/tools/map
+ */
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { lageplan, pinCategories } from '@content/lageplan';
+
+const tileUrl =
+  import.meta.env.MAP_TILE_URL || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+const config = {
+  center: lageplan.center,
+  zoom: lageplan.zoom,
+  tileUrl,
+  pins: lageplan.pins,
+  categories: pinCategories,
+};
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Karten-Editor · FLINTA*SIALAND</title>
+    <style>
+      :root { --berry: #5d3e51; --mint: #edf5ed; --green: #7a8b48; --line: #d6cdd2; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; font-family: system-ui, -apple-system, sans-serif;
+        background: var(--mint); color: var(--berry);
+      }
+      .wrap { display: grid; grid-template-columns: 1fr 380px; gap: 0; height: 100vh; }
+      @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; height: auto; } }
+      #map { width: 100%; height: 100vh; }
+      @media (max-width: 900px) { #map { height: 60vh; } }
+      .side {
+        overflow-y: auto; padding: 1.25rem; background: #fff;
+        border-left: 1px solid var(--line);
+      }
+      h1 { font-size: 1.15rem; margin: 0 0 .25rem; }
+      .lede { font-size: .82rem; color: #6b5560; margin: 0 0 1rem; line-height: 1.5; }
+      .toolbar { display: flex; gap: .5rem; margin-bottom: 1rem; }
+      .btn {
+        font: inherit; font-size: .78rem; padding: .4rem .8rem;
+        border: 1px solid var(--berry); background: transparent; color: var(--berry);
+        border-radius: 999px; cursor: pointer;
+      }
+      .btn:hover { background: var(--berry); color: var(--mint); }
+      .btn.primary { background: var(--green); border-color: var(--green); color: #fff; }
+      .pin {
+        border: 1px solid var(--line); border-radius: 10px; padding: .6rem .7rem;
+        margin-bottom: .6rem;
+      }
+      .pin.sel { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
+      .pin .top { display: flex; gap: .4rem; align-items: center; }
+      .pin .dot { width: 12px; height: 12px; border-radius: 50%; flex: none; border: 1px solid rgba(0,0,0,.2); }
+      .pin input.title { flex: 1; font: inherit; font-size: .82rem; border: 1px solid var(--line); border-radius: 6px; padding: .2rem .4rem; }
+      .pin .meta { display: flex; gap: .4rem; align-items: center; margin-top: .4rem; }
+      .pin select { font: inherit; font-size: .74rem; border: 1px solid var(--line); border-radius: 6px; padding: .15rem .3rem; }
+      .pin .coords { font-family: ui-monospace, monospace; font-size: .72rem; color: #6b5560; margin-left: auto; }
+      .pin .del { font-size: .72rem; color: #a33; border: none; background: none; cursor: pointer; padding: 0 .2rem; }
+      .out { margin-top: 1rem; }
+      .out h2 { font-size: .9rem; margin: 0 0 .4rem; }
+      textarea {
+        width: 100%; height: 220px; font-family: ui-monospace, monospace; font-size: .7rem;
+        border: 1px solid var(--line); border-radius: 8px; padding: .5rem; background: var(--mint); color: var(--berry);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div id="map" role="application" aria-label="Karten-Editor"></div>
+      <div class="side">
+        <h1>Karten-Editor</h1>
+        <p class="lede">
+          Ziehe die Marker, um die Position zu ändern. Klick auf die Karte setzt
+          einen neuen Pin am Cursor. Titel &amp; Kategorie pro Pin editierbar.
+          Kopiere unten den <code>pins</code>-Block in
+          <code>src/content/lageplan.ts</code>.
+        </p>
+        <div class="toolbar">
+          <button class="btn primary" id="add">+ Pin am Kartenzentrum</button>
+          <button class="btn" id="copy">Block kopieren</button>
+        </div>
+        <div id="list"></div>
+        <div class="out">
+          <h2>pins: [ … ] für lageplan.ts</h2>
+          <textarea id="out" readonly></textarea>
+        </div>
+      </div>
+    </div>
+
+    <script type="application/json" set:html={JSON.stringify(config)} id="cfg"></script>
+
+    <script>
+      import { Map as MlMap, Marker } from 'maplibre-gl';
+
+      interface Pin {
+        id: string;
+        title: string;
+        category: string;
+        lat: number;
+        lng: number;
+        description?: string;
+      }
+
+      const cfgEl = document.getElementById('cfg')!;
+      const cfg = JSON.parse(cfgEl.textContent!) as {
+        center: { lat: number; lng: number };
+        zoom: number;
+        tileUrl: string;
+        pins: Pin[];
+        categories: Record<string, { label: string; color: string }>;
+      };
+
+      const state: Pin[] = cfg.pins.map((p) => ({ ...p }));
+      const markers: any[] = [];
+      let selected = -1;
+
+      const map = new MlMap({
+        container: 'map',
+        style: {
+          version: 8,
+          sources: {
+            osm: { type: 'raster', tiles: [cfg.tileUrl], tileSize: 256 },
+          },
+          layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
+        },
+        center: [cfg.center.lng, cfg.center.lat],
+        zoom: cfg.zoom,
+      });
+
+      function colorFor(cat: string) {
+        return cfg.categories[cat]?.color ?? '#5d3e51';
+      }
+
+      function makeMarkerEl(p: Pin) {
+        const el = document.createElement('div');
+        el.className = 'lp-marker';
+        el.style.setProperty('--c', colorFor(p.category));
+        el.innerHTML = `<span class="lp-dot"></span><span class="lp-label">${p.title}</span>`;
+        return el;
+      }
+
+      function round(n: number) {
+        return Math.round(n * 1e5) / 1e5;
+      }
+
+      function addMarker(i: number) {
+        const p = state[i];
+        const el = makeMarkerEl(p);
+        const m = new Marker({ element: el, anchor: 'bottom', draggable: true })
+          .setLngLat([p.lng, p.lat])
+          .addTo(map);
+        el.addEventListener('click', () => select(i));
+        m.on('dragstart', () => select(i));
+        m.on('drag', () => {
+          const ll = m.getLngLat();
+          state[i].lat = round(ll.lat);
+          state[i].lng = round(ll.lng);
+          renderList();
+          renderOut();
+        });
+        markers[i] = m;
+      }
+
+      function select(i: number) {
+        selected = i;
+        renderList();
+        const row = document.querySelector(`[data-row="${i}"]`);
+        row?.scrollIntoView({ block: 'nearest' });
+      }
+
+      function refreshMarker(i: number) {
+        const p = state[i];
+        const el = markers[i].getElement() as HTMLElement;
+        el.style.setProperty('--c', colorFor(p.category));
+        el.querySelector('.lp-label')!.textContent = p.title;
+      }
+
+      const list = document.getElementById('list')!;
+      const out = document.getElementById('out') as HTMLTextAreaElement;
+
+      function renderList() {
+        list.innerHTML = '';
+        state.forEach((p, i) => {
+          const row = document.createElement('div');
+          row.className = 'pin' + (i === selected ? ' sel' : '');
+          row.dataset.row = String(i);
+          const opts = Object.entries(cfg.categories)
+            .map(
+              ([k, c]) =>
+                `<option value="${k}" ${k === p.category ? 'selected' : ''}>${c.label}</option>`,
+            )
+            .join('');
+          row.innerHTML =
+            `<div class="top">` +
+            `<span class="dot" style="background:${colorFor(p.category)}"></span>` +
+            `<input class="title" value="${p.title.replace(/"/g, '&quot;')}" />` +
+            `<button class="del" title="Löschen">✕</button>` +
+            `</div>` +
+            `<div class="meta">` +
+            `<select class="cat">${opts}</select>` +
+            `<span class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</span>` +
+            `</div>`;
+          row.querySelector('.title')!.addEventListener('input', (e) => {
+            state[i].title = (e.target as HTMLInputElement).value;
+            refreshMarker(i);
+            renderOut();
+          });
+          row.querySelector('.cat')!.addEventListener('change', (e) => {
+            state[i].category = (e.target as HTMLSelectElement).value;
+            refreshMarker(i);
+            (row.querySelector('.dot') as HTMLElement).style.background = colorFor(
+              state[i].category,
+            );
+            renderOut();
+          });
+          row.querySelector('.del')!.addEventListener('click', () => removePin(i));
+          row.addEventListener('click', () => {
+            if (selected !== i) select(i);
+          });
+          list.appendChild(row);
+        });
+      }
+
+      function esc(s: string) {
+        return s.replace(/'/g, "\\'");
+      }
+
+      function renderOut() {
+        const body = state
+          .map((p) => {
+            const lines = [
+              `  {`,
+              `    id: '${esc(p.id)}',`,
+              `    title: '${esc(p.title)}',`,
+              `    category: '${esc(p.category)}',`,
+              `    lat: ${p.lat},`,
+              `    lng: ${p.lng},`,
+            ];
+            if (p.description) lines.push(`    description: '${esc(p.description)}',`);
+            lines.push(`  },`);
+            return lines.join('\n');
+          })
+          .join('\n');
+        out.value = `pins: [\n${body}\n],`;
+      }
+
+      function removePin(i: number) {
+        markers[i].remove();
+        markers.splice(i, 1);
+        state.splice(i, 1);
+        // Marker-Klicks referenzieren Indizes — nach Splice neu binden.
+        rebind();
+        selected = -1;
+        renderList();
+        renderOut();
+      }
+
+      function rebind() {
+        // Alle Marker entfernen und neu aufbauen, damit Indizes stimmen.
+        markers.forEach((m) => m.remove());
+        markers.length = 0;
+        state.forEach((_, i) => addMarker(i));
+      }
+
+      document.getElementById('add')!.addEventListener('click', () => {
+        const c = map.getCenter();
+        const base = 'neuer-pin';
+        let id = base;
+        let n = 2;
+        while (state.some((p) => p.id === id)) id = `${base}-${n++}`;
+        state.push({
+          id,
+          title: 'Neuer Pin',
+          category: 'stand',
+          lat: round(c.lat),
+          lng: round(c.lng),
+        });
+        addMarker(state.length - 1);
+        select(state.length - 1);
+        renderOut();
+      });
+
+      map.on('click', (e) => {
+        state.push({
+          id: 'neuer-pin',
+          title: 'Neuer Pin',
+          category: 'stand',
+          lat: round(e.lngLat.lat),
+          lng: round(e.lngLat.lng),
+        });
+        // eindeutige id
+        const i = state.length - 1;
+        let id = 'neuer-pin';
+        let n = 2;
+        while (state.some((p, j) => j !== i && p.id === id)) id = `neuer-pin-${n++}`;
+        state[i].id = id;
+        addMarker(i);
+        select(i);
+        renderOut();
+      });
+
+      document.getElementById('copy')!.addEventListener('click', () => {
+        navigator.clipboard?.writeText(out.value);
+      });
+
+      map.on('load', () => {
+        state.forEach((_, i) => addMarker(i));
+        renderList();
+        renderOut();
+      });
+    </script>
+
+    <style is:global>
+      .lp-marker { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: grab; transform: translateY(4px); }
+      .lp-marker .lp-dot { width: 16px; height: 16px; border-radius: 9999px; background: var(--c); border: 2px solid #edf5ed; box-shadow: 0 1px 4px rgba(51,30,44,.45); }
+      .lp-marker .lp-label { font-family: system-ui, sans-serif; font-weight: 700; font-size: 11px; line-height: 1; white-space: nowrap; color: #edf5ed; background: #5d3e51; padding: 3px 7px; border-radius: 9999px; box-shadow: 0 1px 4px rgba(51,30,44,.35); }
+    </style>
+  </body>
+</html>

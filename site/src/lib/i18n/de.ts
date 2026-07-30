@@ -10,7 +10,7 @@
  */
 export const de = {
   meta: {
-    siteName: 'Flinta*sialand',
+    siteName: 'FLINTA*SIALAND',
     tagline: 'Festival',
   },
   nav: {
@@ -50,7 +50,7 @@ export const de = {
   },
   a11y: {
     starDecoration: 'Dekorativer Genderstern',
-    logo: 'Flinta*sialand — zur Startseite',
+    logo: 'FLINTA*SIALAND — zur Startseite',
     externalLink: 'Öffnet in neuem Tab',
   },
 } as const;

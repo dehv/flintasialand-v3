@@ -13,6 +13,8 @@ interface Props {
   alt: string;
   focus1?: string;
   focus2?: string;
+  zoom1?: number;
+  zoom2?: number;
   shape1?: StarShape;
   shape2?: StarShape;
   accent1?: StarAccent;
@@ -28,6 +30,8 @@ const {
   alt,
   focus1 = 'center',
   focus2 = 'center',
+  zoom1 = 1,
+  zoom2 = 1,
   shape1 = '2',
   shape2 = '4',
   accent1 = 'teal',
@@ -46,6 +50,7 @@ const {
       shape={shape1}
       accent={accent1}
       focus={focus1}
+      zoom={zoom1}
       waber={waber}
       sizes={sizes}
     />
@@ -57,6 +62,7 @@ const {
       shape={shape2}
       accent={accent2}
       focus={focus2}
+      zoom={zoom2}
       waber={waber}
       sizes={sizes}
     />

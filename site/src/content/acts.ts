@@ -1,14 +1,14 @@
 import type { ImageMetadata } from 'astro';
 import imgTigrezz from '@assets/artists/tigrezz_punch.jpg';
-import imgMakahaun from '@assets/artists/makahaun.jpg';
-import imgDddr from '@assets/artists/dddr.jpg';
-import imgArtemis from '@assets/artists/artemis_jade.jpg';
-import imgBaerte from '@assets/artists/baerte_mit_maedchen.jpg';
+import imgMakahaun from '@assets/artists/makahaun-alt3.jpg';
+import imgDddr from '@assets/artists/dddr-alt2.jpg';
+import imgArtemis from '@assets/artists/artemis-jade-alt1.jpg';
+import imgBaerte from '@assets/artists/baerte-mit-maedchen-alt2.jpg';
 import imgBesteLiv from '@assets/artists/beste_und_liv.jpg';
 import imgFlouse from '@assets/artists/flouse.jpg';
 import imgIdeer from '@assets/artists/ideer.jpg';
-import imgScherwin from '@assets/artists/scherwin_aliasshay.jpg';
-import imgScherwin2 from '@assets/artists/scherwin_aliasshay_2.jpg';
+import imgScherwin from '@assets/artists/scherwin-alias-shay-alt3.jpg';
+import imgScherwin2 from '@assets/artists/scherwin-alias-shay-alt5.jpg';
 import imgFloppyCorti from '@assets/artists/floppy_corti.jpg';
 import imgShaxtarKisya from '@assets/artists/shaxtar_kisya.jpg';
 import imgLilApple from '@assets/artists/lil_apple.jpg';
@@ -29,6 +29,8 @@ export interface Act {
   time: string;
   /** object-position für den Bildausschnitt (Gesicht sichtbar halten). */
   focus?: string;
+  /** Zoom-Faktor des Bildausschnitts (1 = kein Zoom, 1.4 = 40 % näher). */
+  zoom?: number;
   /**
    * Zweites Foto — nur für b2b-Acts, bei denen die beiden Künstler*innen NICHT
    * auf einem gemeinsamen Bild sind. Wird als zweiter, kombinierter Genderstern
@@ -36,6 +38,8 @@ export interface Act {
    */
   image2?: ImageMetadata;
   focus2?: string;
+  /** Zoom-Faktor für das zweite Foto. */
+  zoom2?: number;
   highlight?: boolean;
 }
 
@@ -57,6 +61,8 @@ export const acts: Act[] = [
     ],
     stage: 'Kieselwiese',
     time: '21:00–21:45',
+    focus: '73% 45%',
+    zoom: 1.9,
     highlight: true,
   },
   {
@@ -71,6 +77,8 @@ export const acts: Act[] = [
     ],
     stage: 'Maschinerie',
     time: '22:00–00:00',
+    focus: '32% 4%',
+    zoom: 2.1,
     highlight: true,
   },
   {
@@ -84,6 +92,8 @@ export const acts: Act[] = [
     ],
     stage: 'Kieselwiese',
     time: '19:45–20:30',
+    focus: '48% 42%',
+    zoom: 1.2,
     highlight: true,
   },
   {
@@ -97,7 +107,8 @@ export const acts: Act[] = [
     ],
     stage: 'Kieselwiese',
     time: '17:45–18:30',
-    focus: 'center 35%',
+    focus: '37% 54%',
+    zoom: 1.9,
     highlight: true,
   },
   {
@@ -109,7 +120,8 @@ export const acts: Act[] = [
     links: [],
     stage: 'Kieselwiese',
     time: '19:00–19:45',
-    focus: 'center 40%',
+    focus: '26% 28%',
+    zoom: 1.2,
   },
   {
     id: 'beste-und-liv',
@@ -120,18 +132,20 @@ export const acts: Act[] = [
     links: [],
     stage: 'Kieselwiese',
     time: '16:45–17:15',
-    focus: 'center 42%',
+    focus: '27% 41%',
+    zoom: 1.55,
   },
   {
     id: 'flouse',
     name: 'FLouSe',
     image: imgFlouse,
     genre: 'Indie / Alternative / Punk',
-    bio: 'FLouSe ist Newcomer-Singer-Songwriterin und die Solo-Version der Dortmunder Band FLouSe and the Flousen. Beim flinta*sialand bringt sie ihre selbstgeschriebenen Songs auf die Bühne – irgendwo zwischen Indie, Alternative und Punk. Wer Lust auf musikalischen Mischmasch, charmantes Chaos und eine ganz eigene Ordnung hat, sollte diesen Auftritt nicht verpassen.',
+    bio: 'FLouSe ist Newcomer-Singer-Songwriterin und die Solo-Version der Dortmunder Band FLouSe and the Flousen. Beim FLINTA*SIALAND bringt sie ihre selbstgeschriebenen Songs auf die Bühne – irgendwo zwischen Indie, Alternative und Punk. Wer Lust auf musikalischen Mischmasch, charmantes Chaos und eine ganz eigene Ordnung hat, sollte diesen Auftritt nicht verpassen.',
     links: [],
     stage: 'Kieselwiese',
     time: '15:30–16:15',
-    focus: 'center 30%',
+    focus: '44% 0%',
+    zoom: 1.65,
   },
   {
     id: 'ideer',
@@ -142,7 +156,8 @@ export const acts: Act[] = [
     links: [],
     stage: 'Kieselwiese',
     time: '15:00–15:15',
-    focus: 'center 38%',
+    focus: '52% 20%',
+    zoom: 1.85,
   },
   {
     id: 'scherwin-alias-shay',
@@ -156,9 +171,11 @@ export const acts: Act[] = [
     ],
     stage: 'Maschinerie',
     time: '20:00–22:00',
-    focus: 'center 28%',
+    focus: '44% 41%',
+    zoom: 2.15,
     image2: imgScherwin2,
-    focus2: 'center 30%',
+    focus2: '51% 25%',
+    zoom2: 1.55,
   },
   {
     id: 'floppy-corti',
@@ -169,7 +186,8 @@ export const acts: Act[] = [
     links: [],
     stage: 'Maschinerie',
     time: '18:15–20:00',
-    focus: 'center 28%',
+    focus: '63% 0%',
+    zoom: 1.55,
   },
   {
     id: 'shaxtar-kisya',
@@ -183,7 +201,8 @@ export const acts: Act[] = [
     ],
     stage: 'Maschinerie',
     time: '16:30–18:15',
-    focus: 'center 30%',
+    focus: '49% 0%',
+    zoom: 1.55,
   },
   {
     id: 'lil-apple',
@@ -194,7 +213,8 @@ export const acts: Act[] = [
     links: [],
     stage: 'Maschinerie',
     time: '14:00–15:00',
-    focus: 'center 30%',
+    focus: '52% 5%',
+    zoom: 1.55,
   }
 ];
 

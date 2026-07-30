@@ -34,6 +34,8 @@ interface Props {
   ratio?: number | string;
   /** Bildausschnitt (CSS object-position), um z. B. Gesichter im Fokus zu halten. */
   focus?: string;
+  /** Zoom-Faktor (1 = kein Zoom). Skaliert das Bild um den Fokuspunkt. */
+  zoom?: number;
   /** Sternkanten „wabern“ lassen (SVG-Filter). */
   waber?: boolean;
   /** Above-the-fold (Hero) ⇒ eager laden. */
@@ -50,6 +52,7 @@ const {
   overlay = 0.28,
   ratio,
   focus = 'center',
+  zoom = 1,
   waber = false,
   eager = false,
   sizes = '(min-width: 768px) 33vw, 80vw',
@@ -64,6 +67,7 @@ const style = [
   `--star-mask: url("${star.src.src}")`,
   `--star-overlay-opacity: ${overlay}`,
   `--star-focus: ${focus}`,
+  `--star-zoom: ${zoom}`,
   `aspect-ratio: ${ratio ?? star.ratio}`,
   accentColor ? `--star-accent: ${accentColor}` : '',
 ]
@@ -99,29 +103,31 @@ const style = [
 </figure>
 
 <style>
+  /* Die Sternmaske sitzt auf der Figure und clippt die ganze Gruppe (Bild +
+     Overlay) als Einheit. So bleibt beim Zoom (scale auf dem Bild) die
+     Sternform erhalten — der Ausschnitt wird enger, die Maske skaliert nicht. */
   .star-masked {
     position: relative;
     display: block;
     width: 100%;
     margin: 0;
+    -webkit-mask: var(--star-mask) no-repeat center / 100% 100%;
+    mask: var(--star-mask) no-repeat center / 100% 100%;
   }
 
-  /* Bild + Overlay teilen sich dieselbe Sternmaske. mask-size 100% 100% streckt
-     die Form auf die Box — die Box-Ratio entspricht per Default der Form-Ratio,
-     daher keine sichtbare Verzerrung. */
   .star-masked__img,
   .star-masked__overlay {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-    -webkit-mask: var(--star-mask) no-repeat center / 100% 100%;
-    mask: var(--star-mask) no-repeat center / 100% 100%;
   }
 
   .star-masked__img {
     object-fit: cover;
     object-position: var(--star-focus, center);
+    scale: var(--star-zoom, 1);
+    transform-origin: var(--star-focus, center);
     display: block;
   }
 

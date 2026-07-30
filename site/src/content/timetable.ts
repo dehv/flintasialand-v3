@@ -15,7 +15,7 @@ export const timetable: StageSchedule[] = [
     stageName: 'Kieselwiese (Liveacts)',
     stageSlug: 'kieselwiese',
     slots: [
-      { time: '14:30h', artist: 'Begrüßung flinta*sialand Team' },
+      { time: '14:30h', artist: 'Begrüßung FLINTA*SIALAND Team' },
       { time: '15:00h - 15:15h', artist: 'Ideer' },
       { time: '15:30h - 16:15h', artist: 'FlOuse' },
       { time: '16:45h - 17:15h', artist: 'Beste & Liv' },
