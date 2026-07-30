@@ -15,10 +15,8 @@ interface Props {
   mp4?: string;
   poster?: string;
 }
-const {
-  mp4 = '/media/hero/hero.mp4',
-  poster = '/media/hero/hero-poster.jpg',
-} = Astro.props;
+const { mp4 = "/media/hero/hero.mp4", poster = "/media/hero/hero-poster.jpg" } =
+  Astro.props;
 ---
 
 <div class="hero-bg" data-hero-variant="video">
@@ -34,9 +32,6 @@ const {
   >
     <source src={mp4} type="video/mp4" />
   </video>
-  <!-- Scrim: leichte Berry-Abdunklung für Kontrast von Logo/Datum über hellen
-       Videostellen; nach unten etwas dichter (Übergang in die nächste Sektion). -->
-  <div class="hero-bg__scrim" aria-hidden="true"></div>
 </div>
 
 <style>
@@ -56,20 +51,19 @@ const {
   .hero-bg__scrim {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(
-        to bottom,
-        color-mix(in srgb, var(--color-berry) 30%, transparent) 0%,
-        color-mix(in srgb, var(--color-berry) 22%, transparent) 45%,
-        color-mix(in srgb, var(--color-berry) 62%, transparent) 100%
-      );
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-berry) 30%, transparent) 0%,
+      color-mix(in srgb, var(--color-berry) 22%, transparent) 45%,
+      color-mix(in srgb, var(--color-berry) 62%, transparent) 100%
+    );
   }
 </style>
 
 <script>
   // Wiedergabe nur bei erlaubter Bewegung starten (sonst Poster-Standbild).
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const video = document.querySelector<HTMLVideoElement>('.hero-bg__video');
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const video = document.querySelector<HTMLVideoElement>(".hero-bg__video");
 
   function apply() {
     if (!video) return;
@@ -84,5 +78,5 @@ const {
   }
 
   apply();
-  reduce.addEventListener('change', apply);
+  reduce.addEventListener("change", apply);
 </script>
