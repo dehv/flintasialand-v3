@@ -81,7 +81,6 @@ export const acts: Act[] = [
     focus: '73% 45%',
     zoom: 1.9,
     shape: '3',
-    highlight: true,
   },
   {
     id: 'makahaun',
@@ -97,9 +96,9 @@ export const acts: Act[] = [
     ],
     stage: 'Maschinerie',
     time: '23:00–01:00',
-    focus: '32% 4%',
-    zoom: 2.1,
-    highlight: true,
+    focus: '58% 45%',
+    zoom: 1.15,
+    shape: '1',
   },
   {
     id: 'dddr',
@@ -114,7 +113,6 @@ export const acts: Act[] = [
     time: '19:45–20:30',
     focus: '48% 42%',
     zoom: 1.2,
-    highlight: true,
   },
   {
     id: 'artemis-jade',
@@ -130,7 +128,6 @@ export const acts: Act[] = [
     focus: '37% 54%',
     zoom: 1.9,
     shape: '1',
-    highlight: true,
   },
   {
     id: 'baerte-mit-maedchen',
@@ -141,7 +138,7 @@ export const acts: Act[] = [
     links: [],
     stage: 'Kieselwiese',
     time: '19:00–19:45',
-    focus: '26% 28%',
+    focus: '32% 0%',
     zoom: 1.2,
     shape: '3',
   },
@@ -257,8 +254,8 @@ export const acts: Act[] = [
     ],
     stage: 'Maschinerie',
     time: '15:00–17:00',
-    focus: 'center 30%',
-    zoom: 1.3,
+    focus: '0% 36%',
+    zoom: 1.45,
   }
 ];
 

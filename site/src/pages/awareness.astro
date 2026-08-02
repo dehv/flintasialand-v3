@@ -11,25 +11,12 @@ import Section from '@ui/Section.astro';
 import Heading from '@ui/Heading.astro';
 import Button from '@ui/Button.astro';
 import StarBullet from '@ui/StarBullet.astro';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
 
-const angebote: { title: string; text: string }[] = [
-  {
-    title: 'Awareness-Team vor Ort',
-    text: 'Den ganzen Tag und Abend ansprechbar — erkennbar an den pinken Westen mit der Aufschrift „Awareness“. Parteilich, unterstützend und vertraulich.',
-  },
-  {
-    title: 'Rückzugsraum',
-    text: 'Ein ruhiger Ort zum Durchatmen, wenn dir alles zu viel wird. Du brauchst keinen Grund zu nennen.',
-  },
-  {
-    title: 'Pronomen-Sticker',
-    text: 'Am Eingang verfügbar. Du entscheidest selbst, wie du angesprochen werden möchtest.',
-  },
-  {
-    title: 'Pinke Bänder gegen Fotos',
-    text: 'Wer nicht fotografiert werden möchte, nimmt sich am Eingang ein pinkes Band. Bitte respektiere das — und frage grundsätzlich vor jedem Foto.',
-  },
-];
+const locale = localeFromPath(Astro.url.pathname);
+const t = texte.awareness;
+const grundsatzShapes = ['1', '2', '3', '4'] as const;
 ---
 
 <BaseLayout

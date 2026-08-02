@@ -81,7 +81,7 @@ const OPPOSITE: Record<Corner, Corner> = {
         data-tab="timetable"
         class="tab-btn"
       >
-        Timetable
+        {pick(t.tabTimetable, locale)}
       </button>
     </div>
 
@@ -178,7 +178,7 @@ const OPPOSITE: Record<Corner, Corner> = {
       {
         actsOhneFoto.length > 0 && (
           <div class="mt-14">
-            <h2 class="font-display text-lg font-bold text-accent">Außerdem an den Decks</h2>
+            <h2 class="font-display text-lg font-bold text-accent">{pick(t.alsoAtDecks, locale)}</h2>
             <ul class="mt-5 grid gap-4 sm:grid-cols-2">
               {actsOhneFoto.map((act) => (
                 <li class="rounded-2xl bg-surface-muted/50 p-5 ring-1 ring-hairline">
@@ -211,7 +211,7 @@ const OPPOSITE: Record<Corner, Corner> = {
     >
       <div class="mt-8 flex flex-wrap items-center gap-3">
         <Button href="/timetable/print" variant="outline">
-          Als PDF speichern / drucken
+          {pick(t.ctaPrint, locale)}
         </Button>
       </div>
       <TimetableGrid />

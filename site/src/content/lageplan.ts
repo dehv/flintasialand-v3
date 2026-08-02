@@ -59,78 +59,80 @@ export const lageplan: VenueLageplan = {
   zoom: 16.5,
 
   pins: [
-    // — Areale —
     {
       id: 'maschinerie',
       title: 'Maschinerie',
-      category: 'area',
-      lat: 51.5313,
-      lng: 7.4451,
-      description: 'Halle im Westen des Geländes.',
+      category: 'buehne',
+      lat: 51.53118,
+      lng: 7.44599,
+      description: 'Hier spielen unsere DJs',
     },
     {
       id: 'communityspace',
       title: 'Community Space',
       category: 'area',
-      lat: 51.5308,
-      lng: 7.4463,
+      lat: 51.53041,
+      lng: 7.44616,
       description: 'Zentraler Bereich mit zusätzlichen Ständen.',
     },
     {
       id: 'kieselwiese',
       title: 'Kieselwiese',
       category: 'area',
-      lat: 51.5304,
-      lng: 7.4479,
-      description: 'Areal im Osten am Kai.',
+      lat: 51.5305,
+      lng: 7.44689,
+      description: 'Hier spielen unsere Live Acts',
     },
-
-    // — Eingang & Orientierung —
     {
       id: 'eingang',
       title: 'Eingang',
       category: 'eingang',
-      lat: 51.5302,
-      lng: 7.4474,
+      lat: 51.53036,
+      lng: 7.44671,
       description: 'Begrüßung, Bändchen, Pronomen-Sticker.',
     },
     {
       id: 'infostand',
       title: 'Infostand',
       category: 'service',
-      lat: 51.5305,
-      lng: 7.447,
-      description: 'Awareness, Trans* Assurances, Pronomen-Sticker.',
+      lat: 51.53045,
+      lng: 7.44657,
+      description: 'Wegweiser*in, Infos Awareness COC, Timetable, Pronomensticker, Stifte',
     },
-    {
-      id: 'strassensperrung',
-      title: 'Straßensperrung',
-      category: 'service',
-      lat: 51.5303,
-      lng: 7.4471,
-    },
-
-    // — Bühnen & Stände (Auswahl) —
     {
       id: 'queer-dating-stage',
       title: 'Queer Dating Stage',
       category: 'buehne',
-      lat: 51.5307,
-      lng: 7.4457,
+      lat: 51.53076,
+      lng: 7.44612,
     },
     {
       id: 'toiletten',
       title: 'Toiletten',
       category: 'service',
-      lat: 51.531,
-      lng: 7.4464,
+      lat: 51.5308,
+      lng: 7.44647,
+    },
+    {
+      id: 'toiletten-2',
+      title: 'Toiletten 2',
+      category: 'service',
+      lat: 51.53132,
+      lng: 7.44598,
+    },
+    {
+      id: 'essensstaende',
+      title: 'Essensstände',
+      category: 'stand',
+      lat: 51.53096,
+      lng: 7.44654,
     },
   ],
 
   anreise: {
     oepnv:
-      'Mit den Öffentlichen bis zur Haltestelle „Hafen“ — von dort sind es rund 15 Minuten zu Fuß zum Speicher 100.',
-    auto: 'Speicherstraße 100, 44147 Dortmund. Bitte möglichst mit ÖPNV oder Rad anreisen und Autos vermeiden — Parkmöglichkeiten im Hafenareal sind begrenzt.',
+      'Mit den Öffentlichen bis zur Haltestelle „Hafen“, von dort sind es rund 15 Minuten zu Fuß zum Speicher 100.',
+    auto: 'Speicherstraße 100, 44147 Dortmund. Bitte möglichst mit ÖPNV oder Rad anreisen, Parkmöglichkeiten im Hafenareal sind begrenzt.',
     barrierefreiheit:
       'Das Gelände liegt am Kai (teils Kopfsteinpflaster/unebener Untergrund). Angaben zu barrierefreien Zugängen und Toiletten ergänzen wir hier, sobald final.',
   },
