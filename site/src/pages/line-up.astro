@@ -17,6 +17,11 @@ import TimetableGrid from '@blocks/TimetableGrid.astro';
 import Button from '@ui/Button.astro';
 import { acts, actsOhneFoto, STAGE_LABEL } from '@content/acts';
 import type { StarShape, StarAccent } from '@lib/sterne';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const t = texte.lineup;
 
 type Corner = 'tl' | 'tr' | 'bl' | 'br';
 const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
@@ -26,20 +31,27 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
   { shape: '4', accent: 'pink', corner: 'tl' },
 ];
 
+/** Diagonal gegenüberliegende Ecke — für das zweite Foto eines b2b-Acts. */
+const OPPOSITE: Record<Corner, Corner> = {
+  tl: 'br',
+  tr: 'bl',
+  bl: 'tr',
+  br: 'tl',
+};
+
 ---
 
 <BaseLayout
-  title="Line-Up & Timetable"
-  description="Das komplette Line-Up des FLINTA*SIALAND 2026 mit Bühne und Uhrzeit — umschaltbar zur vollständigen Timetable. Speicher 100, Dortmund."
+  title={pick(t.metaTitle, locale)}
+  description={pick(t.metaDescription, locale)}
 >
   <Section theme="light" spacing="lg" class="pt-28 md:pt-32">
     <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-      FLINTA*SIALAND 2026
+      {pick(texte.common.kickerYear, locale)}
     </p>
-    <Heading level={1} size="lg" class="mt-3">Line-Up & Timetable</Heading>
+    <Heading level={1} size="lg" class="mt-3">{pick(t.headline, locale)}</Heading>
     <p class="mt-4 max-w-2xl text-on-surface-muted">
-      Samstag, 15. August 2026 · Speicher 100, Dortmunder Hafen. Zwei Bühnen,
-      ein Tag. Wechsle zwischen den Act-Profilen und dem kompletten Zeitplan.
+      {pick(t.body, locale)}
     </p>
 
     <!-- Umschalter -->
@@ -58,7 +70,7 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
         data-tab="lineup"
         class="tab-btn"
       >
-        Line-Up
+        {pick(t.tabLineup, locale)}
       </button>
       <button
         type="button"
@@ -81,16 +93,39 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
             const l = layouts[i % layouts.length];
             return (
               <article class="flex flex-col">
-                <StarCornerImage
-                  src={act.image}
-                  alt={`${act.name} — Portrait`}
-                  ratio="4 / 5"
-                  shape={l.shape}
-                  accent={l.accent}
-                  corner={l.corner}
-                  focus={act.focus}
-                  zoom={act.zoom}
-                />
+                {act.image2 ? (
+                  <div class="grid grid-cols-2 gap-3">
+                    <StarCornerImage
+                      src={act.image}
+                      alt={`${act.name} — Portrait 1`}
+                      ratio="4 / 5"
+                      shape={act.shape ?? l.shape}
+                      accent={l.accent}
+                      corner={l.corner}
+                      focus={act.focus}
+                      zoom={act.zoom}
+                    />
+                    <StarCornerImage
+                      src={act.image2}
+                      alt={`${act.name} — Portrait 2`}
+                      ratio="4 / 5"
+                      shape={act.shape2 ?? (l.shape === '1' ? '3' : '1')}
+                      accent={l.accent === 'pink' ? 'green' : 'pink'}
+                      corner={OPPOSITE[l.corner]}
+                      focus={act.focus2}
+                      zoom={act.zoom2}
+                    />
+                  </div>
+                ) : (
+                  <StarCornerImage
+                    src={act.image}
+                    alt={`${act.name} — Portrait`}
+                    ratio="4 / 5"
+                    shape={l.shape}
+                    accent={l.accent}
+                    corner={l.corner}
+                  />
+                )}
                 <div class="mt-5">
                   <h2 class="font-display text-2xl font-bold tracking-tight">
                     {act.name}
@@ -103,7 +138,19 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
                     <span aria-hidden="true">·</span>
                     <span class="font-mono tracking-tight text-accent">{act.time} Uhr</span>
                   </p>
-                  <p class="mt-3 text-on-surface-muted">{act.bio}</p>
+                  <p class="mt-3 text-on-surface-muted">
+                    {locale === 'en' ? (act.bioEn ?? act.bio) : act.bio}
+                  </p>
+                  {locale === 'de' && act.translatedFrom === 'en' && (
+                    <p class="mt-1 text-xs italic text-on-surface-muted">
+                      {pick(texte.common.translatedFromEn, locale)}
+                    </p>
+                  )}
+                  {locale === 'en' && act.translatedFrom === 'de' && (
+                    <p class="mt-1 text-xs italic text-on-surface-muted">
+                      {pick(texte.common.translatedFromDe, locale)}
+                    </p>
+                  )}
                   {act.links.length > 0 && (
                     <ul class="mt-4 flex flex-wrap gap-2">
                       {act.links.map((link) => (
@@ -127,29 +174,31 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
         }
       </div>
 
-      <!-- Acts ohne Pressefoto -->
-      <div class="mt-14">
-        <h2 class="font-display text-lg font-bold text-accent">Außerdem an den Decks</h2>
-        <ul class="mt-5 grid gap-4 sm:grid-cols-2">
-          {
-            actsOhneFoto.map((act) => (
-              <li class="rounded-2xl bg-surface-muted/50 p-5 ring-1 ring-hairline">
-                <h3 class="font-display text-xl font-bold tracking-tight">{act.name}</h3>
-                {act.genre && (
-                  <p class="mt-1 text-sm font-medium uppercase tracking-wider text-accent">
-                    {act.genre}
+      <!-- Acts ohne Pressefoto (nur wenn vorhanden) -->
+      {
+        actsOhneFoto.length > 0 && (
+          <div class="mt-14">
+            <h2 class="font-display text-lg font-bold text-accent">Außerdem an den Decks</h2>
+            <ul class="mt-5 grid gap-4 sm:grid-cols-2">
+              {actsOhneFoto.map((act) => (
+                <li class="rounded-2xl bg-surface-muted/50 p-5 ring-1 ring-hairline">
+                  <h3 class="font-display text-xl font-bold tracking-tight">{act.name}</h3>
+                  {act.genre && (
+                    <p class="mt-1 text-sm font-medium uppercase tracking-wider text-accent">
+                      {act.genre}
+                    </p>
+                  )}
+                  <p class="mt-2 flex flex-wrap items-center gap-x-2 text-sm font-semibold text-on-surface-muted">
+                    <span>{STAGE_LABEL[act.stage]}</span>
+                    <span aria-hidden="true">·</span>
+                    <span class="font-mono tracking-tight text-accent">{act.time} Uhr</span>
                   </p>
-                )}
-                <p class="mt-2 flex flex-wrap items-center gap-x-2 text-sm font-semibold text-on-surface-muted">
-                  <span>{STAGE_LABEL[act.stage]}</span>
-                  <span aria-hidden="true">·</span>
-                  <span class="font-mono tracking-tight text-accent">{act.time} Uhr</span>
-                </p>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
     </div>
 
     <!-- ANSICHT 2: TIMETABLE -->

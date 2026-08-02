@@ -57,7 +57,7 @@ function nextStarKey(): StarShape {
 
 const photos: Photo[] = [];
 for (const a of acts) {
-  const k1 = nextStarKey();
+  const k1 = a.shape ?? nextStarKey();
   photos.push({
     actId: a.id,
     key: '',
@@ -71,7 +71,7 @@ for (const a of acts) {
     zoom: a.zoom ?? 1,
   });
   if (a.image2) {
-    const k2 = nextStarKey();
+    const k2 = a.shape2 ?? nextStarKey();
     photos.push({
       actId: a.id,
       key: '2',
@@ -334,12 +334,13 @@ for (const a of acts) {
         const zKey = key === '2' ? 'zoom2' : 'zoom';
         const imgKey = key === '2' ? 'image2' : 'image';
         const lines = [`// ${id}`];
+        const shKey = key === '2' ? 'shape2' : 'shape';
         if (card.dataset.file !== card.dataset.deffile)
           lines.push(`// ${imgKey} → Datei '${card.dataset.file}' (Import in acts.ts anpassen)`);
-        if (card.dataset.shape !== card.dataset.defshape)
-          lines.push(`// Stern: Form ${card.dataset.shape} (Vorschau)`);
         lines.push(`${fKey}: '${fmtFocus(x, y)}',`);
         if (zoom > 1.001) lines.push(`${zKey}: ${zoom.toFixed(2)},`);
+        if (card.dataset.shape !== card.dataset.defshape)
+          lines.push(`${shKey}: '${card.dataset.shape}',`);
         return lines.join('\n');
       }
 

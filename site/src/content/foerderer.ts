@@ -28,7 +28,7 @@ export const sponsors: Sponsor[] = [
   {
     name: 'Koordinierungsstelle LSBTIQ* Dortmund',
     logo: logoLsbtiq,
-    url: 'https://www.dortmund.de/'
+    url: 'https://www.dortmund.de/rathaus/verwaltung/amt-fuer-angelegenheiten-des-oberbuergermeisters-und-des-rates/koordinierungsstelle-fuer-lsbtiq/'
   },
   {
     name: 'Kulturbüro Dortmund',
@@ -38,21 +38,21 @@ export const sponsors: Sponsor[] = [
   {
     name: 'Stadtbezirksmarketing Dortmund-Nordstadt',
     logo: logoStadtbezirk,
-    url: 'https://www.dortmund.de/'
+    url: 'https://echt-nordstadt.de/'
   },
   {
     name: 'Hartkern',
     logo: logoHartkern,
-    url: 'https://hartkern.de/'
+    url: 'https://www.instagram.com/hartkern.ev/'
   },
   {
     name: 'Maschinerie e.V.',
     logo: logoMaschinerie,
-    url: 'https://maschinerie.org/'
+    url: 'https://www.maschinerie.org/'
   },
   {
     name: 'Speicher 100',
     logo: logoSpeicher100,
-    url: 'https://speicher100.de/'
+    url: 'https://speicher100.org/'
   }
 ];

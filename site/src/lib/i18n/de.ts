@@ -23,6 +23,7 @@ export const de = {
     language: 'Sprache',
     intro: 'Über',
     lineup: 'Line-Up',
+    workshops: 'Workshops & Community',
     timetable: 'Timetable',
     lageplan: 'Lageplan',
     awareness: 'Awareness',

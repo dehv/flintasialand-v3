@@ -18,6 +18,11 @@ import StarMaskedImage from '@ui/StarMaskedImage.astro';
 import StarDuo from '@ui/StarDuo.astro';
 import { acts, STAGE_LABEL } from '@content/acts';
 import { getStar, type StarShape, type StarAccent } from '@lib/sterne';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const t = texte.lineupTeaser;
 
 // Alle Acts mit Foto laufen durch den Marquee.
 const marqueeActs = acts;
@@ -57,12 +62,11 @@ const deco = [
 
   <div class="relative text-center">
     <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-      Line-Up
+      {pick(t.kicker, locale)}
     </p>
-    <Heading level={2} size="lg" class="mt-3">Wer spielt beim FLINTA*SIALAND</Heading>
+    <Heading level={2} size="lg" class="mt-3">{pick(t.headline, locale)}</Heading>
     <p class="mx-auto mt-4 max-w-2xl text-on-surface-muted">
-      Alle Acts auf einen Blick — von treibenden Live-Performances bis zu tiefen
-      elektronischen DJ-Sets, auf zwei Bühnen im Speicher 100.
+      {pick(t.body, locale)}
     </p>
   </div>
 
@@ -87,6 +91,8 @@ const deco = [
                     focus2={act.focus2}
                     zoom1={act.zoom}
                     zoom2={act.zoom2}
+                    shape1={act.shape ?? s.shape}
+                    shape2={act.shape2}
                     accent1={s.accent}
                     accent2={s.accent === 'teal' ? 'pink' : 'teal'}
                     waber
@@ -96,7 +102,7 @@ const deco = [
                   <StarMaskedImage
                     src={act.image}
                     alt={copy === 1 ? '' : act.name}
-                    shape={s.shape}
+                    shape={act.shape ?? s.shape}
                     accent={s.accent}
                     focus={act.focus}
                     zoom={act.zoom}
@@ -122,8 +128,8 @@ const deco = [
   </div>
 
   <div class="relative mt-14 flex flex-wrap justify-center gap-4">
-    <Button href="/line-up">Ganzes Line-Up</Button>
-    <Button href="/line-up#timetable" variant="outline">Timetable</Button>
+    <Button href="/line-up">{pick(t.ctaFull, locale)}</Button>
+    <Button href="/line-up#timetable" variant="outline">{pick(t.ctaTimetable, locale)}</Button>
   </div>
 </Section>
 

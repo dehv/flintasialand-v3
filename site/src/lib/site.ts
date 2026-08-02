@@ -24,6 +24,7 @@ export interface NavItem {
 export const primaryNav: NavItem[] = [
   { key: 'intro', label: 'Über', href: '/#intro', anchor: true },
   { key: 'lineup', label: 'Line-Up', href: '/line-up' },
+  { key: 'workshops', label: 'Workshops & Community', href: '/workshops' },
   { key: 'lageplan', label: 'Lageplan', href: '/lageplan' },
   { key: 'awareness', label: 'Awareness', href: '/awareness' },
 ];

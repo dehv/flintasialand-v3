@@ -22,6 +22,7 @@ export const en: Dict = {
     language: 'Language',
     intro: 'About',
     lineup: 'Line-up',
+    workshops: 'Workshops & Community',
     timetable: 'Timetable',
     lageplan: 'Location',
     awareness: 'Awareness',

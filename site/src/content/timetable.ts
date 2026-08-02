@@ -30,11 +30,11 @@ export const timetable: StageSchedule[] = [
     stageSlug: 'maschinerie',
     slots: [
       { time: '14:00h - 15:00h', artist: 'lil apple' },
-      { time: '15:00h - 16:30h', artist: 'canê b2b Schrotflinta' },
-      { time: '16:30h - 18:15h', artist: 'shaxtar b2b kisya' },
-      { time: '18:15h - 20:00h', artist: 'Floppy b2b Corti' },
-      { time: '20:00h - 22:00h', artist: 'Scherwin Hosseini b2b Alias Shay' },
-      { time: '22:00h - 00:00h', artist: 'makahaun' }
+      { time: '15:00h - 17:00h', artist: 'canê b2b Schrotflinta' },
+      { time: '17:00h - 19:00h', artist: 'shaxtar b2b kisya' },
+      { time: '19:00h - 21:00h', artist: 'Floppy b2b Corti' },
+      { time: '21:00h - 23:00h', artist: 'Scherwin Hosseini b2b Alias Shay' },
+      { time: '23:00h - 01:00h', artist: 'makahaun' }
     ]
   }
 ];
