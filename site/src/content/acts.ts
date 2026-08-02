@@ -138,9 +138,8 @@ export const acts: Act[] = [
     links: [],
     stage: 'Kieselwiese',
     time: '19:00–19:45',
-    focus: '32% 0%',
-    zoom: 1.2,
-    shape: '3',
+    focus: '4% 0%',
+    shape: '1',
   },
   {
     id: 'beste-und-liv',

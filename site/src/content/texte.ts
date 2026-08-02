@@ -81,7 +81,7 @@ export const texte = {
       'Neben der Musik ist der <strong>Community Space</strong> das Herz zum Mitmachen: Skillsharing-Workshops zum Ausprobieren und Lernen, die künstlerisch-politische Zone <strong>Gewalten Formen</strong> und die <strong>Queer Dating Stage</strong> — von und für FLINTA* & Allies.',
     ),
     cta: T('Workshops & Community'),
-    credit: T('Illustration: „Gewalten Formen“ (Pitchdeck 2026)'),
+    credit: T('Illustration: „Gewalten Formen“'),
   },
 
   /** Lageplan-Teaser (Startseite). */
@@ -100,13 +100,13 @@ export const texte = {
   /** Awareness-Teaser (Startseite). */
   awarenessTeaser: {
     kicker: T('Awareness & Sicherer Raum'),
-    headline: T('Hier bist du sicher.'),
+    headline: T('Damit alle eine gute Zeit haben können.'),
     // (html)
     body1: T(
       'Das FLINTA*SIALAND ist ein <strong class="text-on-surface">safer space</strong> für alle FLINTA*-Personen. Wir stehen für eine <strong class="text-on-surface">Zero-Tolerance-Politik</strong> gegenüber Diskriminierung, Grenzüberschreitungen und jeder Form von Gewalt. Unser Awareness-Team ist den ganzen Tag und Abend vor Ort und ansprechbar — für alle.',
     ),
     body2: T(
-      'Wir bieten Pronomen-Sticker am Eingang an, damit du selbst entscheiden kannst, wie du angesprochen werden möchtest. Dein Wohlbefinden steht im Zentrum.',
+      'Wir bieten Pronomen-Sticker am Eingang an, damit du selbst entscheiden kannst, wie du angesprochen werden möchtest.',
     ),
     ctaConcept: T('Awareness-Konzept'),
     ctaCoc: T('Code of Conduct'),
@@ -114,7 +114,7 @@ export const texte = {
     items: [
       { title: T('Awareness-Team'), text: T('Erkennbar an bunten Westen — jederzeit ansprechbar.') },
       { title: T('Rückzugsraum'), text: T('Ein ruhiger Ort zum Durchatmen — kein Grund nötig.') },
-      { title: T('Pronomen-Sticker'), text: T('Am Eingang verfügbar — wähle, wie du angesprochen werden willst.') },
+      { title: T('Pronomen-Sticker'), text: T('Am Eingang verfügbar.') },
     ],
   },
 
@@ -133,11 +133,11 @@ export const texte = {
   lineup: {
     metaTitle: T('Line-Up & Timetable'),
     metaDescription: T(
-      'Das komplette Line-Up des FLINTA*SIALAND 2026 mit Bühne und Uhrzeit — umschaltbar zur vollständigen Timetable. Speicher 100, Dortmund.',
+      'Das komplette Line-Up des FLINTA*SIALAND 2026 mit Bühne und Uhrzeit. Speicher 100, Dortmund.',
     ),
     headline: T('Line-Up & Timetable'),
     body: T(
-      'Samstag, 15. August 2026 · Speicher 100, Dortmunder Hafen. Zwei Bühnen, ein Tag. Wechsle zwischen den Act-Profilen und dem kompletten Zeitplan.',
+      'Samstag, 15. August 2026 · Speicher 100, Dortmunder Hafen. Ein Tag, zwei Bühnen.',
     ),
     tabLineup: T('Line-Up'),
     tabTimetable: T('Timetable'),
@@ -155,7 +155,7 @@ export const texte = {
     headline: T('Community Space & Workshops'),
     // (html)
     intro: T(
-      'Neben Musik und Awareness ist der <strong>Community Space</strong> das Herz zum Mitmachen: Skillsharing-Workshops zum Ausprobieren, Lernen und Austauschen, die künstlerisch-politische Zone <strong>Gewalten Formen</strong> und die <strong>Queer Dating Stage</strong> — von und für FLINTA* & Allies. Einige Angebote sind schon fix, weitere folgen in Kürze.',
+      'Neben Musik und Awareness ist der <strong>Community Space</strong> das Herz zum Mitmachen: Skillsharing-Workshops zum Ausprobieren, Lernen und Austauschen, die künstlerisch-politische Zone <strong>Gewalten Formen</strong> und die <strong>Queer Dating Stage</strong> — von und für FLINTA* & Allies.',
     ),
     workshopsHeading: T('Workshops & Skillsharing'),
     gewalten: {
@@ -168,7 +168,7 @@ export const texte = {
       p2: T(
         'In dieser Zone finden auch Workshops statt — u. a. der <strong>Mut-Muskel-Workshop</strong> der Radikalen Töchter und der Vortrag <strong>„Psychische Gewalt & narzisstischen Missbrauch erkennen“</strong>.',
       ),
-      credit: T('Illustration: „Gewalten Formen“ (Pitchdeck 2026)'),
+      credit: T('Illustration: „Gewalten Formen“'),
     },
     queer: {
       heading: T('Queer Dating Stage'),
@@ -185,7 +185,7 @@ export const texte = {
       'Das Awareness-Konzept des FLINTA*SIALAND: Safer Space, Awareness-Team, Rückzugsraum und klare Haltung gegen Diskriminierung.',
     ),
     kicker: T('Awareness & Sicherer Raum'),
-    headline: T('Hier bist du sicher.'),
+    headline: T('Damit alle eine gute Zeit haben können.'),
     // (html)
     intro: T(
       'Das FLINTA*SIALAND ist ein <strong class="text-on-surface">safer space</strong> für alle FLINTA*-Personen. Wir stehen für eine <strong class="text-on-surface">Zero-Tolerance-Politik</strong> gegenüber Diskriminierung, Grenzüberschreitungen und jeder Form von Gewalt. Dein Wohlbefinden steht im Zentrum.',
@@ -243,7 +243,7 @@ export const texte = {
     metaTitle: T('Seite nicht gefunden'),
     metaDescription: T('Diese Seite gibt es leider nicht (mehr).'),
     kicker: T('Fehler 404'),
-    headline: T('Hier ist nichts los'),
+    headline: T('Hier ist es mucksmäuschenstill... 🐭'),
     body: T(
       'Die Seite, die du suchst, gibt es leider nicht (mehr). Vielleicht hat sich ein Tippfehler eingeschlichen oder der Link ist veraltet.',
     ),
