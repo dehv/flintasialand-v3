@@ -47,8 +47,10 @@ export interface VenueLageplan {
   center: { lat: number; lng: number };
   zoom: number;
   pins: MapPin[];
-  /** Anfahrt / Barrierefreiheit (redaktionell, i18n später). */
+  /** Anfahrt / Barrierefreiheit (redaktionell). */
   anreise: { oepnv: string; auto: string; barrierefreiheit: string };
+  /** Englische Anfahrt / Barrierefreiheit (Fallback auf `anreise`). */
+  anreiseEn?: { oepnv: string; auto: string; barrierefreiheit: string };
 }
 
 export const lageplan: VenueLageplan = {
@@ -135,5 +137,13 @@ export const lageplan: VenueLageplan = {
     auto: 'Speicherstraße 100, 44147 Dortmund. Bitte möglichst mit ÖPNV oder Rad anreisen, Parkmöglichkeiten im Hafenareal sind begrenzt.',
     barrierefreiheit:
       'Das Gelände liegt am Kai (teils Kopfsteinpflaster/unebener Untergrund). Angaben zu barrierefreien Zugängen und Toiletten ergänzen wir hier, sobald final.',
+  },
+
+  anreiseEn: {
+    oepnv:
+      'Take public transport to the “Hafen” stop; from there it’s about a 15-minute walk to Speicher 100.',
+    auto: 'Speicherstraße 100, 44147 Dortmund. Please travel by public transport or bike if you can — parking in the harbour area is limited.',
+    barrierefreiheit:
+      'The grounds sit on the quay (partly cobblestones/uneven surface). We’ll add details on accessible entrances and toilets here as soon as they’re final.',
   },
 };

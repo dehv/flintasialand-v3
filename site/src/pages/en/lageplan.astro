@@ -18,6 +18,10 @@ const mapsHref = `https://www.openstreetmap.org/?mlat=${lageplan.center.lat}&mlo
 
 // Karten-Tipp: {osm} wird durch den OpenStreetMap-Link ersetzt.
 const [mapTipBefore, mapTipAfter] = pick(t.mapTip, locale).split('{osm}');
+
+// Anreise-Texte je Sprache (Fallback auf Deutsch).
+const anreise =
+  locale === 'en' && lageplan.anreiseEn ? lageplan.anreiseEn : lageplan.anreise;
 ---
 
 <BaseLayout
@@ -62,16 +66,16 @@ const [mapTipBefore, mapTipAfter] = pick(t.mapTip, locale).split('{osm}');
     <div class="mt-8 grid gap-8 md:grid-cols-3">
       <div>
         <h3 class="font-display text-lg font-bold text-accent">{pick(t.oepnvLabel, locale)}</h3>
-        <p class="mt-2 text-on-surface-muted">{lageplan.anreise.oepnv}</p>
+        <p class="mt-2 text-on-surface-muted">{anreise.oepnv}</p>
       </div>
       <div>
         <h3 class="font-display text-lg font-bold text-accent">{pick(t.autoLabel, locale)}</h3>
-        <p class="mt-2 text-on-surface-muted">{lageplan.anreise.auto}</p>
+        <p class="mt-2 text-on-surface-muted">{anreise.auto}</p>
       </div>
       <div>
         <h3 class="font-display text-lg font-bold text-accent">{pick(t.barrierefreiheitLabel, locale)}</h3>
         <p class="mt-2 text-on-surface-muted">
-          {lageplan.anreise.barrierefreiheit}
+          {anreise.barrierefreiheit}
         </p>
       </div>
     </div>

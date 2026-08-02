@@ -77,6 +77,14 @@ const {
       filter: none;
     }
   }
+
+  /* Mobil: das teure Kanten-„Wabern“ (per-Frame SVG-Displacement) abschalten —
+     die Scroll-Rotation (reines GPU-transform) bleibt als dezente Bewegung. */
+  @media (max-width: 767px) {
+    .scroll-star__waber {
+      filter: none;
+    }
+  }
 </style>
 
 <script>

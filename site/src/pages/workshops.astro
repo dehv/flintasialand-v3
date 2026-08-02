@@ -93,7 +93,9 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
                     <span class="font-mono tracking-tight text-accent">{ws.time}</span>
                   )}
                 </p>
-                <p class="mt-3 text-on-surface-muted">{ws.description}</p>
+                <p class="mt-3 text-on-surface-muted">
+                  {locale === 'en' ? (ws.descriptionEn ?? ws.description) : ws.description}
+                </p>
               </div>
             </article>
           );

@@ -45,5 +45,21 @@ export function switchLocalePath(pathname: string, target: Locale): string {
   return bare === '/' ? '/en/' : `/en${bare}`;
 }
 
+/**
+ * Einen internen Link in die aktive Sprache übersetzen:
+ *   ('/line-up', 'en')  -> '/en/line-up'
+ *   ('/', 'en')         -> '/en/'
+ *   ('/#lineup', 'en')  -> '/en/#lineup'
+ *   ('/line-up', 'de')  -> '/line-up'   (DE = Wurzel, unverändert)
+ * Externe/relative Links (ohne führenden „/" bzw. „//") bleiben unangetastet.
+ */
+export function localizeHref(href: string, locale: Locale): string {
+  if (locale === 'de') return href;
+  if (!href.startsWith('/') || href.startsWith('//')) return href;
+  if (href === '/') return '/en/';
+  if (href.startsWith('/#')) return `/en/${href.slice(1)}`;
+  return `/en${href}`;
+}
+
 /** Bequemer Default-Export der Primärsprache (Deutsch). */
 export const t: Dict = useTranslations(defaultLocale);

@@ -22,6 +22,8 @@ export interface Workshop {
   /** Ort auf dem Gelände, z. B. „Community Space“. */
   location?: string;
   description: string;
+  /** Englische Beschreibung (falls vorhanden) — sonst EN-Fallback auf `description`. */
+  descriptionEn?: string;
   /** Optionales Foto (wie bei Acts). */
   image?: ImageMetadata;
   focus?: string;
@@ -41,6 +43,8 @@ export const workshops: Workshop[] = [
     location: 'Straßensperrung',
     description:
       'Entdecke dein Talent an der Nähmaschine! Ein offenes Schnupperangebot ohne Anmeldung: In entspannter Atmosphäre lernst du unter Anleitung die Grundlagen des Nähens. Zum Einstieg nähen wir alle gemeinsam an einer festlichen Girlande, die sich über das Gelände zieht. Besonders für Anfänger*innen — alles Nötige ist da.',
+    descriptionEn:
+      'Discover your talent at the sewing machine! An open taster session, no sign-up needed: in a relaxed atmosphere you’ll learn the basics of sewing with guidance. To start, we all sew together on a festive garland that stretches across the grounds. Especially for beginners — everything you need is provided.',
     image: imgAmenJuvlja,
     focus: '50% 45%',
   },
@@ -52,6 +56,8 @@ export const workshops: Workshop[] = [
     location: 'Kieselwiese',
     description:
       'Ein DIY-Onlineradio für unabhängige Musikkultur ist den ganzen Tag mit mobilem Studio vor Ort. Radio Makro streamt die Acts live auf makroscope.de/radio — und zwischendurch kannst du selbst ans Mikro: Probier deine Stimme aus, mach hörbar, was dich interessiert, oder grüß die Oma. Kommt einfach vorbei!',
+    descriptionEn:
+      'A DIY online radio for independent music culture is on site all day with a mobile studio. Radio Makro streams the acts live at makroscope.de/radio — and in between you can take the mic yourself: try out your voice, make what interests you audible, or say hi to your gran. Just drop by!',
     image: imgRadioMakro,
     focus: '50% 40%',
   },
@@ -63,6 +69,8 @@ export const workshops: Workshop[] = [
     location: 'Gewalten Formen',
     description:
       'Die Welt braucht neue radikale Ideen — vor allem aber mehr Mut. Gemeinsam trainieren wir unseren Mutmuskel: mit Ansätzen der Aktionskunst und des künstlerischen Aktivismus, mit Geschichten von Aktionen, Methoden und Visionen. Ein politischer, kreativer, aktivierender Workshop als Inspiration für die eigene Haltung.',
+    descriptionEn:
+      'The world needs new radical ideas — but above all, more courage. Together we train our courage muscle: with approaches from action art and artistic activism, with stories of actions, methods and visions. A political, creative, activating workshop as inspiration for your own stance.',
   },
   {
     id: 'narzisstischer-missbrauch',
@@ -72,6 +80,8 @@ export const workshops: Workshop[] = [
     location: 'Gewalten Formen',
     description:
       'Ein Vortrag für alle, die Einblick in das Thema „Narzisstischer Missbrauch & seine Folgen“ suchen. Once you see it, you can’t unsee it: Wir schauen auf die oft subtilen Taktiken — von Gaslighting über Lovebombing bis Breadcrumbing —, auf Victim Blaming und darauf, wie Außenstehende Betroffene unterstützen können und wo es kosten- & barrierefreie Hilfe gibt. Intersektional, interdisziplinär und entstigmatisierend.',
+    descriptionEn:
+      'A talk for anyone seeking insight into the topic of “narcissistic abuse & its consequences”. Once you see it, you can’t unsee it: we look at the often subtle tactics — from gaslighting to lovebombing to breadcrumbing —, at victim blaming, and at how bystanders can support those affected and where to find free and accessible help. Intersectional, interdisciplinary and destigmatising.',
   },
   {
     id: 'erasure-poetry',
@@ -80,6 +90,8 @@ export const workshops: Workshop[] = [
     location: 'Community Space',
     description:
       'Aus Vorhandenem Neues schaffen: Beim Erasure-Poetry-Workshop entstehen aus bestehenden Texten eigene Gedichte — durch Weglassen, Übermalen, Hervorheben. Details folgen in Kürze.',
+    descriptionEn:
+      'Making something new from what already exists: in the erasure poetry workshop, your own poems emerge from existing texts — through omitting, painting over, highlighting. Details coming soon.',
     tba: true,
   },
   {
@@ -89,6 +101,8 @@ export const workshops: Workshop[] = [
     location: 'Maschinerie',
     description:
       'Über Bewegung in Verbindung kommen — mit sich selbst und miteinander. Details folgen in Kürze.',
+    descriptionEn:
+      'Connecting through movement — with yourself and with each other. Details coming soon.',
     tba: true,
   },
   {
@@ -97,6 +111,8 @@ export const workshops: Workshop[] = [
     location: 'Community Space',
     description:
       'Ein Raum für queere Poesie zum Zuhören und Mitmachen. Details folgen in Kürze.',
+    descriptionEn:
+      'A space for queer poetry to listen to and join in. Details coming soon.',
     tba: true,
   },
   {
@@ -106,6 +122,8 @@ export const workshops: Workshop[] = [
     location: 'Straßensperrung',
     description:
       'Farbe an die Wand: Ausprobieren, sprühen, gestalten. Details folgen in Kürze.',
+    descriptionEn:
+      'Paint on the wall: try it out, spray, create. Details coming soon.',
     tba: true,
   },
   {
@@ -115,6 +133,8 @@ export const workshops: Workshop[] = [
     location: 'Community Space',
     description:
       'Body-Art zum Selbermachen mit flüssigem Latex. Details folgen in Kürze.',
+    descriptionEn:
+      'DIY body art with liquid latex. Details coming soon.',
     tba: true,
   },
 ];

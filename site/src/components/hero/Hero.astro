@@ -19,6 +19,8 @@ import HeroVideoBackground from '@components/hero/HeroVideoBackground.astro';
 import HeroWebglBackground from '@components/hero/HeroWebglBackground.astro';
 import logoMarkRaw from '@assets/logo/logo-mark.svg?raw';
 import datumRaw from '@assets/brand/datum-berry.svg?raw';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
 
 interface Props {
   variant?: 'video' | 'webgl';
@@ -31,6 +33,9 @@ const {
   dateLabel = '15. August 2026',
   scrollTo = '#intro',
 } = Astro.props;
+
+const locale = localeFromPath(Astro.url.pathname);
+const tHero = texte.hero;
 
 // Logo-Mark inline aufbereiten (fill=currentColor, feste Maße raus -> CSS-Breite).
 const logoMark = logoMarkRaw
@@ -166,21 +171,14 @@ const dateMark = datumRaw
           <span class="hero__logo" set:html={logoMark} />
         </span>
       </span>
-      <span class="sr-only">
-        FLINTA*SIALAND — Festival für Sichtbarkeit und Empowerment von
-        FLINTA*-Künstler*innen
-      </span>
+      <span class="sr-only">{pick(tHero.taglineSr, locale)}</span>
     </h1>
 
     <!-- Tagline: separat & STARR (kein Warp, kein Parallax). Gendersterne in normaler Textfarbe. -->
-    <p class="hero__tagline" aria-hidden="true">
-      Festival für Sichtbarkeit<br />
-      und Empowerment<br />
-      von FLINTA<span class="stern">*</span>-Künstler<span class="stern">*</span>innen
-    </p>
+    <p class="hero__tagline" aria-hidden="true" set:html={pick(tHero.taglineHtml, locale)} />
 
     <p class="hero__date">
-      <span class="sr-only">Am {dateLabel}</span>
+      <span class="sr-only">{pick(tHero.datePrefix, locale)} {dateLabel}</span>
       <span class="hero__date-mark" set:html={dateMark} />
     </p>
   </div>
