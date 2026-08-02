@@ -17,6 +17,11 @@ import TimetableGrid from '@blocks/TimetableGrid.astro';
 import Button from '@ui/Button.astro';
 import { acts, actsOhneFoto, STAGE_LABEL } from '@content/acts';
 import type { StarShape, StarAccent } from '@lib/sterne';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const t = texte.lineup;
 
 type Corner = 'tl' | 'tr' | 'bl' | 'br';
 const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
@@ -37,17 +42,16 @@ const OPPOSITE: Record<Corner, Corner> = {
 ---
 
 <BaseLayout
-  title="Line-Up & Timetable"
-  description="Das komplette Line-Up des FLINTA*SIALAND 2026 mit Bühne und Uhrzeit — umschaltbar zur vollständigen Timetable. Speicher 100, Dortmund."
+  title={pick(t.metaTitle, locale)}
+  description={pick(t.metaDescription, locale)}
 >
   <Section theme="light" spacing="lg" class="pt-28 md:pt-32">
     <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-      FLINTA*SIALAND 2026
+      {pick(texte.common.kickerYear, locale)}
     </p>
-    <Heading level={1} size="lg" class="mt-3">Line-Up & Timetable</Heading>
+    <Heading level={1} size="lg" class="mt-3">{pick(t.headline, locale)}</Heading>
     <p class="mt-4 max-w-2xl text-on-surface-muted">
-      Samstag, 15. August 2026 · Speicher 100, Dortmunder Hafen. Zwei Bühnen,
-      ein Tag. Wechsle zwischen den Act-Profilen und dem kompletten Zeitplan.
+      {pick(t.body, locale)}
     </p>
 
     <!-- Umschalter -->
@@ -66,7 +70,7 @@ const OPPOSITE: Record<Corner, Corner> = {
         data-tab="lineup"
         class="tab-btn"
       >
-        Line-Up
+        {pick(t.tabLineup, locale)}
       </button>
       <button
         type="button"
@@ -77,7 +81,7 @@ const OPPOSITE: Record<Corner, Corner> = {
         data-tab="timetable"
         class="tab-btn"
       >
-        Timetable
+        {pick(t.tabTimetable, locale)}
       </button>
     </div>
 
@@ -134,10 +138,17 @@ const OPPOSITE: Record<Corner, Corner> = {
                     <span aria-hidden="true">·</span>
                     <span class="font-mono tracking-tight text-accent">{act.time} Uhr</span>
                   </p>
-                  <p class="mt-3 text-on-surface-muted">{act.bioEn ?? act.bio}</p>
-                  {act.translatedFrom === 'de' && (
+                  <p class="mt-3 text-on-surface-muted">
+                    {locale === 'en' ? (act.bioEn ?? act.bio) : act.bio}
+                  </p>
+                  {locale === 'de' && act.translatedFrom === 'en' && (
                     <p class="mt-1 text-xs italic text-on-surface-muted">
-                      Translated from German
+                      {pick(texte.common.translatedFromEn, locale)}
+                    </p>
+                  )}
+                  {locale === 'en' && act.translatedFrom === 'de' && (
+                    <p class="mt-1 text-xs italic text-on-surface-muted">
+                      {pick(texte.common.translatedFromDe, locale)}
                     </p>
                   )}
                   {act.links.length > 0 && (
@@ -167,7 +178,7 @@ const OPPOSITE: Record<Corner, Corner> = {
       {
         actsOhneFoto.length > 0 && (
           <div class="mt-14">
-            <h2 class="font-display text-lg font-bold text-accent">Außerdem an den Decks</h2>
+            <h2 class="font-display text-lg font-bold text-accent">{pick(t.alsoAtDecks, locale)}</h2>
             <ul class="mt-5 grid gap-4 sm:grid-cols-2">
               {actsOhneFoto.map((act) => (
                 <li class="rounded-2xl bg-surface-muted/50 p-5 ring-1 ring-hairline">
@@ -200,7 +211,7 @@ const OPPOSITE: Record<Corner, Corner> = {
     >
       <div class="mt-8 flex flex-wrap items-center gap-3">
         <Button href="/timetable/print" variant="outline">
-          Als PDF speichern / drucken
+          {pick(t.ctaPrint, locale)}
         </Button>
       </div>
       <TimetableGrid />

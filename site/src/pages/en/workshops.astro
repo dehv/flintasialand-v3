@@ -15,6 +15,12 @@ import StarBullet from '@ui/StarBullet.astro';
 import { workshops } from '@content/workshops';
 import type { StarShape, StarAccent } from '@lib/sterne';
 import imgGewaltenFormen from '@assets/workshops/gewalten-formen.png';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const t = texte.workshops;
+const cs = texte.common.communitySpace;
 
 type Corner = 'tl' | 'tr' | 'bl' | 'br';
 const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
@@ -26,23 +32,17 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
 ---
 
 <BaseLayout
-  title="Community Space & Workshops"
-  description="Workshops, Gewalten Formen & Queer Dating Stage — der Community Space des FLINTA*SIALAND zum Mitmachen, von und für FLINTA* & Allies."
+  title={pick(t.metaTitle, locale)}
+  description={pick(t.metaDescription, locale)}
 >
   <Section theme="light" spacing="lg" class="pt-28 md:pt-32">
     <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-      FLINTA*SIALAND 2026
+      {pick(texte.common.kickerYear, locale)}
     </p>
-    <Heading level={1} size="lg" class="mt-3">Community Space & Workshops</Heading>
-    <p class="mt-4 max-w-2xl text-on-surface-muted">
-      Neben Musik und Awareness ist der <strong>Community Space</strong> das Herz
-      zum Mitmachen: Skillsharing-Workshops zum Ausprobieren, Lernen und
-      Austauschen, die künstlerisch-politische Zone <strong>Gewalten Formen</strong>
-      und die <strong>Queer Dating Stage</strong> — von und für FLINTA* & Allies.
-      Einige Angebote sind schon fix, weitere folgen in Kürze.
-    </p>
+    <Heading level={1} size="lg" class="mt-3">{pick(t.headline, locale)}</Heading>
+    <p class="mt-4 max-w-2xl text-on-surface-muted" set:html={pick(t.intro, locale)} />
 
-    <Heading level={2} size="md" class="mt-14">Workshops & Skillsharing</Heading>
+    <Heading level={2} size="md" class="mt-14">{pick(t.workshopsHeading, locale)}</Heading>
 
     <div class="mt-8 grid gap-x-8 gap-y-12 sm:grid-cols-2">
       {
@@ -65,7 +65,7 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
                 <div class="flex items-center gap-3 rounded-2xl bg-surface-muted/50 px-5 py-4 ring-1 ring-hairline">
                   <StarBullet shape={ws.shape ?? l.shape} accent={l.accent} size="1.6rem" />
                   <span class="font-display text-sm font-bold uppercase tracking-wider text-accent">
-                    Community Space
+                    {pick(cs, locale)}
                   </span>
                 </div>
               )}
@@ -77,7 +77,7 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
                   </h3>
                   {ws.tba && (
                     <span class="rounded-full bg-surface-muted/70 px-2.5 py-0.5 font-display text-xs font-bold uppercase tracking-wider text-on-surface-muted ring-1 ring-hairline">
-                      Infos folgen
+                      {pick(texte.common.infosFolgen, locale)}
                     </span>
                   )}
                 </div>
@@ -109,22 +109,12 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
         <div class="flex items-center gap-3">
           <StarBullet shape="4" accent="pink" size="1.6rem" />
           <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-            Community Space
+            {pick(cs, locale)}
           </p>
         </div>
-        <Heading level={2} size="md" class="mt-3">Gewalten Formen</Heading>
-        <p class="mt-4 max-w-2xl text-on-surface-muted">
-          <strong>„Gewalten Formen“</strong> ist eine mobile, künstlerisch-politische
-          Installation, die über verschiedene Medienformate das Thema
-          geschlechtsspezifische Gewalt in den öffentlichen Raum bringt. Das Projekt
-          verbindet Kunst, Aktivismus und Aufklärung, um patriarchale Strukturen
-          aufzudecken und kritisch zu hinterfragen.
-        </p>
-        <p class="mt-4 max-w-2xl text-on-surface-muted">
-          In dieser Zone finden auch Workshops statt — u. a. der
-          <strong> Mut-Muskel-Workshop</strong> der Radikalen Töchter und der Vortrag
-          <strong> „Psychische Gewalt & narzisstischen Missbrauch erkennen“</strong>.
-        </p>
+        <Heading level={2} size="md" class="mt-3">{pick(t.gewalten.heading, locale)}</Heading>
+        <p class="mt-4 max-w-2xl text-on-surface-muted" set:html={pick(t.gewalten.p1, locale)} />
+        <p class="mt-4 max-w-2xl text-on-surface-muted" set:html={pick(t.gewalten.p2, locale)} />
       </div>
       <div class="md:col-span-5">
         <StarCornerImage
@@ -137,7 +127,7 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
           focus="50% 45%"
         />
         <p class="mt-3 text-xs text-on-surface-muted">
-          Illustration: „Gewalten Formen“ (Pitchdeck 2026)
+          {pick(t.gewalten.credit, locale)}
         </p>
       </div>
     </div>
@@ -148,17 +138,15 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
     <div class="flex items-center gap-3">
       <StarBullet shape="2" accent="pink" size="1.6rem" />
       <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-        Community Space
+        {pick(cs, locale)}
       </p>
     </div>
-    <Heading level={2} size="md" class="mt-3">Queer Dating Stage</Heading>
+    <Heading level={2} size="md" class="mt-3">{pick(t.queer.heading, locale)}</Heading>
     <p class="mt-4 max-w-2xl text-on-surface-muted">
-      Eine kleine Bühne für Begegnungen: spielerisch, selbstbestimmt und mit
-      Augenzwinkern neue Menschen kennenlernen. Das genaue Format und die Zeiten
-      geben wir hier in Kürze bekannt.
+      {pick(t.queer.body, locale)}
     </p>
     <p class="mt-4 inline-flex items-center gap-2 rounded-full bg-surface-muted/70 px-4 py-1.5 font-display text-xs font-bold uppercase tracking-wider text-on-surface-muted ring-1 ring-hairline">
-      Infos folgen
+      {pick(texte.common.infosFolgen, locale)}
     </p>
   </Section>
 </BaseLayout>
