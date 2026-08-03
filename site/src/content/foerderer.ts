@@ -48,7 +48,7 @@ export const sponsors: Sponsor[] = [
   {
     name: 'Maschinerie e.V.',
     logo: logoMaschinerie,
-    url: 'https://www.maschinerie.org/'
+    url: 'https://maschinerie-dortmund.tumblr.com/'
   },
   {
     name: 'Speicher 100',
