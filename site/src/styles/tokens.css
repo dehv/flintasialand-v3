@@ -22,7 +22,12 @@
   --color-berry: #5d3e51; /* rgb(93, 62, 81)  */
   --color-mint: #edf5ed; /* rgb(237, 245, 237) */
   --color-accent-teal: #aad2cc; /* rgb(170, 210, 204) — UI-Akzent auf Dark */
-  --color-accent-green: #7a8b48; /* rgb(122, 139, 72) — UI-Akzent auf Light */
+  --color-accent-green: #7a8b48; /* rgb(122, 139, 72) — Marken-Grün: Deko/Gendersterne */
+  /* Marken-Grün auf Mint erreicht nur 3.36:1 → für Fließtext/kleine UI zu hell.
+     Dieses dunklere Grün ist die *UI/Text*-Variante des Akzents auf hellen Zonen
+     (≥4.5:1 auf Mint). Das originale --color-accent-green bleibt für große Deko-
+     Sterne. TODO(Alia/Jana): finalen barrierefreien Grünton der CI freigeben. */
+  --color-accent-green-ui: #5c6a30; /* dunkleres Grün — UI/Text-Akzent auf Light */
   --color-accent-pink: #dc95bb; /* rgb(220, 149, 187) — nur Gendersterne/Deko */
 
   /* --- Typografie --- */
@@ -46,8 +51,8 @@
   --surface: var(--color-mint);
   --surface-muted: color-mix(in srgb, var(--color-mint) 92%, black);
   --on-surface: var(--color-berry);
-  --on-surface-muted: color-mix(in srgb, var(--color-berry) 70%, var(--color-mint));
-  --accent: var(--color-accent-green);
+  --on-surface-muted: color-mix(in srgb, var(--color-berry) 84%, var(--color-mint));
+  --accent: var(--color-accent-green-ui);
   --accent-on: var(--color-mint);
   --hairline: color-mix(in srgb, var(--color-berry) 18%, transparent);
   color-scheme: light;
@@ -75,8 +80,8 @@
   --surface: var(--color-mint);
   --surface-muted: color-mix(in srgb, var(--color-mint) 92%, black);
   --on-surface: var(--color-berry);
-  --on-surface-muted: color-mix(in srgb, var(--color-berry) 70%, var(--color-mint));
-  --accent: var(--color-accent-green);
+  --on-surface-muted: color-mix(in srgb, var(--color-berry) 84%, var(--color-mint));
+  --accent: var(--color-accent-green-ui);
   --accent-on: var(--color-mint);
   --hairline: color-mix(in srgb, var(--color-berry) 18%, transparent);
   color-scheme: light;

@@ -12,6 +12,12 @@
 .vscode/
 .idea/
 
+# Build-Output & Abhängigkeiten (werden von der CI erzeugt, nie committen)
+node_modules/
+**/node_modules/
+site/dist/
+site/.astro/
+
 # Design-Quelldateien & Projektunterlagen (Rohdaten)
 /FLINTA_SIA Corporate Design_Jana Uso_01-07-26/
 /Genderstern Animation Final/

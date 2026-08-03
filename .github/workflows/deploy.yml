@@ -1,0 +1,47 @@
+name: Deploy to GitHub Pages
+
+# Baut die Astro-Seite (liegt im Unterordner site/) und deployt sie auf
+# GitHub Pages. Läuft bei jedem Push auf main und manuell über den
+# "Run workflow"-Button (workflow_dispatch).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Rechte, die die offiziellen Pages-Actions brauchen.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Immer nur ein Deploy gleichzeitig; laufende nicht abbrechen.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # withastro/action installiert Abhängigkeiten, baut und lädt das
+      # dist/-Verzeichnis als Pages-Artefakt hoch. `path` zeigt auf den
+      # Astro-Projektordner (site/), nicht auf das Repo-Root.
+      - name: Build
+        uses: withastro/action@v3
+        with:
+          path: ./site
+          node-version: 22
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

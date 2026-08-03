@@ -80,7 +80,7 @@ export const texte = {
   /** Line-Up-Teaser (Startseite). */
   lineupTeaser: {
     kicker: T('Line-Up', 'Line-up'),
-    headline: T('Wer spielt beim FLINTA*SIALAND', 'Who’s playing at FLINTA*SIALAND'),
+    headline: T('Wer spielt beim FLINTA*SIALAND?', 'Who’s playing at FLINTA*SIALAND?'),
     body: T(
       'Alle Acts auf einen Blick — von treibenden Live-Performances bis zu tiefen elektronischen DJ-Sets, auf zwei Bühnen im Speicher 100.',
       'Every act at a glance — from driving live performances to deep electronic DJ sets, on two stages at Speicher 100.',

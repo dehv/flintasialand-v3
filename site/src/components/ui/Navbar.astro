@@ -57,7 +57,7 @@ function isActive(href: string, anchor?: boolean): boolean {
 // damit sie auch über hellen Sektionen lesbar bleiben. Feste CI-Farben.
 const pillShadow = 'shadow-[0_2px_12px_rgba(51,30,44,0.28)]';
 const pillBase =
-  'inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 font-display text-sm font-bold whitespace-nowrap transition-colors focus-visible:outline-berry ' +
+  'inline-flex min-h-[44px] items-center gap-1.5 rounded-full px-5 py-2.5 font-display text-sm font-bold whitespace-nowrap transition-colors focus-visible:outline-berry ' +
   pillShadow;
 const pillIdle = 'bg-mint text-berry hover:bg-accent-teal';
 const pillActive = 'bg-accent-teal text-berry';
