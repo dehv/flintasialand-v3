@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-03T00:00:00Z",
+  "title": "Design System: FLINTA*SIALAND",
+  "extensions": {
+    "colorMeta": {
+      "berry": {
+        "role": "primary",
+        "displayName": "Harbour Berry",
+        "canonical": "#5d3e51",
+        "tonalRamp": ["oklch(18% 0.03 350)", "oklch(26% 0.04 350)", "oklch(34% 0.05 350)", "oklch(42% 0.05 350)", "oklch(52% 0.05 350)", "oklch(64% 0.04 350)", "oklch(78% 0.03 350)", "oklch(92% 0.02 350)"]
+      },
+      "mint": {
+        "role": "secondary",
+        "displayName": "Foam Mint",
+        "canonical": "#edf5ed",
+        "tonalRamp": ["oklch(24% 0.02 150)", "oklch(36% 0.02 150)", "oklch(48% 0.02 150)", "oklch(60% 0.02 150)", "oklch(72% 0.02 150)", "oklch(83% 0.015 150)", "oklch(92% 0.012 150)", "oklch(97% 0.008 150)"]
+      },
+      "accent-teal": {
+        "role": "tertiary",
+        "displayName": "Tide Teal",
+        "canonical": "#aad2cc",
+        "tonalRamp": ["oklch(28% 0.03 190)", "oklch(38% 0.04 190)", "oklch(48% 0.04 190)", "oklch(58% 0.04 190)", "oklch(68% 0.04 190)", "oklch(78% 0.04 190)", "oklch(86% 0.035 190)", "oklch(93% 0.02 190)"]
+      },
+      "accent-green": {
+        "role": "tertiary",
+        "displayName": "Reed Green",
+        "canonical": "#7a8b48",
+        "tonalRamp": ["oklch(22% 0.05 120)", "oklch(32% 0.07 120)", "oklch(42% 0.08 120)", "oklch(52% 0.09 120)", "oklch(60% 0.09 120)", "oklch(70% 0.08 120)", "oklch(82% 0.06 120)", "oklch(92% 0.03 120)"]
+      },
+      "accent-pink": {
+        "role": "tertiary",
+        "displayName": "Bloom Pink",
+        "canonical": "#dc95bb",
+        "tonalRamp": ["oklch(30% 0.06 350)", "oklch(42% 0.09 350)", "oklch(52% 0.11 350)", "oklch(62% 0.12 350)", "oklch(72% 0.12 350)", "oklch(80% 0.10 350)", "oklch(88% 0.07 350)", "oklch(94% 0.04 350)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Poster-scale festival statements and page titles." },
+      "headline": { "displayName": "Headline", "purpose": "Primary section headings (h1/h2)." },
+      "title": { "displayName": "Title", "purpose": "Sub-section and card headings (h3)." },
+      "body": { "displayName": "Body", "purpose": "Reading copy; generous line-height for mobile." },
+      "label": { "displayName": "Label", "purpose": "Pills, buttons, meta — short and bold." }
+    },
+    "shadows": [
+      { "name": "floating-pill", "value": "0 2px 12px rgba(51,30,44,0.28)", "purpose": "The only standing shadow: separates free-floating nav pills from the section behind them." }
+    ],
+    "motion": [
+      { "name": "spring-in", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Staggered fly-in of mobile nav pills." },
+      { "name": "button-press", "value": "transform 150ms ease", "purpose": "Springy scale on button/pill hover, focus and active." },
+      { "name": "waber-soft", "value": "SVG feTurbulence + feDisplacementMap (static noise, animated scale)", "purpose": "Cheap organic edge wobble for the many image masks." },
+      { "name": "waber-logo", "value": "SVG feTurbulence (animated baseFrequency) + feDisplacementMap", "purpose": "Strong flowing wobble matching the hero logo; for a few large deco stars only." },
+      { "name": "default-duration", "value": "200ms", "purpose": "Global default transition duration." }
+    ],
+    "breakpoints": [
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "container-max", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Primary CTA; zone-accent fill shown here in a dark (berry) zone → tide-teal on berry ink.",
+      "html": "<a class=\"ds-btn-solid\" href=\"#\">Zum Line-Up</a>",
+      "css": ".ds-btn-solid { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: #aad2cc; color: #5d3e51; font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 9999px; transition: transform 150ms ease; } .ds-btn-solid:hover, .ds-btn-solid:focus-visible { transform: scale(1.03); } .ds-btn-solid:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary CTA; 2px zone-accent border, accent text, transparent fill (shown on a dark zone).",
+      "html": "<a class=\"ds-btn-outline\" href=\"#\">Mehr erfahren</a>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: transparent; color: #aad2cc; border: 2px solid #aad2cc; font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif; font-weight: 700; font-size: 1rem; text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 9999px; transition: transform 150ms ease; } .ds-btn-outline:hover, .ds-btn-outline:focus-visible { transform: scale(1.03); } .ds-btn-outline:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Nav Pill (idle)",
+      "kind": "nav",
+      "refersTo": "nav-pill-idle",
+      "description": "Floating navigation pill at rest: fixed mint ground, berry text, the one standing shadow; hovers to teal.",
+      "html": "<a class=\"ds-nav-pill\" href=\"#\">Lageplan</a>",
+      "css": ".ds-nav-pill { display: inline-flex; align-items: center; gap: 0.375rem; background: #edf5ed; color: #5d3e51; font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif; font-weight: 700; font-size: 0.875rem; text-decoration: none; white-space: nowrap; padding: 0.625rem 1.25rem; border-radius: 9999px; box-shadow: 0 2px 12px rgba(51,30,44,0.28); transition: background-color 200ms ease; } .ds-nav-pill:hover, .ds-nav-pill:focus-visible { background: #aad2cc; }"
+    },
+    {
+      "name": "Nav Pill (active)",
+      "kind": "nav",
+      "refersTo": "nav-pill-active",
+      "description": "Current-route navigation pill: solid tide-teal on berry text.",
+      "html": "<a class=\"ds-nav-pill-active\" href=\"#\" aria-current=\"page\">Line-Up</a>",
+      "css": ".ds-nav-pill-active { display: inline-flex; align-items: center; gap: 0.375rem; background: #aad2cc; color: #5d3e51; font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif; font-weight: 700; font-size: 0.875rem; text-decoration: none; white-space: nowrap; padding: 0.625rem 1.25rem; border-radius: 9999px; box-shadow: 0 2px 12px rgba(51,30,44,0.28); }"
+    },
+    {
+      "name": "Star Bullet",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Signature list marker: a genderstar silhouette tinted from a CI token, replacing dots and ✦. (Uses a representative organic-star SVG in place of the repo mask PNG.)",
+      "html": "<ul class=\"ds-star-list\"><li><span class=\"ds-star-bullet\" aria-hidden=\"true\"></span>Zwei Bühnen, ein Tag</li><li><span class=\"ds-star-bullet\" aria-hidden=\"true\"></span>Eintritt frei / auf Spendenbasis</li></ul>",
+      "css": ".ds-star-list { list-style: none; margin: 0; padding: 0; font-family: 'Bricolage Grotesque Variable', system-ui, sans-serif; color: #5d3e51; } .ds-star-list li { display: flex; align-items: flex-start; gap: 0.75rem; line-height: 1.65; margin-bottom: 0.5rem; } .ds-star-bullet { flex-shrink: 0; width: 1rem; height: 1rem; margin-top: 0.3rem; background: #7a8b48; -webkit-mask: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 4c5 20 21 26 41 21-13 16-13 33 0 50-20-5-36 1-41 21-5-20-21-26-41-21 13-17 13-34 0-50 20 5 36-1 41-21z'/%3E%3C/svg%3E\") no-repeat center / contain; mask: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 4c5 20 21 26 41 21-13 16-13 33 0 50-20-5-36 1-41 21-5-20-21-26-41-21 13-17 13-34 0-50 20 5 36-1 41-21z'/%3E%3C/svg%3E\") no-repeat center / contain; }"
+    },
+    {
+      "name": "Star Corner Image",
+      "kind": "card",
+      "refersTo": null,
+      "description": "Signature editorial image treatment: rounded rectangular photo with a solid genderstar in an accent tint overlapping one corner. (Star drawn as a representative organic SVG; repo uses the mask-0x PNGs.)",
+      "html": "<figure class=\"ds-star-corner\"><div class=\"ds-star-corner__frame\"><div class=\"ds-star-corner__img\"></div></div><span class=\"ds-star-corner__star\" aria-hidden=\"true\"></span></figure>",
+      "css": ".ds-star-corner { position: relative; display: block; width: 220px; margin: 0; padding: 14px; } .ds-star-corner__frame { aspect-ratio: 4 / 5; overflow: hidden; border-radius: 0.75rem; } .ds-star-corner__img { width: 100%; height: 100%; background: linear-gradient(135deg, #7a8b48, #5d3e51); } .ds-star-corner__star { position: absolute; bottom: 0; right: 0; width: 40%; aspect-ratio: 1.04; background: #dc95bb; -webkit-mask: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 4c5 20 21 26 41 21-13 16-13 33 0 50-20-5-36 1-41 21-5-20-21-26-41-21 13-17 13-34 0-50 20 5 36-1 41-21z'/%3E%3C/svg%3E\") no-repeat center / contain; mask: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 4c5 20 21 26 41 21-13 16-13 33 0 50-20-5-36 1-41 21-5-20-21-26-41-21 13-17 13-34 0-50 20 5 36-1 41-21z'/%3E%3C/svg%3E\") no-repeat center / contain; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Floating Harbour",
+    "overview": "FLINTA*SIALAND lives on the water of the Dortmund harbour at dusk. The dark surfaces are berry — a deep, warm, plummy dusk-water — and light surfaces are mint, the pale foam catching the last light. Across both, the organic genderstar (Genderstern) forms drift like water lilies: they hold the artist portraits, punctuate the lists, and edge the sections, and they gently waber — an organic wobble borrowed straight from the logo's own motion. This is a warm, hand-made, DIY-queer world where the signature shape is soft and alive, never a rectangle when it can be a bloom. The system is built on theme zones: every section declares itself dark (berry ground, mint text, teal accent) or light (mint ground, berry text, green accent), and every component reads the zone rather than hard-coding a colour. Depth is carried entirely by that dark/light contrast and hairline rules — the world is flat and colour-zoned — and interaction is playful and bold.",
+    "keyCharacteristics": [
+      "Berry & Mint theme zones; every colour decision is zone-relative, never hard-coded.",
+      "The genderstar is the load-bearing brand device: mask, corner mark, and bullet.",
+      "Organic 'waber' motion (SVG turbulence) is the house animation, echoing the logo.",
+      "Flat and colour-zoned; shadow is reserved for floating navigation.",
+      "One typeface (Bricolage Grotesque) doing everything, from wordmark to timetable.",
+      "Mobile-first, and accessibility treated as stance (visible focus, reduced-motion honoured)."
+    ],
+    "rules": [
+      { "name": "The Zone Rule", "body": "No component hard-codes a colour. Sections carry data-theme=\"dark|light\"; components use semantic roles (surface, on-surface, accent) so a button is teal on dark and green on light automatically. Reach for a raw CI colour only for a deliberately fixed element (e.g. the navbar pills).", "section": "colors" },
+      { "name": "The Pink-Is-Not-UI Rule", "body": "accent-pink decorates genderstars and ornament only. If it is a button, a link, or body text, it is wrong.", "section": "colors" },
+      { "name": "The Variant-A-Only Rule", "body": "Berry & Mint (Variant A) is the entire world. Variant B does not exist here, and the two are never mixed on one surface.", "section": "colors" },
+      { "name": "The Balanced-Head Rule", "body": "Display headings use text-wrap: balance, line-height: 1.05, and letter-spacing: -0.01em — tight, poster-like, never a lonely orphaned word.", "section": "typography" },
+      { "name": "The One-Voice-Font Rule", "body": "Do not introduce a second typeface. Even monospace contexts (set times) stay Bricolage with tabular-nums.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "New surfaces are flat. If you feel the urge to add a shadow to a card or portrait, first ask whether a theme-zone switch or a hairline says it better. The answer is almost always yes.", "section": "elevation" },
+      { "name": "The Star-Over-Square Rule", "body": "When an image or accent can carry a genderstar, it should: full star-mask for hero/portrait highlights, corner star for content-dense grids, star bullet instead of a dot or ✦.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do wrap every section in a dark or light theme zone and let components pull surface / on-surface / accent automatically.",
+      "Do reach for a genderstar (mask, corner, or bullet) wherever an image or accent appears — it is the brand, not decoration.",
+      "Do keep pills and buttons fully rounded, bold, and springy on hover (scale-[1.03]).",
+      "Do use Bricolage Grotesque for everything, with tabular-nums for times and figures.",
+      "Do honour prefers-reduced-motion: waber filters off, transitions near-instant, smooth-scroll disabled.",
+      "Do keep surfaces flat; separate them with theme-zone contrast and hairlines."
+    ],
+    "donts": [
+      "Don't hard-code a colour where a semantic role exists; and never introduce Variant B or mix the two variants.",
+      "Don't use accent-pink as UI (button, link, body text) — it is genderstar/ornament only.",
+      "Don't add card or portrait shadows; the floating nav pill is the only standing shadow.",
+      "Don't introduce a second typeface.",
+      "Don't put a raw rectangle where a genderstar treatment belongs."
+    ]
+  }
+}

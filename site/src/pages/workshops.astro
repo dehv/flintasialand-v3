@@ -36,9 +36,6 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
   description={pick(t.metaDescription, locale)}
 >
   <Section theme="light" spacing="lg" class="pt-28 md:pt-32">
-    <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-      {pick(texte.common.kickerYear, locale)}
-    </p>
     <Heading level={1} size="lg" class="mt-3">{pick(t.headline, locale)}</Heading>
     <p class="mt-4 max-w-2xl text-on-surface-muted" set:html={pick(t.intro, locale)} />
 
@@ -110,9 +107,6 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
       <div class="md:col-span-7">
         <div class="flex items-center gap-3">
           <StarBullet shape="4" accent="pink" size="1.6rem" />
-          <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-            {pick(cs, locale)}
-          </p>
         </div>
         <Heading level={2} size="md" class="mt-3">{pick(t.gewalten.heading, locale)}</Heading>
         <p class="mt-4 max-w-2xl text-on-surface-muted" set:html={pick(t.gewalten.p1, locale)} />
@@ -139,9 +133,6 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
   <Section theme="light" spacing="lg" class="border-t border-hairline">
     <div class="flex items-center gap-3">
       <StarBullet shape="2" accent="pink" size="1.6rem" />
-      <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-        {pick(cs, locale)}
-      </p>
     </div>
     <Heading level={2} size="md" class="mt-3">{pick(t.queer.heading, locale)}</Heading>
     <p class="mt-4 max-w-2xl text-on-surface-muted">

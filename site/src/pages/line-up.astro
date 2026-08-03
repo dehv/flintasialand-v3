@@ -46,9 +46,6 @@ const OPPOSITE: Record<Corner, Corner> = {
   description={pick(t.metaDescription, locale)}
 >
   <Section theme="light" spacing="lg" class="pt-28 md:pt-32">
-    <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
-      {pick(texte.common.kickerYear, locale)}
-    </p>
     <Heading level={1} size="lg" class="mt-3">{pick(t.headline, locale)}</Heading>
     <p class="mt-4 max-w-2xl text-on-surface-muted">
       {pick(t.body, locale)}
@@ -159,7 +156,7 @@ const OPPOSITE: Record<Corner, Corner> = {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="inline-flex rounded-full px-3 py-1 text-sm font-bold text-accent ring-1 ring-hairline transition-colors hover:bg-accent hover:text-accent-on"
+                            class="inline-flex min-h-[44px] items-center rounded-full px-4 py-2 text-sm font-bold text-accent ring-1 ring-hairline transition-colors hover:bg-accent hover:text-accent-on"
                           >
                             {link.label}
                           </a>
@@ -221,12 +218,18 @@ const OPPOSITE: Record<Corner, Corner> = {
 
 <style>
   .tab-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
     border-radius: 9999px;
     padding: 0.5rem 1.25rem;
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 0.9375rem;
-    color: var(--color-on-surface-muted);
+    font-size: 1rem;
+    /* Volle on-surface-Farbe statt muted: der inaktive Tab (Steuer-Element)
+       muss lesbar sein (muted/muted erreichte nur 2.13:1). */
+    color: var(--color-on-surface);
     transition:
       background-color 150ms ease,
       color 150ms ease;

@@ -243,7 +243,8 @@ const dateMark = datumRaw
     width: min(88vw, 44rem);
     transform: translate3d(var(--px, 0px), var(--py, 0px), 0);
     transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
+    /* will-change wird nur während aktiver Maus-Parallaxe per JS gesetzt
+       (nicht dauerhaft im Ruhezustand). */
   }
 
   /* Ebene 2: Kanten-Warp + rosa Shimmer via SVG-Filter. */
@@ -304,7 +305,12 @@ const dateMark = datumRaw
     bottom: clamp(1rem, 3.5vh, 2rem);
     left: 50%;
     z-index: 1;
-    transform: translateX(-50%);
+    /* Mind. 44×44 Tap-Ziel; Icon bleibt optisch klein & zentriert. */
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-left: -22px;
     color: var(--color-mint);
     opacity: 0.85;
     animation: hero-bob 2.4s ease-in-out infinite;
@@ -316,10 +322,10 @@ const dateMark = datumRaw
   @keyframes hero-bob {
     0%,
     100% {
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0);
     }
     50% {
-      transform: translateX(-50%) translateY(6px);
+      transform: translateY(6px);
     }
   }
 
@@ -376,6 +382,8 @@ const dateMark = datumRaw
     if (bound || !root || !layer || reduce.matches || !finePointer.matches)
       return;
     window.addEventListener('pointermove', onMove, { passive: true });
+    // will-change nur während aktiver Parallaxe (nicht dauerhaft im Ruhezustand).
+    if (layer) layer.style.willChange = 'transform';
     bound = true;
   }
   function disable() {
@@ -385,6 +393,7 @@ const dateMark = datumRaw
     targetX = targetY = 0;
     layer?.style.removeProperty('--px');
     layer?.style.removeProperty('--py');
+    layer?.style.removeProperty('will-change');
     bound = false;
   }
 
