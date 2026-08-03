@@ -1,0 +1,34 @@
+---
+/**
+ * LogoMark — das Festival-Wortbild OHNE Unterzeile (kompakt, für Navbar/Footer).
+ *
+ * Das SVG wird inline eingebettet und auf `fill: currentColor` gesetzt, damit
+ * das Logo automatisch die Textfarbe der aktuellen Theme-Zone erbt
+ * (mint auf dark, berry auf light) — eine Quelle, beide Kontexte, kein Umfärben.
+ */
+import raw from '@assets/logo/logo-mark.svg?raw';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+// XML/Doctype entfernen, feste width/height streichen (Skalierung via CSS),
+// fill auf currentColor setzen (Pfade ohne eigenes fill erben es).
+const svg = raw
+  .replace(/<\?xml[\s\S]*?\?>/, '')
+  .replace(/<!DOCTYPE[\s\S]*?>/, '')
+  .replace(/<svg([^>]*?)\swidth="[^"]*"/, '<svg$1')
+  .replace(/<svg([^>]*?)\sheight="[^"]*"/, '<svg$1')
+  .replace('<svg', '<svg fill="currentColor" role="img" aria-label="FLINTA*SIALAND"');
+---
+
+<span class:list={['logo-mark inline-flex', className]} set:html={svg} />
+
+<style>
+  .logo-mark :global(svg) {
+    display: block;
+    height: 100%;
+    width: auto;
+  }
+</style>

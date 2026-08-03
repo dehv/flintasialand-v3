@@ -1,0 +1,150 @@
+/*
+  Globales Stylesheet — bindet Tailwind v4 ein und mappt die CI-Tokens
+  auf Tailwind-Utilities. In Komponenten NUR Tokens/Utilities verwenden,
+  keine Ad-hoc-Hexwerte.
+*/
+
+@import 'tailwindcss';
+@import './tokens.css';
+
+/* Self-hosted Font (kein Google-Fonts-Request -> DSGVO + Performance).
+   Variable Font: ein Datei-Set für alle Gewichte. */
+@import '@fontsource-variable/bricolage-grotesque';
+
+/* ---------------------------------------------------------------------------
+   Tailwind-Theme: CI-Farben + semantische, theme-abhängige Farben.
+   - berry/mint/accent-* -> feste CI-Farben (bg-berry, text-mint, ...).
+   - surface/on-surface/accent -> lesen die per data-theme gesetzten Rollen,
+     d. h. `bg-surface text-on-surface` reagiert automatisch auf die Zone.
+--------------------------------------------------------------------------- */
+/* Feste CI-Farben + Fonts: normale @theme-Tokens (statisch). */
+@theme {
+  --color-berry: #5d3e51;
+  --color-mint: #edf5ed;
+  --color-accent-teal: #aad2cc;
+  --color-accent-green: #7a8b48;
+  --color-accent-pink: #dc95bb;
+
+  --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-sans: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  /* Die CI kennt keine Monospace — `font-mono` (z. B. Timetable-Zeiten) soll
+     ebenfalls Bricolage nutzen. tabular-nums hält Zahlen dennoch bündig. */
+  --font-mono: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+
+  --default-transition-duration: 200ms;
+}
+
+/*
+  Semantische, zonen-abhängige Rollen MÜSSEN via `@theme inline` laufen:
+  so kompiliert `bg-surface` zu `background-color: var(--surface)` und liest
+  den per [data-theme] kaskadierten Wert zur Laufzeit. Ohne `inline` würde
+  Tailwind v4 den var()-Wert beim Build zu einer Konstante verflachen und die
+  Theme-Umschaltung bräche.
+*/
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-muted: var(--on-surface-muted);
+  --color-accent: var(--accent);
+  --color-accent-on: var(--accent-on);
+  --color-hairline: var(--hairline);
+}
+
+/* ---------------------------------------------------------------------------
+   Basis-Reset / Grundstil
+--------------------------------------------------------------------------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Sticky-Navbar-Höhe als Scroll-Offset für Anker-Navigation. */
+    scroll-padding-top: var(--nav-height);
+    font-family: var(--font-body);
+  }
+
+  /* Wer reduzierte Bewegung wünscht, bekommt kein smooth-scroll & keine Deko-Motion. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  /* Sichtbarer, CI-treuer Fokus-Ring — A11y ist Haltung, nicht Deko. */
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  /* Skip-Link: nur bei Fokus sichtbar. */
+  .skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -100%;
+    z-index: 100;
+    background: var(--color-accent);
+    color: var(--color-accent-on);
+    padding: 0.625rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    transition: top 150ms ease;
+  }
+  .skip-link:focus {
+    top: 0.5rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Wiederkehrende Utility-Kompositionen (bewusst schlank gehalten).
+--------------------------------------------------------------------------- */
+@layer components {
+  .u-container {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  /* `font-mono` nutzt jetzt Bricolage (siehe --font-mono) — tabular-nums hält
+     Uhrzeiten/Zahlen trotzdem sauber in Spalten. */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+  @media (min-width: 768px) {
+    .u-container {
+      padding-inline: 2rem;
+    }
+  }
+}

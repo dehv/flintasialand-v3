@@ -1,0 +1,236 @@
+---
+/**
+ * LineupTeaser — Line-Up-Teaser (dark-Sektion).
+ *
+ * Desktop: eine automatisch laufende Reihe (Marquee) ALLER Acts mit Foto —
+ * Stern-maskiertes Portrait (Gesicht im Fokus), Name, Bühne + Uhrzeit. Der
+ * Track ist dupliziert → nahtlose Endlosschleife; Hover pausiert.
+ * Mobil: bewusst einspaltig gestapelt (kompakte Zeilen, kein Auto-Scroll).
+ * Dahinter „wabern“ dezente Deko-Sterne.
+ *
+ * Darunter zwei CTAs: komplettes Line-Up und Timetable (beide auf der
+ * kombinierten /line-up-Seite, Timetable via #timetable-Ansicht).
+ */
+import Section from '@ui/Section.astro';
+import Heading from '@ui/Heading.astro';
+import Button from '@ui/Button.astro';
+import StarMaskedImage from '@ui/StarMaskedImage.astro';
+import StarDuo from '@ui/StarDuo.astro';
+import { acts, STAGE_LABEL } from '@content/acts';
+import { getStar, type StarShape, type StarAccent } from '@lib/sterne';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const t = texte.lineupTeaser;
+
+// Alle Acts mit Foto laufen durch den Marquee.
+const marqueeActs = acts;
+
+// Abwechselnde Formen/Akzente für Rhythmus in der Reihe.
+const shapes: StarShape[] = ['1', '2', '3', '4'];
+const accents: StarAccent[] = ['teal', 'pink'];
+const styleFor = (i: number) => ({
+  shape: shapes[i % shapes.length],
+  accent: accents[i % accents.length],
+});
+
+// Deko-Sterne (nur Silhouette, wabern im Hintergrund).
+const deco = [
+  { mask: getStar('3').src.src, ratio: getStar('3').ratio, accent: 'var(--color-accent-teal)' },
+  { mask: getStar('2').src.src, ratio: getStar('2').ratio, accent: 'var(--color-accent-pink)' },
+  { mask: getStar('1').src.src, ratio: getStar('1').ratio, accent: 'var(--color-accent-teal)' },
+];
+---
+
+<Section theme="dark" id="lineup" spacing="lg" class="relative overflow-hidden">
+  <!-- Wabernde Deko-Sterne (rein dekorativ) -->
+  <div class="lu-deco" aria-hidden="true">
+    <span
+      class="lu-deco__star lu-deco__star--a"
+      style={`--m:url("${deco[0].mask}"); --r:${deco[0].ratio}; --c:${deco[0].accent}`}
+    ></span>
+    <span
+      class="lu-deco__star lu-deco__star--b"
+      style={`--m:url("${deco[1].mask}"); --r:${deco[1].ratio}; --c:${deco[1].accent}`}
+    ></span>
+    <span
+      class="lu-deco__star lu-deco__star--c"
+      style={`--m:url("${deco[2].mask}"); --r:${deco[2].ratio}; --c:${deco[2].accent}`}
+    ></span>
+  </div>
+
+  <div class="relative text-center">
+    <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
+      {pick(t.kicker, locale)}
+    </p>
+    <Heading level={2} size="lg" class="mt-3">{pick(t.headline, locale)}</Heading>
+    <p class="mx-auto mt-4 max-w-2xl text-on-surface-muted">
+      {pick(t.body, locale)}
+    </p>
+  </div>
+
+  <!-- Auto-Marquee (dupliziert für nahtlose Schleife) — auch auf Mobile -->
+  <div class="lu-marquee relative mt-12" data-marquee>
+    <div class="lu-marquee__track">
+      {
+        [0, 1].map((copy) =>
+          marqueeActs.map((act, i) => {
+            const s = styleFor(i);
+            return (
+              <article
+                class="lu-card"
+                aria-hidden={copy === 1 ? 'true' : undefined}
+              >
+                {act.image2 ? (
+                  <StarDuo
+                    src1={act.image}
+                    src2={act.image2}
+                    alt={copy === 1 ? '' : act.name}
+                    focus1={act.focus}
+                    focus2={act.focus2}
+                    zoom1={act.zoom}
+                    zoom2={act.zoom2}
+                    shape1={act.shape ?? s.shape}
+                    shape2={act.shape2}
+                    accent1={s.accent}
+                    accent2={s.accent === 'teal' ? 'pink' : 'teal'}
+                    waber
+                    sizes="150px"
+                  />
+                ) : (
+                  <StarMaskedImage
+                    src={act.image}
+                    alt={copy === 1 ? '' : act.name}
+                    shape={act.shape ?? s.shape}
+                    accent={s.accent}
+                    focus={act.focus}
+                    zoom={act.zoom}
+                    waber
+                    sizes="220px"
+                  />
+                )}
+                <h3 class="mt-4 font-display text-base font-bold tracking-tight">
+                  {act.name}
+                </h3>
+                <p class="mt-1 text-xs font-medium text-on-surface-muted">
+                  {STAGE_LABEL[act.stage]}
+                </p>
+                <p class="font-mono text-xs font-semibold tracking-tight text-accent">
+                  {act.time} Uhr
+                </p>
+              </article>
+            );
+          }),
+        )
+      }
+    </div>
+  </div>
+
+  <div class="relative mt-14 flex flex-wrap justify-center gap-4">
+    <Button href="/line-up">{pick(t.ctaFull, locale)}</Button>
+    <Button href="/line-up#timetable" variant="outline">{pick(t.ctaTimetable, locale)}</Button>
+  </div>
+</Section>
+
+<style>
+  /* --- Auto-Marquee --- */
+  .lu-marquee {
+    /* sanfte Kanten-Verläufe links/rechts */
+    -webkit-mask: linear-gradient(
+      90deg,
+      transparent,
+      #000 6%,
+      #000 94%,
+      transparent
+    );
+    mask: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  }
+  .lu-marquee__track {
+    display: flex;
+    width: max-content;
+    gap: 1.75rem;
+    animation: lu-scroll 48s linear infinite;
+    will-change: transform;
+  }
+  .lu-marquee:hover .lu-marquee__track {
+    animation-play-state: paused;
+  }
+  @keyframes lu-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      /* zweite Track-Hälfte deckt sich mit der ersten → nahtlos */
+      transform: translateX(calc(-50% - 0.875rem));
+    }
+  }
+
+  .lu-card {
+    width: 13.5rem;
+    flex: 0 0 auto;
+    text-align: center;
+  }
+
+  /* --- Deko-Sterne (Silhouetten, „wabern“) --- */
+  .lu-deco {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .lu-deco__star {
+    position: absolute;
+    display: block;
+    width: var(--w, 20rem);
+    aspect-ratio: var(--r, 1);
+    background: var(--c, var(--color-accent-teal));
+    -webkit-mask: var(--m) no-repeat center / 100% 100%;
+    mask: var(--m) no-repeat center / 100% 100%;
+    opacity: 0.08;
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+  .lu-deco__star--a {
+    --w: 26rem;
+    top: -6rem;
+    left: -7rem;
+    animation: lu-waber 13s ease-in-out infinite;
+  }
+  .lu-deco__star--b {
+    --w: 20rem;
+    right: -5rem;
+    top: 30%;
+    animation: lu-waber 17s ease-in-out infinite reverse;
+  }
+  .lu-deco__star--c {
+    --w: 16rem;
+    bottom: -5rem;
+    left: 22%;
+    animation: lu-waber 15s ease-in-out infinite;
+  }
+  @keyframes lu-waber {
+    0%,
+    100% {
+      transform: scale(1) rotate(-4deg);
+    }
+    50% {
+      transform: scale(1.08) rotate(4deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lu-marquee__track {
+      animation: none;
+      /* ohne Auto-Scroll horizontal antippbar/scrollbar lassen */
+      overflow-x: auto;
+    }
+    .lu-marquee {
+      overflow-x: auto;
+    }
+    .lu-deco__star {
+      animation: none;
+    }
+  }
+</style>

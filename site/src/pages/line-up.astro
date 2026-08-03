@@ -1,0 +1,286 @@
+---
+/**
+ * /line-up — kombinierte Line-Up- & Timetable-Seite mit Umschalter.
+ *
+ * Zwei Ansichten auf einer Route, per Tab ohne Reload umschaltbar:
+ *   - „Line-Up“ : Act-Profile (Bild/Bio/Links) als Konzept-2-Karten, jeweils
+ *     mit Bühne + Uhrzeit. Acts ohne Pressefoto folgen als Text-Karten.
+ *   - „Timetable“: klassischer Zeitplan nach Bühne.
+ * Die Ansicht ist per URL-Hash vorwählbar (#timetable) — so landet der
+ * Timetable-Button vom Teaser bzw. der /timetable-Redirect direkt richtig.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@ui/Section.astro';
+import Heading from '@ui/Heading.astro';
+import StarCornerImage from '@ui/StarCornerImage.astro';
+import TimetableGrid from '@blocks/TimetableGrid.astro';
+import Button from '@ui/Button.astro';
+import { acts, actsOhneFoto, STAGE_LABEL } from '@content/acts';
+import type { StarShape, StarAccent } from '@lib/sterne';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const t = texte.lineup;
+
+type Corner = 'tl' | 'tr' | 'bl' | 'br';
+const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
+  { shape: '2', accent: 'pink', corner: 'tr' },
+  { shape: '3', accent: 'green', corner: 'br' },
+  { shape: '1', accent: 'green', corner: 'bl' },
+  { shape: '4', accent: 'pink', corner: 'tl' },
+];
+
+/** Diagonal gegenüberliegende Ecke — für das zweite Foto eines b2b-Acts. */
+const OPPOSITE: Record<Corner, Corner> = {
+  tl: 'br',
+  tr: 'bl',
+  bl: 'tr',
+  br: 'tl',
+};
+
+---
+
+<BaseLayout
+  title={pick(t.metaTitle, locale)}
+  description={pick(t.metaDescription, locale)}
+>
+  <Section theme="light" spacing="lg" class="pt-28 md:pt-32">
+    <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
+      {pick(texte.common.kickerYear, locale)}
+    </p>
+    <Heading level={1} size="lg" class="mt-3">{pick(t.headline, locale)}</Heading>
+    <p class="mt-4 max-w-2xl text-on-surface-muted">
+      {pick(t.body, locale)}
+    </p>
+
+    <!-- Umschalter -->
+    <div
+      class="mt-8 inline-flex rounded-full bg-surface-muted/60 p-1 ring-1 ring-hairline"
+      role="tablist"
+      aria-label="Ansicht wählen"
+      data-tabs
+    >
+      <button
+        type="button"
+        role="tab"
+        id="tab-lineup"
+        aria-controls="panel-lineup"
+        aria-selected="true"
+        data-tab="lineup"
+        class="tab-btn"
+      >
+        {pick(t.tabLineup, locale)}
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="tab-timetable"
+        aria-controls="panel-timetable"
+        aria-selected="false"
+        data-tab="timetable"
+        class="tab-btn"
+      >
+        {pick(t.tabTimetable, locale)}
+      </button>
+    </div>
+
+    <!-- ANSICHT 1: LINE-UP -->
+    <div id="panel-lineup" role="tabpanel" aria-labelledby="tab-lineup" data-panel="lineup">
+      <div class="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2">
+        {
+          acts.map((act, i) => {
+            const l = layouts[i % layouts.length];
+            return (
+              <article class="flex flex-col">
+                {act.image2 ? (
+                  <div class="grid grid-cols-2 gap-3">
+                    <StarCornerImage
+                      src={act.image}
+                      alt={`${act.name} — Portrait 1`}
+                      ratio="4 / 5"
+                      shape={act.shape ?? l.shape}
+                      accent={l.accent}
+                      corner={l.corner}
+                      focus={act.focus}
+                      zoom={act.zoom}
+                    />
+                    <StarCornerImage
+                      src={act.image2}
+                      alt={`${act.name} — Portrait 2`}
+                      ratio="4 / 5"
+                      shape={act.shape2 ?? (l.shape === '1' ? '3' : '1')}
+                      accent={l.accent === 'pink' ? 'green' : 'pink'}
+                      corner={OPPOSITE[l.corner]}
+                      focus={act.focus2}
+                      zoom={act.zoom2}
+                    />
+                  </div>
+                ) : (
+                  <StarCornerImage
+                    src={act.image}
+                    alt={`${act.name} — Portrait`}
+                    ratio="4 / 5"
+                    shape={l.shape}
+                    accent={l.accent}
+                    corner={l.corner}
+                  />
+                )}
+                <div class="mt-5">
+                  <h2 class="font-display text-2xl font-bold tracking-tight">
+                    {act.name}
+                  </h2>
+                  <p class="mt-1 text-sm font-medium uppercase tracking-wider text-accent">
+                    {act.genre}
+                  </p>
+                  <p class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-on-surface-muted">
+                    <span>{STAGE_LABEL[act.stage]}</span>
+                    <span aria-hidden="true">·</span>
+                    <span class="font-mono tracking-tight text-accent">{act.time} Uhr</span>
+                  </p>
+                  <p class="mt-3 text-on-surface-muted">
+                    {locale === 'en' ? (act.bioEn ?? act.bio) : act.bio}
+                  </p>
+                  {locale === 'de' && act.translatedFrom === 'en' && (
+                    <p class="mt-1 text-xs italic text-on-surface-muted">
+                      {pick(texte.common.translatedFromEn, locale)}
+                    </p>
+                  )}
+                  {locale === 'en' && act.translatedFrom === 'de' && (
+                    <p class="mt-1 text-xs italic text-on-surface-muted">
+                      {pick(texte.common.translatedFromDe, locale)}
+                    </p>
+                  )}
+                  {act.links.length > 0 && (
+                    <ul class="mt-4 flex flex-wrap gap-2">
+                      {act.links.map((link) => (
+                        <li>
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex rounded-full px-3 py-1 text-sm font-bold text-accent ring-1 ring-hairline transition-colors hover:bg-accent hover:text-accent-on"
+                          >
+                            {link.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+
+      <!-- Acts ohne Pressefoto (nur wenn vorhanden) -->
+      {
+        actsOhneFoto.length > 0 && (
+          <div class="mt-14">
+            <h2 class="font-display text-lg font-bold text-accent">{pick(t.alsoAtDecks, locale)}</h2>
+            <ul class="mt-5 grid gap-4 sm:grid-cols-2">
+              {actsOhneFoto.map((act) => (
+                <li class="rounded-2xl bg-surface-muted/50 p-5 ring-1 ring-hairline">
+                  <h3 class="font-display text-xl font-bold tracking-tight">{act.name}</h3>
+                  {act.genre && (
+                    <p class="mt-1 text-sm font-medium uppercase tracking-wider text-accent">
+                      {act.genre}
+                    </p>
+                  )}
+                  <p class="mt-2 flex flex-wrap items-center gap-x-2 text-sm font-semibold text-on-surface-muted">
+                    <span>{STAGE_LABEL[act.stage]}</span>
+                    <span aria-hidden="true">·</span>
+                    <span class="font-mono tracking-tight text-accent">{act.time} Uhr</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+    </div>
+
+    <!-- ANSICHT 2: TIMETABLE -->
+    <div
+      id="panel-timetable"
+      role="tabpanel"
+      aria-labelledby="tab-timetable"
+      data-panel="timetable"
+      hidden
+    >
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <Button href="/timetable/print" variant="outline" localize={false}>
+          {pick(t.ctaPrint, locale)}
+        </Button>
+      </div>
+      <TimetableGrid />
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .tab-btn {
+    border-radius: 9999px;
+    padding: 0.5rem 1.25rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--color-on-surface-muted);
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
+  }
+  .tab-btn[aria-selected='true'] {
+    background: var(--color-accent);
+    color: var(--color-accent-on);
+  }
+  .tab-btn:hover:not([aria-selected='true']) {
+    color: var(--color-accent);
+  }
+</style>
+
+<script>
+  // Tab-Umschalter ohne Reload. Ansicht via #hash vorwählbar/teilbar.
+  const root = document.querySelector<HTMLElement>('[data-tabs]');
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+  const panels = new Map<string, HTMLElement>();
+  document.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => {
+    panels.set(p.dataset.panel!, p);
+  });
+
+  function activate(view: string, updateHash = true) {
+    if (!panels.has(view)) view = 'lineup';
+    buttons.forEach((b) => {
+      const selected = b.dataset.tab === view;
+      b.setAttribute('aria-selected', String(selected));
+      b.tabIndex = selected ? 0 : -1;
+    });
+    panels.forEach((panel, key) => {
+      panel.hidden = key !== view;
+    });
+    if (updateHash) {
+      const hash = view === 'timetable' ? '#timetable' : '';
+      history.replaceState(null, '', `${location.pathname}${hash}`);
+    }
+  }
+
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => activate(b.dataset.tab!)),
+  );
+
+  // Pfeiltasten-Navigation (Tablist-A11y).
+  root?.addEventListener('keydown', (e) => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const i = buttons.findIndex((b) => b.getAttribute('aria-selected') === 'true');
+    const next = e.key === 'ArrowRight' ? (i + 1) % buttons.length : (i - 1 + buttons.length) % buttons.length;
+    buttons[next].focus();
+    activate(buttons[next].dataset.tab!);
+  });
+
+  // Initiale Ansicht aus dem Hash.
+  activate(location.hash === '#timetable' ? 'timetable' : 'lineup', false);
+  window.addEventListener('hashchange', () =>
+    activate(location.hash === '#timetable' ? 'timetable' : 'lineup', false),
+  );
+</script>

@@ -1,0 +1,52 @@
+---
+/**
+ * StarBullet — kleiner Genderstern als Aufzählungszeichen.
+ *
+ * Rendert eine der organischen Stern-Silhouetten (mask-01…04) als eingefärbte
+ * Maske (Alpha aus dem PNG, Farbe aus CI-Token) — dieselbe Technik wie
+ * StarCornerImage. Ersetzt runde Bullet-Punkte / ✦-Zeichen durch das
+ * Markenzeichen. Rein dekorativ (aria-hidden).
+ *
+ * @example
+ * <li class="flex items-start gap-3">
+ *   <StarBullet /> Text …
+ * </li>
+ */
+import { getStar, resolveAccent, type StarShape, type StarAccent } from '@lib/sterne';
+
+interface Props {
+  /** Sternform '1'–'4'. */
+  shape?: StarShape;
+  /** Akzentfarbe. 'auto' = Zonen-Akzent. */
+  accent?: StarAccent;
+  /** Größe (beliebige CSS-Länge). */
+  size?: string;
+  class?: string;
+}
+
+const { shape = '1', accent = 'auto', size = '1rem', class: className } = Astro.props;
+
+const star = getStar(shape);
+const accentColor = resolveAccent(accent) ?? 'var(--accent)';
+
+const style = [
+  `--star-mask: url("${star.src.src}")`,
+  `--star-accent: ${accentColor}`,
+  `--star-size: ${size}`,
+  `--star-ratio: ${star.ratio}`,
+].join('; ');
+---
+
+<span class:list={['star-bullet', className]} style={style} aria-hidden="true"></span>
+
+<style>
+  .star-bullet {
+    display: inline-block;
+    flex-shrink: 0;
+    width: var(--star-size);
+    aspect-ratio: var(--star-ratio);
+    background: var(--star-accent);
+    -webkit-mask: var(--star-mask) no-repeat center / 100% 100%;
+    mask: var(--star-mask) no-repeat center / 100% 100%;
+  }
+</style>

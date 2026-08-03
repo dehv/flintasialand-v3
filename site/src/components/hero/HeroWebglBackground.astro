@@ -1,0 +1,55 @@
+---
+/**
+ * HeroWebglBackground — PLATZHALTER für Hero Version 2 (NICHT gebaut).
+ *
+ * Später: WebGL-Wasser-Shader (Three.js) als eigenständige, lazy geladene Island
+ * — interaktive Wellen, auf denen die Gendersterne wie Seerosen schwimmen und
+ * mit der Maus verschiebbar sind.
+ *
+ * Bewusst als klar abgegrenzte Island vorbereitet, aber deaktiviert: aktuell
+ * rendert diese Komponente nur das Poster-Standbild als statischen Hintergrund.
+ * Three.js wird NICHT geladen. Zum Aktivieren später:
+ *   1. Three.js-Wasser-Island in `hero-webgl.client.ts` implementieren,
+ *   2. hier ein <canvas data-hero-webgl> mounten + Script per client:visible laden,
+ *   3. `<Hero variant="webgl">` setzen (siehe Hero.astro).
+ * Der umgebende Hero (Logo-Ebene, Datum, Layout) bleibt unverändert.
+ */
+interface Props {
+  poster?: string;
+}
+const { poster = '/media/hero/hero-poster.jpg' } = Astro.props;
+---
+
+<div
+  class="hero-bg"
+  data-hero-variant="webgl"
+  style={`--hero-poster: url("${poster}")`}
+>
+  {/* TODO(Phase 7): <canvas data-hero-webgl> + Three.js-Wasser-Island mounten. */}
+  <div class="hero-bg__still" aria-hidden="true"></div>
+  <div class="hero-bg__scrim" aria-hidden="true"></div>
+</div>
+
+<style>
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: var(--color-berry);
+  }
+  .hero-bg__still {
+    position: absolute;
+    inset: 0;
+    background: var(--hero-poster) center / cover no-repeat;
+  }
+  .hero-bg__scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-berry) 30%, transparent) 0%,
+      color-mix(in srgb, var(--color-berry) 22%, transparent) 45%,
+      color-mix(in srgb, var(--color-berry) 62%, transparent) 100%
+    );
+  }
+</style>

@@ -1,0 +1,93 @@
+---
+/**
+ * StarDuo — zwei kombinierte Gendersterne für b2b-Acts, deren Künstler*innen
+ * NICHT auf einem gemeinsamen Foto sind. Zwei überlappende, diagonal versetzte
+ * Stern-Masken (je ein Foto). Erbt das Waber von StarMaskedImage.
+ */
+import StarMaskedImage from '@ui/StarMaskedImage.astro';
+import type { StarShape, StarAccent } from '@lib/sterne';
+
+interface Props {
+  src1: ImageMetadata | string;
+  src2: ImageMetadata | string;
+  alt: string;
+  focus1?: string;
+  focus2?: string;
+  zoom1?: number;
+  zoom2?: number;
+  shape1?: StarShape;
+  shape2?: StarShape;
+  accent1?: StarAccent;
+  accent2?: StarAccent;
+  waber?: boolean;
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  src1,
+  src2,
+  alt,
+  focus1 = 'center',
+  focus2 = 'center',
+  zoom1 = 1,
+  zoom2 = 1,
+  shape1 = '2',
+  shape2 = '4',
+  accent1 = 'teal',
+  accent2 = 'pink',
+  waber = false,
+  sizes = '150px',
+  class: className,
+} = Astro.props;
+---
+
+<div class:list={['star-duo', className]}>
+  <div class="star-duo__a">
+    <StarMaskedImage
+      src={src1}
+      alt={alt}
+      shape={shape1}
+      accent={accent1}
+      focus={focus1}
+      zoom={zoom1}
+      waber={waber}
+      sizes={sizes}
+    />
+  </div>
+  <div class="star-duo__b">
+    <StarMaskedImage
+      src={src2}
+      alt=""
+      shape={shape2}
+      accent={accent2}
+      focus={focus2}
+      zoom={zoom2}
+      waber={waber}
+      sizes={sizes}
+    />
+  </div>
+</div>
+
+<style>
+  .star-duo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+  }
+  .star-duo__a,
+  .star-duo__b {
+    position: absolute;
+    width: 68%;
+  }
+  .star-duo__a {
+    left: 0;
+    top: 0;
+    z-index: 1;
+  }
+  .star-duo__b {
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+  }
+</style>

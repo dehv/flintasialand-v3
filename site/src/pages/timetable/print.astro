@@ -1,0 +1,85 @@
+---
+/**
+ * /timetable/print — druck-/PDF-optimierte Timetable.
+ *
+ * Nutzt dieselbe TimetableGrid wie die Line-Up-Seite, aber ohne Nav/Footer und
+ * mit @media-print-Feinschliff. „Drucken / Als PDF speichern“ öffnet den
+ * Druckdialog des Browsers (dort „Als PDF sichern“ wählen).
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import TimetableGrid from '@blocks/TimetableGrid.astro';
+---
+
+<BaseLayout title="Timetable — Druckversion" bare>
+  <section class="tt-print">
+    <header class="tt-print__head">
+      <div>
+        <p class="tt-print__kicker">FLINTA*SIALAND 2026</p>
+        <h1 class="tt-print__title">Timetable</h1>
+        <p class="tt-print__meta">Samstag, 15. August 2026 · Speicher 100, Dortmunder Hafen</p>
+      </div>
+      <button type="button" class="tt-print__btn" onclick="window.print()">
+        Drucken / Als PDF speichern
+      </button>
+    </header>
+
+    <TimetableGrid />
+  </section>
+</BaseLayout>
+
+<style>
+  .tt-print {
+    max-width: 60rem;
+    margin-inline: auto;
+    padding: 2.5rem 1.5rem 4rem;
+    color: var(--color-on-surface);
+  }
+  .tt-print__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .tt-print__kicker {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .tt-print__title {
+    margin: 0.25rem 0 0;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .tt-print__meta {
+    margin: 0.35rem 0 0;
+    color: var(--color-on-surface-muted);
+    font-size: 0.9rem;
+  }
+  .tt-print__btn {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-accent-on);
+    cursor: pointer;
+  }
+
+  @media print {
+    /* Nur der Zeitplan aufs Papier — Button/Chrome raus. */
+    .tt-print__btn { display: none; }
+    .tt-print { padding: 0; max-width: none; }
+    :global(:root) { color-scheme: light; }
+    @page { margin: 14mm; }
+  }
+</style>

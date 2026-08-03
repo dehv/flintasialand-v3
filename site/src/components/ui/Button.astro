@@ -1,0 +1,61 @@
+---
+/**
+ * Button / Link-Button — zieht seine Akzentfarbe aus der aktiven Theme-Zone.
+ *
+ * `variant="solid"` = gefüllt in der Zonen-Akzentfarbe (teal auf dark,
+ * green auf light). `variant="outline"` = umrandet. So bleibt jeder CTA
+ * automatisch CI-treu, egal in welcher Sektion er steht.
+ */
+import type { HTMLAttributes } from 'astro/types';
+import { localeFromPath, localizeHref } from '@lib/i18n';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: 'solid' | 'outline';
+  size?: 'sm' | 'md';
+  external?: boolean;
+  /** Internen Link automatisch in die aktive Sprache übersetzen (Standard: an).
+   *  Für Ziele ohne EN-Version (z. B. /timetable/print) auf false setzen. */
+  localize?: boolean;
+}
+
+const {
+  href,
+  variant = 'solid',
+  size = 'md',
+  external = false,
+  localize = true,
+  class: className,
+  ...rest
+} = Astro.props;
+
+// Interne Links folgen der aktiven Sprache (DE = Wurzel, EN = /en-Präfix).
+const locale = localeFromPath(Astro.url.pathname);
+const finalHref = external || !localize ? href : localizeHref(href, locale);
+
+const base =
+  'inline-flex items-center justify-center gap-2 rounded-full font-display font-bold no-underline transition-transform duration-150 hover:scale-[1.03] active:scale-[0.98] focus-visible:scale-[1.03]';
+
+const sizeClass = {
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-6 py-3 text-base',
+}[size];
+
+const variantClass = {
+  solid: 'bg-accent text-accent-on',
+  outline: 'border-2 border-accent text-accent bg-transparent',
+}[variant];
+
+const externalAttrs = external
+  ? { target: '_blank', rel: 'noopener noreferrer' }
+  : {};
+---
+
+<a
+  href={finalHref}
+  class:list={[base, sizeClass, variantClass, className]}
+  {...externalAttrs}
+  {...rest}
+>
+  <slot />
+</a>

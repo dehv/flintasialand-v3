@@ -1,0 +1,151 @@
+---
+/**
+ * StarMaskedImage — Bild-Behandlung Konzept 1 ("das Bild sitzt im Stern").
+ *
+ * Das Bild wird in eine Genderstern-Silhouette geclippt (CSS `mask-image` aus
+ * den registrierten Stern-Assets) und trägt darüber ein leichtes Akzentfarben-
+ * Overlay (`mix-blend-mode: multiply`, niedrige Deckkraft). Für Hero, Act-
+ * Portraits und Highlights.
+ *
+ * Sternform (`shape`) und Akzent (`accent`) sind wählbar → verschiedene Sterne
+ * dürfen verschiedene Akzentfarben tragen.
+ *
+ * Optional:
+ *   - `waber` : lässt die Sternkanten „wabern wie das Logo“ (SVG-Filter
+ *               #waber-soft aus WaberDefs).
+ *
+ * @example
+ * <StarMaskedImage src={actImg} alt="DJ Foo" shape="2" accent="teal" waber />
+ */
+import { Image } from 'astro:assets';
+import { getStar, resolveAccent, type StarShape, type StarAccent } from '@lib/sterne';
+
+interface Props {
+  /** Lokales Bild (optimiert) oder URL-String (z. B. aus dem CMS). */
+  src: ImageMetadata | string;
+  alt: string;
+  /** Sternform '1'–'4'. */
+  shape?: StarShape;
+  /** Akzentfarbe des Overlays. 'auto' = Zonen-Akzent, 'none' = kein Overlay. */
+  accent?: StarAccent;
+  /** Deckkraft des Akzent-Overlays (0–1). */
+  overlay?: number;
+  /** Seitenverhältnis überschreiben (Default = natürliche Form-Ratio). */
+  ratio?: number | string;
+  /** Bildausschnitt (CSS object-position), um z. B. Gesichter im Fokus zu halten. */
+  focus?: string;
+  /** Zoom-Faktor (1 = kein Zoom). Skaliert das Bild um den Fokuspunkt. */
+  zoom?: number;
+  /** Sternkanten „wabern“ lassen (SVG-Filter). */
+  waber?: boolean;
+  /** Above-the-fold (Hero) ⇒ eager laden. */
+  eager?: boolean;
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  shape = '1',
+  accent = 'auto',
+  overlay = 0.28,
+  ratio,
+  focus = 'center',
+  zoom = 1,
+  waber = false,
+  eager = false,
+  sizes = '(min-width: 768px) 33vw, 80vw',
+  class: className,
+} = Astro.props;
+
+const star = getStar(shape);
+const accentColor = resolveAccent(accent);
+const showOverlay = accentColor !== null && overlay > 0;
+
+const style = [
+  `--star-mask: url("${star.src.src}")`,
+  `--star-overlay-opacity: ${overlay}`,
+  `--star-focus: ${focus}`,
+  `--star-zoom: ${zoom}`,
+  `aspect-ratio: ${ratio ?? star.ratio}`,
+  accentColor ? `--star-accent: ${accentColor}` : '',
+]
+  .filter(Boolean)
+  .join('; ');
+---
+
+<figure
+  class:list={['star-masked', waber && 'star-masked--waber', className]}
+  style={style}
+>
+  {
+    typeof src === 'string' ? (
+      <img
+        class="star-masked__img"
+        src={src}
+        alt={alt}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+      />
+    ) : (
+      <Image
+        class="star-masked__img"
+        src={src}
+        alt={alt}
+        sizes={sizes}
+        widths={[320, 480, 640, 960]}
+        loading={eager ? 'eager' : 'lazy'}
+      />
+    )
+  }
+  {showOverlay && <span class="star-masked__overlay" aria-hidden="true" />}
+</figure>
+
+<style>
+  /* Die Sternmaske sitzt auf der Figure und clippt die ganze Gruppe (Bild +
+     Overlay) als Einheit. So bleibt beim Zoom (scale auf dem Bild) die
+     Sternform erhalten — der Ausschnitt wird enger, die Maske skaliert nicht. */
+  .star-masked {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0;
+    -webkit-mask: var(--star-mask) no-repeat center / 100% 100%;
+    mask: var(--star-mask) no-repeat center / 100% 100%;
+  }
+
+  .star-masked__img,
+  .star-masked__overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .star-masked__img {
+    object-fit: cover;
+    object-position: var(--star-focus, center);
+    scale: var(--star-zoom, 1);
+    transform-origin: var(--star-focus, center);
+    display: block;
+  }
+
+  .star-masked__overlay {
+    background: var(--star-accent);
+    mix-blend-mode: multiply;
+    opacity: var(--star-overlay-opacity, 0.28);
+    pointer-events: none;
+  }
+
+  /* „Wabern wie das Logo“ — verzerrt die gesamte (bereits maskierte) Fläche. */
+  .star-masked--waber {
+    filter: url(#waber-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star-masked--waber {
+      filter: none;
+    }
+  }
+</style>

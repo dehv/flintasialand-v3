@@ -1,0 +1,107 @@
+---
+/**
+ * BaseLayout — Grundgerüst jeder Seite.
+ * Enthält <head> (SEO/OG), Skip-Link, Navbar, <main>, Footer.
+ */
+import '@styles/global.css';
+import Navbar from '@ui/Navbar.astro';
+import Footer from '@ui/Footer.astro';
+import WaberDefs from '@ui/WaberDefs.astro';
+import LogoMark from '@ui/LogoMark.astro';
+import { useTranslations, localeFromPath } from '@lib/i18n';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Pfad zum OG-Bild relativ zur Site-URL. */
+  ogImage?: string;
+  /** Navbar/Footer ausblenden (z. B. für Fehlerseiten). */
+  bare?: boolean;
+  /** DE-only-Seite (Impressum/Datenschutz): kein Sprachumschalter. */
+  deOnly?: boolean;
+  /**
+   * Startet die Seite oben mit einer dunklen (berry) Sektion, muss das
+   * Marken-Logo oben links hell (mint) sein — sonst berry auf berry = unsichtbar.
+   */
+  brandOnDark?: boolean;
+}
+
+const {
+  title,
+  description = 'FLINTA*SIALAND — ein Festival vom Flinta*sia Kollektiv. Musik, Awareness und Community.',
+  ogImage = '/og-default.png',
+  bare = false,
+  deOnly = false,
+  brandOnDark = false,
+} = Astro.props;
+
+const path = Astro.url.pathname;
+const locale = localeFromPath(path);
+const t = useTranslations(locale);
+const homeHref = locale === 'en' ? '/en/' : '/';
+
+const siteName = t.meta.siteName;
+const fullTitle = title ? `${title} — ${siteName}` : `${siteName} Festival`;
+/**
+ * Marken-Logo oben links auf allen Unterseiten (Startseite hat den Hero-Mark).
+ * Bewusst `absolute` statt `fixed`: es sitzt am Seitenanfang und scrollt mit
+ * weg — im Gegensatz zu den fixierten Navigations-Pillen.
+ */
+const isHome = path === '/' || path === '/en' || path === '/en/';
+const showBrand = !bare && !isHome;
+const canonical = new URL(path, Astro.site).toString();
+const ogImageUrl = new URL(ogImage, Astro.site).toString();
+const ogLocale = locale === 'en' ? 'en_GB' : 'de_DE';
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph / Sharing (Stern-Motiv als OG-Bild). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#5d3e51" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#main" class="skip-link">{t.nav.skipToContent}</a>
+    <WaberDefs />
+    {!bare && <Navbar deOnly={deOnly} />}
+    {
+      showBrand && (
+        <div class="pointer-events-none absolute inset-x-0 top-0 z-40">
+          <div class="px-5 py-3 md:px-8 md:py-4">
+            <a
+              href={homeHref}
+              class:list={[
+                'pointer-events-auto inline-flex transition-opacity hover:opacity-80',
+                brandOnDark ? 'text-mint' : 'text-berry',
+              ]}
+              aria-label={t.a11y.logo}
+            >
+              <LogoMark class="h-12 md:h-14" />
+            </a>
+          </div>
+        </div>
+      )
+    }
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    {!bare && <Footer />}
+  </body>
+</html>

@@ -1,0 +1,83 @@
+/*
+  FLINTA*SIALAND — Design-Tokens (CI-verbindlich)
+  ------------------------------------------------
+  Kontrast-Variante A ("Berry & Mint"). Variante B wird NICHT verwendet.
+
+  Diese Datei definiert:
+  1. Die rohen CI-Farben als CSS-Custom-Properties (--color-*).
+  2. Typografie-Variablen (--font-display / --font-body), damit Janas
+     Custom-Lettering später ohne Layout-Umbau eingeschleust werden kann.
+  3. "Theme-Zonen": [data-theme="dark|light"] mappt semantische Rollen
+     (surface / on-surface / accent) auf die richtigen CI-Farben, damit
+     Blöcke ihren Kontext kennen und automatisch die passende Akzentfarbe ziehen.
+
+  Regel Grundmodus "Gemischt":
+    - dark  -> Hintergrund berry, Text mint, UI-Akzent teal
+    - light -> Hintergrund mint,  Text berry, UI-Akzent green
+    - pink  -> nur Gendersterne / Deko, NIE primäres UI (kein Theme-Akzent)
+*/
+
+:root {
+  /* --- Rohe CI-Farben (Single Source of Truth) --- */
+  --color-berry: #5d3e51; /* rgb(93, 62, 81)  */
+  --color-mint: #edf5ed; /* rgb(237, 245, 237) */
+  --color-accent-teal: #aad2cc; /* rgb(170, 210, 204) — UI-Akzent auf Dark */
+  --color-accent-green: #7a8b48; /* rgb(122, 139, 72) — UI-Akzent auf Light */
+  --color-accent-pink: #dc95bb; /* rgb(220, 149, 187) — nur Gendersterne/Deko */
+
+  /* --- Typografie --- */
+  /* Aktueller Stand: Bricolage Grotesque (self-hosted via @fontsource-variable).
+     --font-display kann später auf Janas Webfont (WOFF2) umgestellt werden,
+     ohne dass Komponenten angefasst werden müssen. */
+  --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque',
+    system-ui, sans-serif;
+  --font-body: 'Bricolage Grotesque Variable', 'Bricolage Grotesque',
+    system-ui, sans-serif;
+
+  /* --- Layout-Konstanten --- */
+  --container-max: 80rem; /* 1280px */
+  --nav-height: 4.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.5rem;
+
+  /* Standard-Zone, falls kein data-theme-Vorfahre gesetzt ist: light.
+     (Wird von [data-theme] weiter unten überschrieben.) */
+  --surface: var(--color-mint);
+  --surface-muted: color-mix(in srgb, var(--color-mint) 92%, black);
+  --on-surface: var(--color-berry);
+  --on-surface-muted: color-mix(in srgb, var(--color-berry) 70%, var(--color-mint));
+  --accent: var(--color-accent-green);
+  --accent-on: var(--color-mint);
+  --hairline: color-mix(in srgb, var(--color-berry) 18%, transparent);
+  color-scheme: light;
+}
+
+/* ---------------------------------------------------------------------------
+   THEME-ZONEN
+   Jede Sektion trägt data-theme="dark|light" und setzt damit die semantischen
+   Rollen. Komponenten nutzen NUR die semantischen Tokens (surface/on-surface/
+   accent), nie die rohen Farben direkt -> Design bleibt CI-treu und umschaltbar.
+--------------------------------------------------------------------------- */
+
+[data-theme='dark'] {
+  --surface: var(--color-berry);
+  --surface-muted: color-mix(in srgb, var(--color-berry) 88%, black);
+  --on-surface: var(--color-mint);
+  --on-surface-muted: color-mix(in srgb, var(--color-mint) 72%, var(--color-berry));
+  --accent: var(--color-accent-teal);
+  --accent-on: var(--color-berry); /* Textfarbe AUF dem Akzent (z. B. Button) */
+  --hairline: color-mix(in srgb, var(--color-mint) 22%, transparent);
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --surface: var(--color-mint);
+  --surface-muted: color-mix(in srgb, var(--color-mint) 92%, black);
+  --on-surface: var(--color-berry);
+  --on-surface-muted: color-mix(in srgb, var(--color-berry) 70%, var(--color-mint));
+  --accent: var(--color-accent-green);
+  --accent-on: var(--color-mint);
+  --hairline: color-mix(in srgb, var(--color-berry) 18%, transparent);
+  color-scheme: light;
+}

@@ -1,0 +1,118 @@
+---
+/**
+ * LageplanTeaser — Location-/Gelände-Teaser (light-Sektion).
+ *
+ * Spiegelbild zum Intro („Was ist FLINTA*SIALAND?“): Text steht rechts, links
+ * sitzt ein beim Scrollen rotierender Genderstern, der als Maske für das
+ * Gelände-Foto dient (StarScrollDeco → StarMaskedImage). Am linken Rand bewusst
+ * angeschnitten und im Hintergrund.
+ *
+ * Mobil klappt das Layout in eine Spalte: der Stern wird zur dezenten, faden-
+ * den Hintergrund-Textur hinter dem Text (ein Mint-Schimmer sichert die
+ * Lesbarkeit) — analog zum Intro, nur seitenverkehrt.
+ */
+import Section from '@ui/Section.astro';
+import Heading from '@ui/Heading.astro';
+import Button from '@ui/Button.astro';
+import StarScrollDeco from '@ui/StarScrollDeco.astro';
+import { lageplan } from '@content/lageplan';
+import imgGelaende from '@assets/venue/gelaende.jpg';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+const t = texte.lageplanTeaser;
+---
+
+<Section theme="light" id="lageplan" spacing="lg" class="location relative overflow-hidden border-t border-hairline">
+  <!-- Links angeschnittener, beim Scrollen rotierender Stern mit Gelände-Foto. -->
+  <div class="location-deco" aria-hidden="true">
+    <StarScrollDeco
+      src={imgGelaende}
+      alt="FLINTA*SIALAND Festivalgelände am Speicher 100 — Publikum bei Sonnenuntergang"
+      shape="2"
+      accent="teal"
+      focus="48% 42%"
+      speed={-60}
+      maskOnly
+      class="location-deco__a"
+    />
+  </div>
+
+  <div class="relative z-10 grid items-center gap-8 md:grid-cols-2">
+    <!-- linke Spalte bleibt frei: der Deko-Stern füllt sie im Hintergrund -->
+    <div class="hidden md:block" aria-hidden="true"></div>
+
+    <div class="location-copy">
+      <p class="font-display text-sm font-bold uppercase tracking-widest text-accent">
+        {pick(t.kicker, locale)}
+      </p>
+      <Heading level={2} size="lg" class="mt-3">
+        {pick(t.headline, locale)}
+      </Heading>
+      <p
+        class="mt-5 max-w-prose text-on-surface-muted"
+        set:html={pick(t.body, locale).replace('{ort}', lageplan.name)}
+      />
+      <div class="mt-6">
+        <p class="font-display text-sm font-bold text-on-surface">{pick(t.addressLabel, locale)}</p>
+        <p class="text-on-surface-muted">{lageplan.address}</p>
+      </div>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <Button href="/lageplan">{pick(t.cta, locale)}</Button>
+      </div>
+      <p class="mt-6 text-xs text-on-surface-muted">{pick(t.credit, locale)}</p>
+    </div>
+  </div>
+</Section>
+
+<style>
+  /* Location-Deko: EIN großer Stern, LINKS angeschnitten, im Hintergrund. */
+  .location-deco {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .location-deco :global(.location-deco__a) {
+    position: absolute;
+    width: clamp(30rem, 55vw, 58rem);
+    /* bewusst über den linken Rand hinaus → angeschnitten */
+    left: clamp(-20rem, -14vw, -8rem);
+    top: 50%;
+    translate: 0 -50%;
+    opacity: 0.85;
+  }
+
+  /* Mint-Schimmer hinter dem Text: hebt ihn vom Stern ab (Lesbarkeit). */
+  .location-copy {
+    position: relative;
+    z-index: 0;
+  }
+  .location-copy::before {
+    content: '';
+    position: absolute;
+    inset: -2.5rem -4rem;
+    z-index: -1;
+    background: radial-gradient(
+      70% 65% at 68% 50%,
+      var(--color-mint) 45%,
+      color-mix(in srgb, var(--color-mint) 55%, transparent) 68%,
+      transparent 100%
+    );
+    filter: blur(18px);
+    pointer-events: none;
+  }
+
+  /* Mobil: Stern als dezente, fadende Hintergrund-Textur hinter dem Text. */
+  @media (max-width: 767px) {
+    .location-deco :global(.location-deco__a) {
+      width: 26rem;
+      left: -11rem;
+      opacity: 0.4;
+      /* nach oben ausblenden, damit der Text-Anfang ruhig bleibt */
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 85%, transparent);
+      mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 85%, transparent);
+    }
+  }
+</style>

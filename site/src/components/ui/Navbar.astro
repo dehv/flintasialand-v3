@@ -1,0 +1,251 @@
+---
+/**
+ * Sticky-Navbar im "Solid-Pill"-Stil (Referenz: favoriten-festival.de).
+ * Jedes Nav-Item ist eine solide Pille. Aktuelle Route = invertierte/Akzent-Pille.
+ *
+ * Desktop: Pillen-Reihe. Mobil: "Menü"-Pille -> gestapeltes, rechtsbündiges
+ * Pillen-Overlay. Minimales Vanilla-JS nur fürs Toggle — kein Framework.
+ *
+ * Die Navbar ist bewusst eine dark-Zone (berry Bar): mint-Pillen mit berry-Text
+ * sind darauf immer gut lesbar, egal über welcher Sektion die Bar klebt.
+ */
+import { primaryNav } from '@lib/site';
+import {
+  useTranslations,
+  localeFromPath,
+  switchLocalePath,
+  type Locale,
+} from '@lib/i18n';
+
+interface Props {
+  /** DE-only-Seiten (Impressum/Datenschutz): keinen EN-Umschalter zeigen. */
+  deOnly?: boolean;
+}
+const { deOnly = false } = Astro.props;
+
+// Kein Ticket-Link: der Eintritt ist frei.
+
+const path = Astro.url.pathname;
+const locale = localeFromPath(path);
+const t = useTranslations(locale);
+
+// Sprachumschalter: verweist auf denselben Inhalt in der jeweils anderen Sprache.
+const otherLocale: Locale = locale === 'de' ? 'en' : 'de';
+const otherPath = switchLocalePath(path, otherLocale);
+const otherLabel = otherLocale.toUpperCase();
+const otherName = otherLocale === 'en' ? 'English' : 'Deutsch';
+
+/** Nav-Label aus dem Wörterbuch (Key aus primaryNav), Fallback: Key. */
+function navLabel(key: string): string {
+  return (t.nav as Record<string, string>)[key] ?? key;
+}
+/** Href in die aktive Sprache übersetzen (DE = Wurzel, EN = /en-Präfix). */
+function localizeHref(href: string): string {
+  if (locale === 'de') return href;
+  if (href === '/') return '/en/';
+  if (href.startsWith('/#')) return `/en/${href.slice(1)}`;
+  return `/en${href}`;
+}
+/** Aktiv nur für echte Routen (Anker-Items auf dem One-Pager nie „aktiv"). */
+function isActive(href: string, anchor?: boolean): boolean {
+  if (anchor) return false;
+  const clean = href.replace(/\/$/, '');
+  return path === href || path === clean || path.startsWith(clean + '/');
+}
+
+// Pillen-Stile. Kein Balken -> Schatten trennt die Pillen vom Hintergrund,
+// damit sie auch über hellen Sektionen lesbar bleiben. Feste CI-Farben.
+const pillShadow = 'shadow-[0_2px_12px_rgba(51,30,44,0.28)]';
+const pillBase =
+  'inline-flex items-center gap-1.5 rounded-full px-5 py-2.5 font-display text-sm font-bold whitespace-nowrap transition-colors focus-visible:outline-berry ' +
+  pillShadow;
+const pillIdle = 'bg-mint text-berry hover:bg-accent-teal';
+const pillActive = 'bg-accent-teal text-berry';
+---
+
+<!-- Kein Balken, kein Logo: floatende Pillen oben rechts. pointer-events-none
+     auf dem Wrapper, damit der transparente Bereich Klicks auf den Hero durchlässt;
+     nur die Pillen selbst sind klickbar. -->
+<header class="pointer-events-none fixed inset-x-0 top-0 z-50">
+  <nav
+    aria-label={t.nav.menu}
+    class="flex items-center justify-end gap-4 px-5 py-3 md:px-8 md:py-4"
+  >
+    <!-- Desktop: Pillen-Reihe -->
+    <ul class="pointer-events-auto hidden items-center gap-2 lg:flex">
+      {
+        primaryNav.map((item) => {
+          const href = localizeHref(item.href);
+          return (
+            <li>
+              <a
+                href={href}
+                aria-current={isActive(href, item.anchor) ? 'page' : undefined}
+                class:list={[
+                  pillBase,
+                  isActive(href, item.anchor) ? pillActive : pillIdle,
+                ]}
+              >
+                {navLabel(item.key)}
+              </a>
+            </li>
+          );
+        })
+      }
+      {
+        !deOnly && (
+          <li>
+            <a
+              href={otherPath}
+              hreflang={otherLocale}
+              class:list={[pillBase, pillIdle]}
+              aria-label={`${t.nav.language}: ${otherName}`}
+            >
+              {otherLabel}
+            </a>
+          </li>
+        )
+      }
+    </ul>
+
+    <!-- Mobil: "Menü"-Pille -->
+    <button
+      type="button"
+      id="nav-toggle"
+      class:list={[pillBase, pillIdle, 'pointer-events-auto lg:hidden']}
+      aria-label={t.nav.open}
+      aria-expanded="false"
+      aria-controls="nav-panel"
+    >
+      <span data-label-open>{t.nav.menu}</span>
+    </button>
+  </nav>
+</header>
+
+<!-- Off-Canvas-Overlay (mobil). Außerhalb von <header>, damit der backdrop-blur
+     keinen Containing-Block für das fixed-Overlay erzeugt. -->
+<div
+  id="nav-panel"
+  data-theme="dark"
+  hidden
+  class="fixed inset-0 z-[60] overflow-y-auto bg-surface lg:hidden"
+>
+  <div class="u-container flex min-h-full flex-col items-end gap-3 py-4">
+    <!-- Schließen-Pille -->
+    <button
+      type="button"
+      id="nav-close"
+      data-nav-item
+      style="--i:0"
+      class:list={[pillBase, pillIdle]}
+      aria-label={t.nav.close}
+    >
+      {t.nav.closeShort}
+    </button>
+
+    {
+      primaryNav.map((item, i) => {
+        const href = localizeHref(item.href);
+        return (
+          <a
+            href={href}
+            data-nav-link
+            data-nav-item
+            style={`--i:${i + 1}`}
+            aria-current={isActive(href, item.anchor) ? 'page' : undefined}
+            class:list={[
+              pillBase,
+              'px-6 py-3 text-lg',
+              isActive(href, item.anchor) ? pillActive : pillIdle,
+            ]}
+          >
+            {navLabel(item.key)}
+          </a>
+        );
+      })
+    }
+    {
+      !deOnly && (
+        <a
+          href={otherPath}
+          hreflang={otherLocale}
+          data-nav-link
+          data-nav-item
+          style={`--i:${primaryNav.length + 1}`}
+          class:list={[pillBase, pillIdle, 'px-6 py-3 text-lg']}
+          aria-label={`${t.nav.language}: ${otherName}`}
+        >
+          {otherLabel}
+        </a>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  /* Smoothe Auf-/Zu-Animation: Overlay faded, Pillen fliegen gestaffelt ein.
+     (Reduced-Motion wird global entschärft -> Transitions ~instant.) */
+  #nav-panel {
+    opacity: 0;
+    transition: opacity 240ms ease;
+  }
+  #nav-panel.is-open {
+    opacity: 1;
+  }
+  #nav-panel [data-nav-item] {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+    transition:
+      opacity 320ms ease,
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--i, 0) * 45ms);
+  }
+  #nav-panel.is-open [data-nav-item] {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const closeBtn = document.getElementById('nav-close');
+  const panel = document.getElementById('nav-panel');
+  let isOpen = false;
+  let closeTimer = 0;
+
+  function setOpen(open: boolean) {
+    if (!toggle || !panel || open === isOpen) return;
+    isOpen = open;
+    toggle.setAttribute('aria-expanded', String(open));
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+
+    if (open) {
+      window.clearTimeout(closeTimer);
+      panel.hidden = false;
+      void panel.offsetWidth; // Reflow erzwingen, damit die Transition greift
+      panel.classList.add('is-open');
+      closeBtn?.focus();
+    } else {
+      panel.classList.remove('is-open');
+      // Nach der Ausblend-Transition wirklich aus dem Fluss nehmen.
+      closeTimer = window.setTimeout(() => {
+        if (!isOpen) panel.hidden = true;
+      }, 320);
+      toggle.focus();
+    }
+  }
+
+  toggle?.addEventListener('click', () => setOpen(!isOpen));
+  closeBtn?.addEventListener('click', () => setOpen(false));
+  panel
+    ?.querySelectorAll('[data-nav-link]')
+    .forEach((link) => link.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) setOpen(false);
+  });
+
+  // Beim Wechsel auf Desktop sicher zurücksetzen.
+  window
+    .matchMedia('(min-width: 1024px)')
+    .addEventListener('change', (e) => e.matches && setOpen(false));
+</script>

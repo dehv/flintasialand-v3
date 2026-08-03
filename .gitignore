@@ -1,0 +1,25 @@
+# ─────────────────────────────────────────────────────────────
+# Repo-Policy: NUR die Website (site/) wird versioniert.
+# Janas Design-Rohdaten, Booking-/Community-Ordner, PDFs, Prompts
+# und Betriebssystem-Müll bleiben lokal und gehören nicht ins Repo.
+# (Benötigte Assets werden nach site/src/assets kopiert & dort getrackt.)
+# ─────────────────────────────────────────────────────────────
+
+# OS / Editor
+.DS_Store
+**/.DS_Store
+*.log
+.vscode/
+.idea/
+
+# Design-Quelldateien & Projektunterlagen (Rohdaten)
+/FLINTA_SIA Corporate Design_Jana Uso_01-07-26/
+/Genderstern Animation Final/
+/Logos Förderungen/
+/3_Booking/
+/7_Community space/
+
+# Dokumente & Prompts im Repo-Root
+/*.pdf
+/*.docx
+/*.md

@@ -1,0 +1,88 @@
+---
+/**
+ * Footer — dark-Zone. Impressum/Datenschutz-Platzhalter, Social, Kontakt,
+ * Hinweis aufs Kollektiv (Vorbereitung fürs spätere /kollektiv).
+ */
+import LogoMark from "@ui/LogoMark.astro";
+import { footerLinks, contactEmail } from "@lib/site";
+import { useTranslations, localeFromPath } from "@lib/i18n";
+
+const locale = localeFromPath(Astro.url.pathname);
+const t = useTranslations(locale);
+
+// Legal-Links folgen der Sprache; DE-only-Seiten bleiben auf der DE-Route.
+const legalHref = (link: { href: string; deOnly?: boolean }) =>
+  locale === "en" && !link.deOnly ? `/en${link.href}` : link.href;
+---
+
+<footer data-theme="dark" class="bg-surface text-on-surface">
+  <div
+    class="u-container grid gap-10 py-14 md:grid-cols-[1.5fr_1fr_1fr] md:py-16"
+  >
+    <!-- Brand -->
+    <div>
+      <LogoMark class="h-14 text-on-surface" />
+      <p class="mt-4 max-w-xs text-on-surface-muted">{t.footer.madeWith}</p>
+    </div>
+
+    <!-- Rechtliches -->
+    <nav aria-label={t.footer.imprint}>
+      <h2
+        class="font-display text-sm font-bold uppercase tracking-wide text-accent"
+      >
+        {t.footer.info}
+      </h2>
+      <ul class="mt-4 space-y-2">
+        {
+          footerLinks.legal.map((link) => (
+            <li>
+              <a href={legalHref(link)} class="text-on-surface/90 hover:text-accent">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <!-- Kontakt / Social -->
+    <div>
+      <h2
+        class="font-display text-sm font-bold uppercase tracking-wide text-accent"
+      >
+        {t.footer.contact}
+      </h2>
+      <ul class="mt-4 space-y-2">
+        <li>
+          <a
+            href={`mailto:${contactEmail}`}
+            class="text-on-surface/90 hover:text-accent"
+          >
+            {contactEmail}
+          </a>
+        </li>
+        {
+          footerLinks.social.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-on-surface/90 hover:text-accent"
+              >
+                {link.label}
+                <span class="sr-only"> — {t.a11y.externalLink}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-hairline">
+    <div class="u-container py-6 text-center text-sm text-on-surface-muted">
+      <p>Made in Dortmund with ❤️</p>
+    </div>
+  </div>
+</footer>

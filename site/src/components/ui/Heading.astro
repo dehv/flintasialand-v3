@@ -1,0 +1,44 @@
+---
+/**
+ * Heading — Wrapper für Display-Überschriften.
+ *
+ * Warum ein Wrapper? Janas Custom-Lettering kommt später. Dieser Wrapper ist
+ * die eine Stelle, an der wir eine Überschrift entweder als (a) Webfont-Text
+ * (aktueller Stand: Bricolage Grotesque Bold über --font-display) oder später
+ * (b) als vordefiniertes SVG-Wortbild rendern — ohne Layout-Umbau.
+ *
+ * Sobald SVG-Wortbilder da sind: hier eine `lettering`-Prop ergänzen, die statt
+ * des <text> ein <img>/<svg> einsetzt. Aufrufer bleiben unverändert.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+type Level = 1 | 2 | 3 | 4;
+
+interface Props extends HTMLAttributes<'h2'> {
+  level?: Level;
+  /** Optische Größe unabhängig vom semantischen Level. */
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'display';
+  class?: string;
+}
+
+const { level = 2, size, class: className, ...rest } = Astro.props;
+const Tag = `h${level}` as const;
+
+// Größe folgt dem Level, kann aber überschrieben werden (semantik != optik).
+const resolvedSize = size ?? (['xl', 'lg', 'md', 'sm'][level - 1] as string);
+
+const sizeClass: Record<string, string> = {
+  sm: 'text-xl md:text-2xl',
+  md: 'text-2xl md:text-3xl',
+  lg: 'text-3xl md:text-5xl',
+  xl: 'text-4xl md:text-6xl',
+  display: 'text-5xl md:text-7xl lg:text-8xl',
+};
+---
+
+<Tag
+  class:list={['font-display', sizeClass[resolvedSize], className]}
+  {...rest}
+>
+  <slot />
+</Tag>

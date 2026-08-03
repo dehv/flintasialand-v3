@@ -1,0 +1,40 @@
+---
+/**
+ * DateWordmark — das Datum-Wortbild (Janas SVG) als inline-SVG.
+ *
+ * Das Original liegt in Berry (#673b50) vor. Wir setzen den Fill auf
+ * `currentColor`, damit das Datum die Textfarbe seines Kontexts erbt: auf der
+ * dunklen Hero-Zone also Mint (lesbar über dem Video), auf hellen Sektionen
+ * automatisch Berry. Eine Quelle, jeder Kontext CI-treu und barrierefrei.
+ *
+ * Das SVG selbst ist dekorativ (aria-hidden) — die maschinenlesbare Datums-
+ * angabe liefert der Aufrufer als sichtbaren/sr-Text daneben.
+ */
+import raw from '@assets/brand/datum-berry.svg?raw';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+const svg = raw
+  .replace(/<\?xml[\s\S]*?\?>/, '')
+  .replace(/<!DOCTYPE[\s\S]*?>/, '')
+  .replace(/<!--[\s\S]*?-->/g, '')
+  // feste Maße raus -> Skalierung via CSS (viewBox bleibt)
+  .replace(/<svg([^>]*?)\swidth="[^"]*"/, '<svg$1')
+  .replace(/<svg([^>]*?)\sheight="[^"]*"/, '<svg$1')
+  // Berry-Fill -> currentColor (erbt Kontextfarbe)
+  .replace(/fill:\s*#673b50/gi, 'fill: currentColor')
+  .replace('<svg', '<svg aria-hidden="true" focusable="false"');
+---
+
+<span class:list={['date-wordmark inline-flex', className]} set:html={svg} />
+
+<style>
+  .date-wordmark :global(svg) {
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+</style>

@@ -1,0 +1,28 @@
+{
+  "name": "flintasialand-site",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Website für das Flinta*sialand Festival — erste Instanz eines wiederverwendbaren Event-Typs (Flinta*sia Kollektiv).",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "^3.2.1",
+    "@fontsource-variable/bricolage-grotesque": "^5.1.1",
+    "@tailwindcss/vite": "^4.0.6",
+    "astro": "^5.2.5",
+    "maplibre-gl": "^6.0.0",
+    "tailwindcss": "^4.0.6",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5"
+  }
+}
