@@ -148,4 +148,14 @@ const style = [
       filter: none;
     }
   }
+
+  /* Mobil/Touch (primäres Gerät): den per-Frame-Displacement-Filter abschalten.
+     Die organische Genderstern-Silhouette (Maske) bleibt erhalten — nur das
+     zusätzliche Kanten-Wabern entfällt. Spart auf dem schwächsten Gerät die
+     teuersten Filter-Raster (im Marquee dutzendfach gleichzeitig). */
+  @media (max-width: 767px), (pointer: coarse) {
+    .star-masked--waber {
+      filter: none;
+    }
+  }
 </style>

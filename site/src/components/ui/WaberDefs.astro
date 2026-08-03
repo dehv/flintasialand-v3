@@ -91,17 +91,52 @@
 </style>
 
 <script>
-  // SMIL pausieren bei reduced-motion oder verstecktem Tab (Perf/Respekt).
+  // Die animierten Displacement-Filter (feTurbulence/feDisplacementMap) sind der
+  // teuerste Teil. Wir lassen die SMIL-Animation nur laufen, wenn sie sich
+  // wirklich lohnt: erlaubte Bewegung, Nicht-Touch/Desktop, Tab sichtbar UND ein
+  // Filter-Konsument tatsächlich im Viewport. Auf Mobil/Touch bleibt sie aus —
+  // die Konsumenten schalten ihren Filter dort ohnehin per CSS ab (filter:none),
+  // die organische Sternform (Maske) bleibt sichtbar.
   const svg = document.querySelector<SVGSVGElement>('[data-waber-defs]');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const cheap = window.matchMedia('(max-width: 767px), (pointer: coarse)');
+  const visible = new Set<Element>();
 
+  function shouldAnimate() {
+    return (
+      !!svg &&
+      !reduce.matches &&
+      !cheap.matches &&
+      !document.hidden &&
+      visible.size > 0
+    );
+  }
   function sync() {
     if (!svg) return;
-    if (reduce.matches || document.hidden) svg.pauseAnimations();
-    else svg.unpauseAnimations();
+    if (shouldAnimate()) svg.unpauseAnimations();
+    else svg.pauseAnimations();
+  }
+
+  if (svg && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) visible.add(e.target);
+          else visible.delete(e.target);
+        }
+        sync();
+      },
+      { threshold: 0 },
+    );
+    document
+      .querySelectorAll('.star-masked--waber, .scroll-star__waber')
+      .forEach((el) => io.observe(el));
+  } else {
+    visible.add(document.body); // ohne IO konservativ: als sichtbar behandeln
   }
 
   reduce.addEventListener('change', sync);
+  cheap.addEventListener('change', sync);
   document.addEventListener('visibilitychange', sync);
   sync();
 </script>

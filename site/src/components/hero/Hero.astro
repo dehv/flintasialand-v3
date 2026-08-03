@@ -71,16 +71,16 @@ const dateMark = datumRaw
     <defs>
       <filter
         id="hero-warp-logo"
-        x="-25%"
-        y="-30%"
-        width="150%"
-        height="160%"
+        x="-16%"
+        y="-18%"
+        width="132%"
+        height="136%"
         color-interpolation-filters="sRGB"
       >
         <feTurbulence
           type="fractalNoise"
           baseFrequency="0.008"
-          numOctaves="2"
+          numOctaves="1"
           seed="7"
           result="noise"
         >
@@ -118,16 +118,16 @@ const dateMark = datumRaw
 
       <filter
         id="hero-warp-date"
-        x="-20%"
-        y="-40%"
-        width="140%"
-        height="180%"
+        x="-14%"
+        y="-22%"
+        width="128%"
+        height="150%"
         color-interpolation-filters="sRGB"
       >
         <feTurbulence
           type="fractalNoise"
           baseFrequency="0.012"
-          numOctaves="2"
+          numOctaves="1"
           seed="3"
           result="noise"
         >
@@ -401,19 +401,33 @@ const dateMark = datumRaw
   reduce.addEventListener('change', (e) => (e.matches ? disable() : enable()));
   finePointer.addEventListener('change', (e) => (e.matches ? enable() : disable()));
 
-  // Perf: den animierten Verzerr-Filter (SMIL) pausieren, sobald der Hero aus
-  // dem Viewport ist — sonst rechnet feTurbulence im Hintergrund weiter.
+  // Perf: den animierten Verzerr-Filter (SMIL) nur laufen lassen, wenn es sich
+  // lohnt. Sobald der Hero aus dem Viewport ist, pausieren (sonst rechnet
+  // feTurbulence im Hintergrund weiter). Auf Mobil/Touch — dem primären, aber
+  // schwächsten Gerät — wird die Animation eingefroren: der Warp bleibt als
+  // STATISCHER Zustand sichtbar (einmaliges Raster, kein per-Frame-Filter),
+  // das Logo wabert also nur auf dem Desktop.
   const defs = document.querySelector<SVGSVGElement>('.hero__defs');
-  if (defs && root && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) defs.unpauseAnimations();
-          else defs.pauseAnimations();
-        }
-      },
-      { threshold: 0 },
-    );
-    io.observe(root);
+  const cheapMotion = window.matchMedia('(max-width: 767px), (pointer: coarse)');
+  if (defs && root) {
+    let onScreen = true;
+    function syncDefs() {
+      const animate = onScreen && !reduce.matches && !cheapMotion.matches;
+      if (animate) defs!.unpauseAnimations();
+      else defs!.pauseAnimations();
+    }
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) onScreen = entry.isIntersecting;
+          syncDefs();
+        },
+        { threshold: 0 },
+      );
+      io.observe(root);
+    }
+    cheapMotion.addEventListener('change', syncDefs);
+    reduce.addEventListener('change', syncDefs);
+    syncDefs();
   }
 </script>
