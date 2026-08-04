@@ -48,16 +48,21 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
           return (
             <article class="flex flex-col">
               {ws.image ? (
-                <StarCornerImage
-                  src={ws.image}
-                  alt={`${ws.title} — Workshop`}
-                  ratio="4 / 5"
-                  shape={ws.shape ?? l.shape}
-                  accent={l.accent}
-                  corner={l.corner}
-                  focus={ws.focus}
-                  zoom={ws.zoom}
-                />
+                <div>
+                  <StarCornerImage
+                    src={ws.image}
+                    alt={`${ws.title} — Workshop`}
+                    ratio="4 / 5"
+                    shape={ws.shape ?? l.shape}
+                    accent={l.accent}
+                    corner={l.corner}
+                    focus={ws.focus}
+                    zoom={ws.zoom}
+                  />
+                  {ws.credit && (
+                    <p class="mt-2 text-xs text-on-surface-muted">{ws.credit}</p>
+                  )}
+                </div>
               ) : (
                 <div class="flex items-center gap-3 rounded-2xl bg-surface-muted/50 px-5 py-4 ring-1 ring-hairline">
                   <StarBullet shape={ws.shape ?? l.shape} accent={l.accent} size="1.6rem" />
