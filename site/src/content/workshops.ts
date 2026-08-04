@@ -12,7 +12,8 @@ import type { StarShape } from '@lib/sterne';
 import imgAmenJuvlja from '@assets/workshops/amen-juvlja-girlande.jpg';
 import imgRadioMakro from '@assets/workshops/radio-makro.png';
 import imgLiquidLatex from '@assets/workshops/liquid-latex.png';
-import imgErasurePoetry from '@assets/workshops/erasure-poetry.png';
+import imgErasurePoetry from '@assets/workshops/erasure-poetry-miaina.jpg';
+import imgNarzissmus from '@assets/workshops/narzisstischer-missbrauch.jpg';
 
 export interface Workshop {
   id: string;
@@ -28,6 +29,8 @@ export interface Workshop {
   descriptionEn?: string;
   /** Optionales Foto (wie bei Acts). */
   image?: ImageMetadata;
+  /** Bildnachweis (Fotograf*in), wird dezent unter dem Foto gerendert. */
+  credit?: string;
   focus?: string;
   zoom?: number;
   /** Bevorzugte Genderstern-Form; ohne Angabe rotiert sie automatisch. */
@@ -84,6 +87,9 @@ export const workshops: Workshop[] = [
       'Ein Vortrag für alle, die Einblick in das Thema „Narzisstischer Missbrauch & seine Folgen“ suchen. Once you see it, you can’t unsee it: Wir schauen auf die oft subtilen Taktiken — von Gaslighting über Lovebombing bis Breadcrumbing —, auf Victim Blaming und darauf, wie Außenstehende Betroffene unterstützen können und wo es kosten- & barrierefreie Hilfe gibt. Intersektional, interdisziplinär und entstigmatisierend.',
     descriptionEn:
       'A talk for anyone seeking insight into the topic of “narcissistic abuse & its consequences”. Once you see it, you can’t unsee it: we look at the often subtle tactics — from gaslighting to lovebombing to breadcrumbing —, at victim blaming, and at how bystanders can support those affected and where to find free and accessible help. Intersectional, interdisciplinary and destigmatising.',
+    image: imgNarzissmus,
+    credit: 'Foto: Celia Wagner',
+    focus: '46% 32%',
   },
   {
     id: 'erasure-poetry',
