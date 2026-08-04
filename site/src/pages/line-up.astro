@@ -14,6 +14,7 @@ import Section from '@ui/Section.astro';
 import Heading from '@ui/Heading.astro';
 import StarCornerImage from '@ui/StarCornerImage.astro';
 import TimetableGrid from '@blocks/TimetableGrid.astro';
+import WorkshopSchedule from '@blocks/WorkshopSchedule.astro';
 import Button from '@ui/Button.astro';
 import { acts, actsOhneFoto, STAGE_LABEL } from '@content/acts';
 import type { StarShape, StarAccent } from '@lib/sterne';
@@ -212,6 +213,7 @@ const OPPOSITE: Record<Corner, Corner> = {
         </Button>
       </div>
       <TimetableGrid />
+      <WorkshopSchedule />
     </div>
   </Section>
 </BaseLayout>

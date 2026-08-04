@@ -1,0 +1,107 @@
+---
+/**
+ * WorkshopSchedule — chronologische Workshop-Liste für den Timetable.
+ *
+ * Bewusst als eigene Liste (statt Spalte im Bühnen-Raster): Workshops laufen an
+ * unterschiedlichen Orten und überschneiden sich zeitlich — eine sortierte
+ * Zeit·Ort·Titel-Liste zeigt das kollisionsfrei. Datenquelle: content/workshops.ts.
+ * Es werden nur Workshops mit Uhrzeit gelistet.
+ */
+import { workshops } from '@content/workshops';
+import { texte, pick } from '@content/texte';
+import { localeFromPath } from '@lib/i18n';
+
+const locale = localeFromPath(Astro.url.pathname);
+
+/** Startminute aus dem Zeit-String („18:30–20:30“, „14:00–18:00“) für die Sortierung. */
+const startMin = (time: string): number => {
+  const m = time.match(/(\d{1,2}):(\d{2})/);
+  return m ? Number(m[1]) * 60 + Number(m[2]) : 24 * 60;
+};
+
+const slots = workshops
+  .filter((w) => w.time)
+  .sort((a, b) => startMin(a.time!) - startMin(b.time!));
+---
+
+<div class="ws-sched">
+  <h3 class="ws-sched__head">{pick(texte.workshops.workshopsHeading, locale)}</h3>
+  <ul class="ws-sched__list">
+    {
+      slots.map((w) => (
+        <li class="ws-sched__row">
+          <span class="ws-sched__time">{w.time}</span>
+          <span class="ws-sched__body">
+            <span class="ws-sched__title">{w.title}</span>
+            {w.location && <span class="ws-sched__loc">{w.location}</span>}
+          </span>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .ws-sched {
+    margin-top: 3rem;
+  }
+  .ws-sched__head {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-accent);
+  }
+  .ws-sched__list {
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ws-sched__row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--color-hairline, color-mix(in srgb, var(--color-on-surface) 12%, transparent));
+  }
+  .ws-sched__row:first-child {
+    border-top: none;
+  }
+  .ws-sched__time {
+    flex: 0 0 auto;
+    width: 7.5rem;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-accent);
+  }
+  .ws-sched__body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.6rem;
+  }
+  .ws-sched__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .ws-sched__loc {
+    font-size: 0.85rem;
+    color: var(--color-on-surface-muted);
+  }
+  .ws-sched__loc::before {
+    content: '· ';
+  }
+
+  @media (max-width: 480px) {
+    .ws-sched__row {
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .ws-sched__time {
+      width: auto;
+    }
+  }
+</style>

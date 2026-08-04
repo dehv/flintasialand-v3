@@ -11,6 +11,8 @@ import type { ImageMetadata } from 'astro';
 import type { StarShape } from '@lib/sterne';
 import imgAmenJuvlja from '@assets/workshops/amen-juvlja-girlande.jpg';
 import imgRadioMakro from '@assets/workshops/radio-makro.png';
+import imgLiquidLatex from '@assets/workshops/liquid-latex.png';
+import imgErasurePoetry from '@assets/workshops/erasure-poetry.png';
 
 export interface Workshop {
   id: string;
@@ -40,7 +42,7 @@ export const workshops: Workshop[] = [
     title: 'Stich für Stich',
     facilitator: 'Amen Juvlja Mundial — Wir Frauen Weltweit',
     time: '14:00–18:00',
-    location: 'Straßensperrung',
+    location: 'Landebahn',
     description:
       'Entdecke dein Talent an der Nähmaschine! Ein offenes Schnupperangebot ohne Anmeldung: In entspannter Atmosphäre lernst du unter Anleitung die Grundlagen des Nähens. Zum Einstieg nähen wir alle gemeinsam an einer festlichen Girlande, die sich über das Gelände zieht. Besonders für Anfänger*innen — alles Nötige ist da.',
     descriptionEn:
@@ -65,7 +67,7 @@ export const workshops: Workshop[] = [
     id: 'mut-muskel',
     title: 'Mut-Muskel-Workshop',
     facilitator: 'Radikale Töchter',
-    time: '15:00–16:30',
+    time: '15:00–19:30',
     location: 'Gewalten Formen',
     description:
       'Die Welt braucht neue radikale Ideen — vor allem aber mehr Mut. Gemeinsam trainieren wir unseren Mutmuskel: mit Ansätzen der Aktionskunst und des künstlerischen Aktivismus, mit Geschichten von Aktionen, Methoden und Visionen. Ein politischer, kreativer, aktivierender Workshop als Inspiration für die eigene Haltung.',
@@ -86,13 +88,15 @@ export const workshops: Workshop[] = [
   {
     id: 'erasure-poetry',
     title: 'Erasure Poetry',
+    facilitator: 'Miaïna Razakamanantsoa',
     time: '16:00–18:00',
     location: 'Community Space',
     description:
-      'Aus Vorhandenem Neues schaffen: Beim Erasure-Poetry-Workshop entstehen aus bestehenden Texten eigene Gedichte — durch Weglassen, Übermalen, Hervorheben. Details folgen in Kürze.',
+      'Erasure Poetry ist eine politische Kunstpraxis: Aus diskriminierendem Material — rassistischen oder sexistischen Büchern, Zeitungsartikeln oder Programmen rechtsextremer Parteien — entsteht durch das Streichen von Wörtern und Zeilen eine neue, oft politische Gegenrede. Das Material (u. a. aus dem Dortmunder Stadtraum) wird bewusst nie gekauft, um keine unterdrückerischen Strukturen zu finanzieren. Historisch eng mit LGBTQIA2S+-, feministischen und Black-Liberation-Bewegungen verbunden — in Deutschland aber noch wenig verbreitet.',
     descriptionEn:
-      'Making something new from what already exists: in the erasure poetry workshop, your own poems emerge from existing texts — through omitting, painting over, highlighting. Details coming soon.',
-    tba: true,
+      'Erasure poetry is a political art practice: from discriminatory material — racist or sexist books, newspaper articles or far-right party manifestos — a new, often political counter-speech emerges by striking out words and lines. The material (partly from Dortmund’s urban space) is deliberately never bought, so as not to fund oppressive structures. Historically tied to LGBTQIA2S+, feminist and Black liberation movements — yet still little known in Germany.',
+    image: imgErasurePoetry,
+    focus: '50% 45%',
   },
   {
     id: 'connection-through-movement',
@@ -119,7 +123,7 @@ export const workshops: Workshop[] = [
     id: 'graffiti-workshop',
     title: 'Graffiti Workshop',
     time: '16:00–20:00',
-    location: 'Straßensperrung',
+    location: 'Landebahn',
     description:
       'Farbe an die Wand: Ausprobieren, sprühen, gestalten. Details folgen in Kürze.',
     descriptionEn:
@@ -130,11 +134,12 @@ export const workshops: Workshop[] = [
     id: 'liquid-latex',
     title: 'Liquid Latex',
     time: '18:30–20:30',
-    location: 'Community Space',
+    location: 'Landebahn',
     description:
-      'Body-Art zum Selbermachen mit flüssigem Latex. Details folgen in Kürze.',
+      'Ein weirdly wundervolles Material: Wir experimentieren mit flüssigem Latex — färben es mit Pigmenten, matschen damit rum, tragen es filigran in Schichten auf, erzeugen Membranen, durchbohren es mit Metall, formen Dinge ab. Es entstehen individuelle Anhänger und Deko-Objekte. Und wir quatschen über Barrieren für FLINTA* in Technik, Handwerk und Wissenstransfer — und wie man in schöner Atmosphäre Neues lernen kann.',
     descriptionEn:
-      'DIY body art with liquid latex. Details coming soon.',
-    tba: true,
+      'A weirdly wonderful material: we experiment with liquid latex — colouring it with pigments, squishing it around, layering it delicately, creating membranes, piercing it with metal, casting objects. Individual pendants and decorative pieces emerge. And we chat about the barriers FLINTA* face in tech, craft and knowledge-sharing — and how to learn new things in a lovely atmosphere.',
+    image: imgLiquidLatex,
+    focus: '50% 45%',
   },
 ];

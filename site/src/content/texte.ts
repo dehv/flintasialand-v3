@@ -267,6 +267,13 @@ export const texte = {
           'If you don’t want to be photographed, grab a pink band at the entrance. Please respect it — and always ask before taking any photo.',
         ),
       },
+      {
+        title: T('Barrierefreiheit & Toiletten', 'Accessibility & toilets'),
+        text: T(
+          'Das Gelände ist grundsätzlich barrierefrei. Ein barrierefreies Behinderten-WC findest du bei Toilette 1 (Toilette 2 hat keins). Brauchst du Unterstützung, sprich das Awareness-Team an oder ruf an: 01575 5885086.',
+          'The grounds are generally accessible. You’ll find an accessible toilet at Toilette 1 (Toilette 2 doesn’t have one). If you need support, ask the awareness team or call: +49 1575 5885086.',
+        ),
+      },
     ],
     teamHeading: T('Das Awareness-Team ist für dich da', 'The awareness team is here for you'),
     teamBody: T(

@@ -110,10 +110,11 @@ export const lageplan: VenueLageplan = {
     },
     {
       id: 'toiletten',
-      title: 'Toiletten',
+      title: 'Toiletten 1',
       category: 'service',
       lat: 51.5308,
       lng: 7.44647,
+      description: 'Mit barrierefreiem Behinderten-WC.',
     },
     {
       id: 'toiletten-2',
@@ -121,6 +122,7 @@ export const lageplan: VenueLageplan = {
       category: 'service',
       lat: 51.53132,
       lng: 7.44598,
+      description: 'Ohne Behinderten-WC (dieses gibt es bei Toilette 1).',
     },
     {
       id: 'essensstaende',
@@ -136,7 +138,7 @@ export const lageplan: VenueLageplan = {
       'Mit den Öffentlichen bis zur Haltestelle „Hafen“, von dort sind es rund 15 Minuten zu Fuß zum Speicher 100.',
     auto: 'Speicherstraße 100, 44147 Dortmund. Bitte möglichst mit ÖPNV oder Rad anreisen, Parkmöglichkeiten im Hafenareal sind begrenzt.',
     barrierefreiheit:
-      'Das Gelände liegt am Kai (teils Kopfsteinpflaster/unebener Untergrund). Angaben zu barrierefreien Zugängen und Toiletten ergänzen wir hier, sobald final.',
+      'Das Gelände ist grundsätzlich barrierefrei zugänglich (teils Kopfsteinpflaster/unebener Untergrund am Kai). Ein barrierefreies Behinderten-WC gibt es bei Toilette 1; Toilette 2 hat keins. Wenn du Unterstützung brauchst, sprich jederzeit unser Awareness-Team an oder ruf uns an: 01575 5885086.',
   },
 
   anreiseEn: {
@@ -144,6 +146,6 @@ export const lageplan: VenueLageplan = {
       'Take public transport to the “Hafen” stop; from there it’s about a 15-minute walk to Speicher 100.',
     auto: 'Speicherstraße 100, 44147 Dortmund. Please travel by public transport or bike if you can — parking in the harbour area is limited.',
     barrierefreiheit:
-      'The grounds sit on the quay (partly cobblestones/uneven surface). We’ll add details on accessible entrances and toilets here as soon as they’re final.',
+      'The grounds are generally accessible (partly cobblestones/uneven surface on the quay). There is an accessible toilet at Toilette 1; Toilette 2 does not have one. If you need support, just ask our awareness team any time or call us: +49 1575 5885086.',
   },
 };
