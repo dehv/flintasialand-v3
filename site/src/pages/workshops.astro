@@ -22,6 +22,24 @@ const locale = localeFromPath(Astro.url.pathname);
 const t = texte.workshops;
 const cs = texte.common.communitySpace;
 
+/**
+ * Reihenfolge fürs 2-Spalten-Grid: erst alle Workshops MIT Foto (hohe Karten),
+ * dann die Textkarten — je Gruppe chronologisch. So bleiben die Spalten
+ * gleichmäßig hoch und lesbar, statt dass sich hohe und flache Karten
+ * abwechseln. Workshops ohne Uhrzeit landen am Ende ihrer Gruppe.
+ */
+const startMin = (time?: string): number => {
+  if (!time) return 24 * 60;
+  const m = time.match(/(\d{1,2}):(\d{2})/);
+  return m ? Number(m[1]) * 60 + Number(m[2]) : 24 * 60;
+};
+const orderedWorkshops = [...workshops].sort((a, b) => {
+  const aHasImg = a.image ? 0 : 1;
+  const bHasImg = b.image ? 0 : 1;
+  if (aHasImg !== bHasImg) return aHasImg - bHasImg;
+  return startMin(a.time) - startMin(b.time);
+});
+
 type Corner = 'tl' | 'tr' | 'bl' | 'br';
 const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
   { shape: '2', accent: 'pink', corner: 'tr' },
@@ -43,7 +61,7 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
 
     <div class="mt-8 grid gap-x-8 gap-y-12 sm:grid-cols-2">
       {
-        workshops.map((ws, i) => {
+        orderedWorkshops.map((ws, i) => {
           const l = layouts[i % layouts.length];
           return (
             <article class="flex flex-col">
