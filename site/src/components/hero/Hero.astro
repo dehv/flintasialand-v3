@@ -17,7 +17,7 @@
  */
 import HeroVideoBackground from '@components/hero/HeroVideoBackground.astro';
 import HeroWebglBackground from '@components/hero/HeroWebglBackground.astro';
-import logoMarkRaw from '@assets/logo/logo-mark.svg?raw';
+import logoMarkRaw from '@assets/logo/logo-light-mint.svg?raw';
 import datumRaw from '@assets/brand/datum-berry.svg?raw';
 import { texte, pick } from '@content/texte';
 import { localeFromPath } from '@lib/i18n';
@@ -37,13 +37,16 @@ const {
 const locale = localeFromPath(Astro.url.pathname);
 const tHero = texte.hero;
 
-// Logo-Mark inline aufbereiten (fill=currentColor, feste Maße raus -> CSS-Breite).
+// Logo-Lockup (Mark + Tagline) inline aufbereiten. Feste Maße raus -> CSS-Breite;
+// die eingebauten Mint-Füllungen auf currentColor mappen, damit Farbe & Warp-Halo
+// wie beim Datum-Wortbild greifen.
 const logoMark = logoMarkRaw
   .replace(/<\?xml[\s\S]*?\?>/, '')
   .replace(/<!DOCTYPE[\s\S]*?>/, '')
   .replace(/<!--[\s\S]*?-->/g, '')
   .replace(/<svg([^>]*?)\swidth="[^"]*"/, '<svg$1')
   .replace(/<svg([^>]*?)\sheight="[^"]*"/, '<svg$1')
+  .replace(/fill:\s*#edf6f0/gi, 'fill: currentColor')
   .replace('<svg', '<svg fill="currentColor" aria-hidden="true" focusable="false"');
 
 // Datum-Wortbild inline (wie das Logo), damit Scope + Warp-Filter + Sizing greifen.
@@ -174,8 +177,8 @@ const dateMark = datumRaw
       <span class="sr-only">{pick(tHero.taglineSr, locale)}</span>
     </h1>
 
-    <!-- Tagline: separat & STARR (kein Warp, kein Parallax). Gendersterne in normaler Textfarbe. -->
-    <p class="hero__tagline" aria-hidden="true" set:html={pick(tHero.taglineHtml, locale)} />
+    <!-- Tagline ist Teil des Logo-Lockups (im SVG gesetzt) — keine separate,
+         mobil verrutschende Textebene mehr. -->
 
     <p class="hero__date">
       <span class="sr-only">{pick(tHero.datePrefix, locale)} {dateLabel}</span>
@@ -260,28 +263,6 @@ const dateMark = datumRaw
     display: block;
     width: 100%;
     height: auto;
-  }
-
-  /* Tagline: starr, nach rechts versetzt (unter dem Logo rechtsbündig). */
-  /* Tagline wie im Original-Lockup: 3 Zeilen, klein, rechtsbündig, dicht unter
-     dem Mark (leicht in dessen untere rechte Ecke gezogen). Bewusst STARR. */
-  .hero__tagline {
-    margin: clamp(-1.5rem, -2vh, -0.5rem) 0 0;
-    width: min(88vw, 44rem);
-    text-align: right;
-    padding-right: clamp(0.5rem, 4vw, 3rem);
-    font-family: var(--font-display);
-    font-weight: 700;
-    line-height: 1.1;
-    font-size: clamp(0.8rem, 0.62rem + 0.85vw, 1.15rem);
-    color: var(--color-mint);
-    /* Rosa Schein wie am Logo/Datum — hebt die Tagline warm ab. */
-    text-shadow:
-      0 0 26px color-mix(in srgb, var(--color-accent-pink) 70%, transparent),
-      0 0 10px color-mix(in srgb, var(--color-accent-pink) 45%, transparent);
-  }
-  .hero__tagline .stern {
-    color: inherit;
   }
 
   .hero__date {

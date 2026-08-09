@@ -208,10 +208,20 @@ export const texte = {
     },
     queer: {
       heading: T('Queer Dating Stage', 'Queer Dating Stage'),
-      body: T(
-        'Eine kleine Bühne für Begegnungen: spielerisch, selbstbestimmt und mit Augenzwinkern neue Menschen kennenlernen. Das genaue Format und die Zeiten geben wir hier in Kürze bekannt.',
-        'A little stage for encounters: playful, self-determined and with a wink, getting to know new people. We’ll announce the exact format and times here soon.',
+      format: T(
+        'ANGEL Message — ein Sapphic Kitsch Dating-Format',
+        'ANGEL Message — a sapphic kitsch dating format',
       ),
+      // (html)
+      body: T(
+        'Angelehnt an die Kultshow Herzblatt erschafft <strong>ANGEL Message</strong> ein lesbian Dating-Erlebnis voller Sapphic Kitsch und bringt den Dating-Spaß von Love is Blind auf das FLINTA*SIALAND — serviert werden cunty, flirty Vibes für die Shys. Von 15:30 bis 18:00 Uhr können alle FLINTA*, die FLINTA* daten wollen, die Dating-Installation betreten und unbeobachtet blind daten. Moderiert und geleitet wird das Date von zwei queer Cupids, die ihre Pfeile schon bereithalten.',
+        'Inspired by the cult TV show Blind Date, <strong>ANGEL Message</strong> creates a lesbian dating experience full of sapphic kitsch and brings the fun of Love is Blind to FLINTA*SIALAND — serving cunty, flirty vibes for the shy ones. From 3:30 to 6 pm, all FLINTA* who want to date FLINTA* can enter the dating installation and blind-date unobserved. The dates are hosted and guided by two queer cupids with their arrows at the ready.',
+      ),
+      meta: T(
+        '15:30–18:00 Uhr · FLINTA* only · ohne Publikum',
+        '3:30–6:00 pm · FLINTA* only · no audience',
+      ),
+      credit: T('Grafik: ANGEL Message', 'Artwork: ANGEL Message'),
     },
   },
 

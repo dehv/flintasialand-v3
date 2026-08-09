@@ -33,7 +33,7 @@ export const timetable: StageSchedule[] = [
       { time: '15:00h - 17:00h', artist: 'canê b2b Schrotflinta' },
       { time: '17:00h - 19:00h', artist: 'shaxtar b2b kisya' },
       { time: '19:00h - 21:00h', artist: 'Floppy b2b Corti' },
-      { time: '21:00h - 23:00h', artist: 'Scherwin Hosseini b2b Alias Shay' },
+      { time: '21:00h - 23:00h', artist: 'Scherwin Hosseini' },
       { time: '23:00h - 01:00h', artist: 'makahaun' }
     ]
   }

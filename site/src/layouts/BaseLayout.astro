@@ -8,6 +8,7 @@ import Navbar from '@ui/Navbar.astro';
 import Footer from '@ui/Footer.astro';
 import WaberDefs from '@ui/WaberDefs.astro';
 import LogoMark from '@ui/LogoMark.astro';
+import FlintasiaMark from '@ui/FlintasiaMark.astro';
 import { useTranslations, localeFromPath } from '@lib/i18n';
 
 interface Props {
@@ -19,6 +20,12 @@ interface Props {
   bare?: boolean;
   /** DE-only-Seite (Impressum/Datenschutz): kein Sprachumschalter. */
   deOnly?: boolean;
+  /**
+   * Welches Markenlogo oben links steht. Standard: das Festival-Wortbild
+   * (FLINTA*SIALAND). `'flintasia'` zeigt stattdessen das Kollektiv-Logo —
+   * bewusst nur auf einzelnen Seiten (z. B. Impressum).
+   */
+  brand?: 'flintasialand' | 'flintasia';
   /**
    * Startet die Seite oben mit einer dunklen (berry) Sektion, muss das
    * Marken-Logo oben links hell (mint) sein — sonst berry auf berry = unsichtbar.
@@ -33,6 +40,7 @@ const {
   bare = false,
   deOnly = false,
   brandOnDark = false,
+  brand = 'flintasialand',
 } = Astro.props;
 
 const path = Astro.url.pathname;
@@ -93,7 +101,13 @@ const ogLocale = locale === 'en' ? 'en_GB' : 'de_DE';
               ]}
               aria-label={t.a11y.logo}
             >
-              <LogoMark class="h-12 md:h-14" />
+              {
+                brand === 'flintasia' ? (
+                  <FlintasiaMark class="h-14 md:h-16" />
+                ) : (
+                  <LogoMark class="h-12 md:h-14" />
+                )
+              }
             </a>
           </div>
         </div>

@@ -119,7 +119,7 @@ const OPPOSITE: Record<Corner, Corner> = {
                     src={act.image}
                     alt={`${act.name} — Portrait`}
                     ratio="4 / 5"
-                    shape={l.shape}
+                    shape={act.shape ?? l.shape}
                     accent={l.accent}
                     corner={l.corner}
                   />

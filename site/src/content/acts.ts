@@ -9,7 +9,6 @@ import imgBesteLiv from '@assets/artists/beste_und_liv.jpg';
 import imgFlouse from '@assets/artists/flouse.jpg';
 import imgIdeer from '@assets/artists/ideer.jpg';
 import imgScherwin from '@assets/artists/scherwin-alias-shay-alt3.jpg';
-import imgScherwin2 from '@assets/artists/scherwin-alias-shay-alt5.jpg';
 import imgFloppyCorti from '@assets/artists/floppy_corti.jpg';
 import imgShaxtarKisya from '@assets/artists/shaxtar_kisya.jpg';
 import imgLilApple from '@assets/artists/lil_apple.jpg';
@@ -187,24 +186,18 @@ export const acts: Act[] = [
     shape: '3',
   },
   {
-    id: 'scherwin-alias-shay',
-    name: 'Scherwin Hosseini b2b Alias Shay',
+    id: 'scherwin-hosseini',
+    name: 'Scherwin Hosseini',
     image: imgScherwin,
-    genre: 'Chaabi / Raï / Club',
-    bio: 'Scherwin Hosseini ist freie Kurator*in, Community Organizerin & Gründerin von BLENDHAUS* – einem Raum für Kultur, kreative Zusammenarbeit und Gemeinschaft im Ruhrgebiet. Scherwins Arbeit konzentriert sich auf interdisziplinäre Projekte, kreative Bildungsformate sowie die Sichtbarmachung queerer und marginalisierter Perspektiven. Als DJ spielt Scherwin einen Mix aus kräftigem Bass und SWANA-infused Rhythmen und lässt sich dabei von der Stimmung und Atmosphäre des Moments leiten, statt von festen Genres. Alias Shay ist DJ und Producer*in, geboren in Tunesien, heute in Deutschland zuhause. Die Sets verbinden die Liebe zu Chaabi und Raï mit zeitgenössischem Club, Bass und experimentellen Einflüssen – rhythmusgetrieben und erzählerisch, zwischen arabischem HipHop, Breaks und nordafrikanischen Texturen. Im b2b treffen Heritage-Sounds und moderne Clubformen ohne Hierarchie aufeinander.',
-    bioEn: 'Scherwin Hosseini is an independent curator, community organizer, and founder of BLENDHAUS* — a space for culture, creative collaboration, and community in Germany’s Ruhr region. Their work focuses on interdisciplinary projects, creative education formats, and amplifying queer and marginalized perspectives. As a DJ, they play a mix of heavy bass and SWANA-infused rhythms, guided by the mood and atmosphere of the moment rather than fixed genres. Alias Shay is a DJ and music producer, born in Tunisia and now based in Germany. Their work combines their love for Chaabi and Raï with contemporary club, bass, and experimental influences — rhythm-driven and narrative-led, bringing together Arabic hiphop, breaks, and North African textures. In their b2b, heritage sounds and modern club forms coexist without hierarchy.',
-    links: [
-      { label: 'Instagram', href: 'https://www.instagram.com/alias_shay/' },
-      { label: 'SoundCloud', href: 'https://soundcloud.com/alias-shay' }
-    ],
+    genre: 'Bass / Multi-Genre',
+    bio: 'Scherwin Hosseini ist freie Kurator*in, Community Organizerin & Gründerin von BLENDHAUS* – einem Raum für Kultur, kreative Zusammenarbeit und Gemeinschaft im Ruhrgebiet. Scherwins Arbeit konzentriert sich auf interdisziplinäre Projekte, kreative Bildungsformate sowie die Sichtbarmachung queerer und marginalisierter Perspektiven. Als DJ spielt Scherwin einen Mix aus kräftigem Bass und SWANA-infused Rhythmen und lässt sich dabei von der Stimmung und Atmosphäre des Moments leiten, statt von festen Genres.',
+    bioEn: 'Scherwin Hosseini is an independent curator, community organizer, and founder of BLENDHAUS* — a space for culture, creative collaboration, and community in Germany’s Ruhr region. Their work focuses on interdisciplinary projects, creative education formats, and amplifying queer and marginalized perspectives. As a DJ, they play a mix of heavy bass and SWANA-infused rhythms, guided by the mood and atmosphere of the moment rather than fixed genres.',
+    links: [],
     stage: 'Maschinerie',
     time: '21:00–23:00',
-    focus: '44% 41%',
-    zoom: 2.15,
-    image2: imgScherwin2,
-    focus2: '51% 25%',
-    zoom2: 1.55,
-    shape2: '4',
+    focus: '50% 32%',
+    zoom: 1,
+    shape: '4',
   },
   {
     id: 'floppy-corti',
@@ -264,8 +257,8 @@ export const acts: Act[] = [
     ],
     stage: 'Maschinerie',
     time: '15:00–17:00',
-    focus: '0% 36%',
-    zoom: 1.45,
+    focus: '50% 40%',
+    zoom: 1,
   }
 ];
 
