@@ -15,6 +15,7 @@ import imgLiquidLatex from '@assets/workshops/liquid-latex.png';
 import imgErasurePoetry from '@assets/workshops/erasure-poetry-miaina.jpg';
 import imgNarzissmus from '@assets/workshops/narzisstischer-missbrauch.jpg';
 import imgQueerPoetry from '@assets/workshops/queer-poetry-kollektiv.jpg';
+import imgConnectionMovement from '@assets/workshops/connection-through-movement.jpg';
 
 export interface Workshop {
   id: string;
@@ -34,6 +35,8 @@ export interface Workshop {
   credit?: string;
   focus?: string;
   zoom?: number;
+  /** Bild-Seitenverhältnis (CSS aspect-ratio). Default „4 / 5“ wie bei Acts. */
+  ratio?: string;
   /** Bevorzugte Genderstern-Form; ohne Angabe rotiert sie automatisch. */
   shape?: StarShape;
   /** Details noch offen — rendert einen dezenten „Infos folgen“-Hinweis. */
@@ -114,6 +117,8 @@ export const workshops: Workshop[] = [
       'Ein zweistündiger Bewegungsworkshop zu DJ*-Klängen zum Start in den Festivaltag. Wie bewegen wir uns allein? Wie als Gruppe? Wie stellen wir durch Bewegung und Kontakt Verbindungen her? Wir erkunden Momente der Zugehörigkeit, des Herausbrechens und Wiederzueinanderfindens — mit Übungen zu Support und Vertrauen geben wir uns gegenseitig Spotlights und Empowerment. Im Fokus steht der Spaß an ganz alltäglichen bis extraördinären Bewegungen. Mit unterschiedlichen Bewegungs- und Tanzpraktiken und Raum für Improvisation. Tanzkenntnisse werden nicht vorausgesetzt.',
     descriptionEn:
       'A two-hour movement workshop to DJ* sounds to open the festival day. How do we move on our own? How as a group? How do we create connection through movement and contact? We explore moments of belonging, breaking away and finding each other again — with exercises in support and trust, we give one another spotlights and empowerment. The focus is on the joy of movements from the everyday to the extraordinary. With various movement and dance practices and room for improvisation. No dance experience required.',
+    image: imgConnectionMovement,
+    ratio: '1 / 1',
   },
   {
     id: 'queer-poetry-kollektiv',
@@ -126,7 +131,7 @@ export const workshops: Workshop[] = [
     descriptionEn:
       'The queerpoesie.kollektiv is made up of four artists and sees itself as a literary and political community that questions what is taken for granted. Its focus is on queer-feminist texts that illuminate, defend and celebrate life beyond the norm. Between 7 and 9 pm, three of the collective’s artists — Carrie-Ann Lawrence (she/her), Linn Schiffmann (all pronouns) and Birte Stolte (they/she) — take the stage and present a full dose of poetic queer-feminism: queer political texts, spoken word and drag elements. They look forward to the literary exchange with you!',
     image: imgQueerPoetry,
-    focus: '50% 30%',
+    focus: '50% 42%',
   },
   {
     id: 'graffiti-workshop',

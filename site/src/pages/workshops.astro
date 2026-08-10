@@ -14,7 +14,7 @@ import StarCornerImage from '@ui/StarCornerImage.astro';
 import StarBullet from '@ui/StarBullet.astro';
 import { workshops } from '@content/workshops';
 import type { StarShape, StarAccent } from '@lib/sterne';
-import imgGewaltenFormen from '@assets/workshops/gewalten-formen.png';
+import imgGewaltenFormen from '@assets/workshops/gewalten-formen.jpg';
 import imgAngelMessage from '@assets/workshops/queer-dating-angelmessage.jpg';
 import { texte, pick } from '@content/texte';
 import { localeFromPath } from '@lib/i18n';
@@ -71,7 +71,7 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
                   <StarCornerImage
                     src={ws.image}
                     alt={`${ws.title} — Workshop`}
-                    ratio="4 / 5"
+                    ratio={ws.ratio ?? '4 / 5'}
                     shape={ws.shape ?? l.shape}
                     accent={l.accent}
                     corner={l.corner}
@@ -139,12 +139,11 @@ const layouts: { shape: StarShape; accent: StarAccent; corner: Corner }[] = [
       <div class="md:col-span-5">
         <StarCornerImage
           src={imgGewaltenFormen}
-          alt="„Gewalten Formen“ — Konzept der mobilen, künstlerisch-politischen Installation"
-          ratio="4 / 5"
+          alt="„Gewalten Formen“ — die mobile, künstlerisch-politische Installation"
+          ratio="4 / 3"
           shape="1"
           accent="green"
           corner="tr"
-          focus="50% 45%"
         />
         <p class="mt-3 text-xs text-on-surface-muted">
           {pick(t.gewalten.credit, locale)}
