@@ -2,15 +2,22 @@
 /**
  * Heading — Wrapper für Display-Überschriften.
  *
- * Warum ein Wrapper? Janas Custom-Lettering kommt später. Dieser Wrapper ist
- * die eine Stelle, an der wir eine Überschrift entweder als (a) Webfont-Text
- * (aktueller Stand: Bricolage Grotesque Bold über --font-display) oder später
- * (b) als vordefiniertes SVG-Wortbild rendern — ohne Layout-Umbau.
+ * Warum ein Wrapper? Diese eine Stelle rendert eine Überschrift entweder als
+ * (a) Webfont-Text (Bricolage Grotesque Bold über --font-display) oder als
+ * (b) Janas Handlettering (SVG-Wortbild via `Lettering`) — ohne Layout-Umbau
+ * für die Aufrufer.
  *
- * Sobald SVG-Wortbilder da sind: hier eine `lettering`-Prop ergänzen, die statt
- * des <text> ein <img>/<svg> einsetzt. Aufrufer bleiben unverändert.
+ * Ist `lettering` gesetzt, rendert das SVG-Wortbild anstelle des Webfont-Texts;
+ * der Slot-Inhalt bleibt als sr-only-Text erhalten, damit das Tag weiterhin
+ * seinen zugänglichen Namen hat (Screenreader, SEO).
+ *
+ * Mit `subtitle` steht der Slot-Text stattdessen sichtbar als Untertitel unter
+ * dem Schriftzug — für die Startseiten-Teaser, wo der Schriftzug den Bereich
+ * benennt („LINE-UP") und der bisherige Titel die Aussage liefert („Wer spielt
+ * beim FLINTA*SIALAND?"). Der zugängliche Name bleibt derselbe.
  */
 import type { HTMLAttributes } from 'astro/types';
+import Lettering, { type LetteringName } from './Lettering.astro';
 
 type Level = 1 | 2 | 3 | 4;
 
@@ -18,10 +25,14 @@ interface Props extends HTMLAttributes<'h2'> {
   level?: Level;
   /** Optische Größe unabhängig vom semantischen Level. */
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'display';
+  /** Janas Handlettering statt Webfont-Text; Slot bleibt als sr-only erhalten. */
+  lettering?: LetteringName;
+  /** Nur mit `lettering`: Slot-Text sichtbar als Untertitel statt nur sr-only. */
+  subtitle?: boolean;
   class?: string;
 }
 
-const { level = 2, size, class: className, ...rest } = Astro.props;
+const { level = 2, size, lettering, subtitle = false, class: className, ...rest } = Astro.props;
 const Tag = `h${level}` as const;
 
 // Größe folgt dem Level, kann aber überschrieben werden (semantik != optik).
@@ -34,11 +45,38 @@ const sizeClass: Record<string, string> = {
   xl: 'text-4xl md:text-6xl',
   display: 'text-5xl md:text-7xl lg:text-8xl',
 };
+
+// `Lettering` kennt kein `display` — auf die größte eigene Stufe abbilden.
+const letteringSize = resolvedSize === 'display' ? 'xl' : (resolvedSize as 'sm' | 'md' | 'lg' | 'xl');
+
+// Untertitel bewusst eine Stufe kleiner als die Überschrift selbst — er soll
+// dem Schriftzug zuarbeiten, nicht mit ihm konkurrieren.
+const subtitleClass: Record<string, string> = {
+  sm: 'text-base md:text-lg',
+  md: 'text-lg md:text-xl',
+  lg: 'text-xl md:text-2xl',
+  xl: 'text-2xl md:text-3xl',
+  display: 'text-2xl md:text-4xl',
+};
 ---
 
-<Tag
-  class:list={['font-display', sizeClass[resolvedSize], className]}
-  {...rest}
->
-  <slot />
-</Tag>
+{
+  lettering ? (
+    <Tag class:list={[className]} {...rest}>
+      <Lettering name={lettering} size={letteringSize} />
+      {subtitle ? (
+        <span class:list={['mt-4 block font-display', subtitleClass[resolvedSize]]}>
+          <slot />
+        </span>
+      ) : (
+        <span class="sr-only">
+          <slot />
+        </span>
+      )}
+    </Tag>
+  ) : (
+    <Tag class:list={['font-display', sizeClass[resolvedSize], className]} {...rest}>
+      <slot />
+    </Tag>
+  )
+}

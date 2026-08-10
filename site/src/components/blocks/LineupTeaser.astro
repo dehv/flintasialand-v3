@@ -61,7 +61,9 @@ const deco = [
   </div>
 
   <div class="relative text-center">
-    <Heading level={2} size="lg" class="mt-3">{pick(t.headline, locale)}</Heading>
+    <Heading level={2} size="lg" class="mt-3" lettering="line-up" subtitle>
+      {pick(t.headline, locale)}
+    </Heading>
     <p class="mx-auto mt-4 max-w-2xl text-on-surface-muted">
       {pick(t.body, locale)}
     </p>

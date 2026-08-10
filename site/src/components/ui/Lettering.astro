@@ -1,0 +1,74 @@
+---
+/**
+ * Lettering — Janas Handlettering-Schriftzüge als Inline-SVG.
+ *
+ * Warum inline (wie DateWordmark): Farbe erbt über `currentColor` vom
+ * umgebenden Kontext, kein zweiter Request, kein Layout-Flackern beim Laden.
+ *
+ * Das SVG ist rein dekorativ (aria-hidden) — den lesbaren, zugänglichen Text
+ * liefert der Aufrufer selbst (z. B. als sr-only-Span neben diesem Element).
+ */
+import type { LetteringName } from './lettering-names';
+export type { LetteringName };
+
+interface Props {
+  name: LetteringName;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+}
+
+const { name, size = 'lg', class: className } = Astro.props;
+
+// Eager glob statt Einzel-Imports: alle 11 Schriftzüge landen als Roh-SVG-
+// Strings in `modules`, unabhängig davon, welcher davon gerade gebraucht wird.
+const modules = import.meta.glob<string>('../../assets/lettering/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+const entry = Object.entries(modules).find(([path]) => path.endsWith(`/${name}.svg`));
+if (!entry) {
+  throw new Error(`Lettering "${name}" nicht gefunden unter src/assets/lettering/.`);
+}
+const raw = entry[1];
+
+// Seitenverhältnis aus der viewBox lesen, um die Breite aus der Wunschhöhe
+// abzuleiten (siehe Styles unten) — die Schriftzüge reichen von ca. 4:1 bis 8,5:1.
+const viewBoxMatch = raw.match(/viewBox="[\d.]+ [\d.]+ ([\d.]+) ([\d.]+)"/);
+if (!viewBoxMatch) {
+  throw new Error(`Lettering "${name}": keine viewBox im SVG gefunden.`);
+}
+const ratio = Number(viewBoxMatch[1]) / Number(viewBoxMatch[2]);
+
+const svg = raw.replace('<svg', '<svg aria-hidden="true" focusable="false"');
+---
+
+<span
+  class:list={['lettering', `lettering--${size}`, className]}
+  style={`--lettering-ratio:${ratio}`}
+  set:html={svg}
+/>
+
+<style>
+  .lettering {
+    display: block;
+    /* Das SVG ist inline-block — ohne line-height: 0 entstünde darunter der
+       typische Baseline-Spalt. */
+    line-height: 0;
+  }
+  .lettering :global(svg) {
+    /* inline-block statt block: so folgt der Schriftzug dem `text-align` seines
+       Kontexts (z. B. zentrierter Line-Up-Teaser) ohne eigene Ausrichtungs-Prop. */
+    display: inline-block;
+    /* Breite folgt der Wunschhöhe × Seitenverhältnis, bricht aber nie aus
+       dem Container aus — dadurch skaliert der Schriftzug auf Mobil mit. */
+    width: min(100%, calc(var(--lettering-h) * var(--lettering-ratio)));
+    height: auto;
+    vertical-align: middle;
+  }
+  .lettering--sm { --lettering-h: clamp(1.75rem, 4vw, 2.25rem); }
+  .lettering--md { --lettering-h: clamp(2.25rem, 5vw, 3rem); }
+  .lettering--lg { --lettering-h: clamp(3rem, 7vw, 4.5rem); }
+  .lettering--xl { --lettering-h: clamp(3.5rem, 8vw, 5.5rem); }
+</style>
