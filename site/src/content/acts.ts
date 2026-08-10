@@ -119,7 +119,7 @@ export const acts: Act[] = [
     id: 'artemis-jade',
     name: 'Artemis Jade',
     image: imgArtemis,
-    genre: 'Ambient R&B / Dream Pop',
+    genre: 'Dream Pop',
     bio: 'Artemis Jade erschafft mit samtiger Stimme und sphärischen Synthesizern intime, emotionale Räume. Ihre Musik bewegt sich fließend zwischen verletzlichem R&B, Dream Pop und cinematischen Ambient-Klanglandschaften.',
     bioEn: 'With a velvety voice and spherical synths, Artemis Jade creates intimate, emotional spaces. Her music flows between vulnerable R&B, dream pop and cinematic ambient soundscapes.',
     links: [
