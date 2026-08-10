@@ -99,7 +99,7 @@ export const texte = {
       'Beyond the music, the <strong>Community Space</strong> is the heart of joining in: skill-sharing workshops to try out and learn, the artistic-political zone <strong>Gewalten Formen</strong> and the <strong>Queer Dating Stage</strong> — by and for FLINTA* & allies.',
     ),
     cta: T('Workshops & Community', 'Workshops & community'),
-    credit: T('Foto: Nadia Westerwald — „Gewalten Formen“', 'Photo: Nadia Westerwald — “Gewalten Formen”'),
+    credit: T('Illustration: „Gewalten Formen“', 'Illustration: “Gewalten Formen”'),
   },
 
   /** Lageplan-Teaser (Startseite). */
@@ -204,7 +204,7 @@ export const texte = {
         'In dieser Zone finden auch Workshops statt — u. a. der <strong>Mut-Muskel-Workshop</strong> der Radikalen Töchter und der Vortrag <strong>„Psychische Gewalt & narzisstischen Missbrauch erkennen“</strong>.',
         'Workshops also take place in this zone — including the <strong>Mut-Muskel workshop</strong> by Radikale Töchter and the talk <strong>“Recognising psychological violence & narcissistic abuse”</strong>.',
       ),
-      credit: T('Foto: Nadia Westerwald', 'Photo: Nadia Westerwald'),
+      credit: T('Illustration: „Gewalten Formen“', 'Illustration: “Gewalten Formen”'),
     },
     queer: {
       heading: T('Queer Dating Stage', 'Queer Dating Stage'),

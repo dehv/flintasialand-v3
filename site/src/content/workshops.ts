@@ -16,6 +16,7 @@ import imgErasurePoetry from '@assets/workshops/erasure-poetry-miaina.jpg';
 import imgNarzissmus from '@assets/workshops/narzisstischer-missbrauch.jpg';
 import imgQueerPoetry from '@assets/workshops/queer-poetry-kollektiv.jpg';
 import imgConnectionMovement from '@assets/workshops/connection-through-movement.jpg';
+import imgMutMuskel from '@assets/workshops/mut-muskel-workshop.jpg';
 
 export interface Workshop {
   id: string;
@@ -39,6 +40,12 @@ export interface Workshop {
   ratio?: string;
   /** Bevorzugte Genderstern-Form; ohne Angabe rotiert sie automatisch. */
   shape?: StarShape;
+  /**
+   * Ecke des Genderstern-Akzents; ohne Angabe rotiert sie automatisch.
+   * Override sinnvoll, wenn das Bild selbst Text/Motiv in einer bestimmten
+   * Ecke trägt (z. B. ein Poster) und der Stern ihn sonst verdecken würde.
+   */
+  corner?: 'tl' | 'tr' | 'bl' | 'br';
   /** Details noch offen — rendert einen dezenten „Infos folgen“-Hinweis. */
   tba?: boolean;
 }
@@ -80,6 +87,9 @@ export const workshops: Workshop[] = [
       'Die Welt braucht neue radikale Ideen — vor allem aber mehr Mut. Gemeinsam trainieren wir unseren Mutmuskel: mit Ansätzen der Aktionskunst und des künstlerischen Aktivismus, mit Geschichten von Aktionen, Methoden und Visionen. Ein politischer, kreativer, aktivierender Workshop als Inspiration für die eigene Haltung.',
     descriptionEn:
       'The world needs new radical ideas — but above all, more courage. Together we train our courage muscle: with approaches from action art and artistic activism, with stories of actions, methods and visions. A political, creative, activating workshop as inspiration for your own stance.',
+    image: imgMutMuskel,
+    credit: 'Foto: Nadia Westerwald',
+    ratio: '4 / 3',
   },
   {
     id: 'narzisstischer-missbrauch',
@@ -119,6 +129,7 @@ export const workshops: Workshop[] = [
       'A two-hour movement workshop to DJ* sounds to open the festival day. How do we move on our own? How as a group? How do we create connection through movement and contact? We explore moments of belonging, breaking away and finding each other again — with exercises in support and trust, we give one another spotlights and empowerment. The focus is on the joy of movements from the everyday to the extraordinary. With various movement and dance practices and room for improvisation. No dance experience required.',
     image: imgConnectionMovement,
     ratio: '1 / 1',
+    corner: 'br',
   },
   {
     id: 'queer-poetry-kollektiv',
