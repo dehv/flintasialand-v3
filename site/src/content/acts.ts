@@ -108,7 +108,7 @@ export const acts: Act[] = [
     bio: 'DDDR bringt rohe Energie, treibende Drum-Machines und schneidende Synthesizer auf die Bühne. Ihre Live-Performance verbindet den Geist des Post-Punk mit elektronischen Club-Vibes und einer kompromisslosen Haltung.',
     bioEn: 'DDDR bring raw energy, driving drum machines and cutting synths to the stage. Their live performance blends the spirit of post-punk with electronic club vibes and an uncompromising attitude.',
     links: [
-      { label: 'Instagram', href: 'https://www.instagram.com/' }
+      { label: 'Instagram', href: 'https://www.instagram.com/diedachdeckenderandgruppe' }
     ],
     stage: 'Kieselwiese',
     time: '19:45–20:30',
