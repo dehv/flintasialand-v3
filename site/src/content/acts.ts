@@ -119,11 +119,12 @@ export const acts: Act[] = [
     id: 'artemis-jade',
     name: 'Artemis Jade',
     image: imgArtemis,
-    genre: 'Dream Pop',
-    bio: 'Artemis Jade erschafft mit samtiger Stimme und sphärischen Synthesizern intime, emotionale Räume. Ihre Musik bewegt sich fließend zwischen verletzlichem R&B, Dream Pop und cinematischen Ambient-Klanglandschaften.',
-    bioEn: 'With a velvety voice and spherical synths, Artemis Jade creates intimate, emotional spaces. Her music flows between vulnerable R&B, dream pop and cinematic ambient soundscapes.',
+    genre: 'Noise / Doom / Post-Punk',
+    bio: 'Post Aggressive Noise, doomy und dark — feministisch, queer und laut, zuhause in Köln. Irgendwo zwischen melancholischem Grunge und experimentellem Noise, zuckersüßem Girly-Pop, rauem Post-Punk und kreischendem Doom Metal: Artemis Jade verbindet massive Lautstärke mit sanfter Dissonanz, die in dichten Klangsphären in sich zusammenfällt.',
+    bioEn: 'Post aggressive noise, doomy and dark — feminist, queer and loud, based in Cologne. Lost somewhere between melancholic grunge and experimental noise, sugar-sweet girly pop, raspy post-punk and shrieking doom metal: Artemis Jade blends massive loudness and soft dissonance collapsing in dense sound spheres.',
+    translatedFrom: 'en',
     links: [
-      { label: 'Instagram', href: 'https://www.instagram.com/' }
+      { label: 'Instagram', href: 'https://www.instagram.com/artemis__jade/' }
     ],
     stage: 'Kieselwiese',
     time: '17:45–18:30',
