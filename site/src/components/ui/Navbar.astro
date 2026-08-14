@@ -9,7 +9,7 @@
  * Die Navbar ist bewusst eine dark-Zone (berry Bar): mint-Pillen mit berry-Text
  * sind darauf immer gut lesbar, egal über welcher Sektion die Bar klebt.
  */
-import { primaryNav } from '@lib/site';
+import { primaryNav, ticketUrl } from '@lib/site';
 import {
   useTranslations,
   localeFromPath,
@@ -22,8 +22,6 @@ interface Props {
   deOnly?: boolean;
 }
 const { deOnly = false } = Astro.props;
-
-// Kein Ticket-Link: der Eintritt ist frei.
 
 const path = Astro.url.pathname;
 const locale = localeFromPath(path);
@@ -61,6 +59,13 @@ const pillBase =
   pillShadow;
 const pillIdle = 'bg-mint text-berry hover:bg-accent-teal';
 const pillActive = 'bg-accent-teal text-berry';
+// Ticket-Pille: invertiert (berry auf mint-Ring) — hebt sich als einziger
+// CTA aus der Mint-Reihe heraus, bleibt aber über hellen Sektionen lesbar.
+const pillTicket =
+  'bg-berry text-mint ring-2 ring-mint hover:bg-accent-teal hover:text-berry';
+// Im Overlay ist der Hintergrund selbst berry — dort füllt die Ticket-Pille
+// teal (mit Mint-Ring), damit sie der stärkste, nicht der leiseste CTA bleibt.
+const pillTicketOnDark = 'bg-accent-teal text-berry ring-2 ring-mint';
 ---
 
 <!-- Kein Balken, kein Logo: floatende Pillen oben rechts. pointer-events-none
@@ -106,7 +111,29 @@ const pillActive = 'bg-accent-teal text-berry';
           </li>
         )
       }
+      <li>
+        <a
+          href={ticketUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class:list={[pillBase, pillTicket]}
+        >
+          {t.actions.tickets}
+          <span class="sr-only">({t.a11y.externalLink})</span>
+        </a>
+      </li>
     </ul>
+
+    <!-- Mobil: Ticket-CTA bleibt sichtbar (ohne Menü-Umweg) -->
+    <a
+      href={ticketUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class:list={[pillBase, pillTicket, 'pointer-events-auto lg:hidden']}
+    >
+      {t.actions.tickets}
+      <span class="sr-only">({t.a11y.externalLink})</span>
+    </a>
 
     <!-- Mobil: "Menü"-Pille -->
     <button
@@ -179,6 +206,18 @@ const pillActive = 'bg-accent-teal text-berry';
         </a>
       )
     }
+    <a
+      href={ticketUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-nav-link
+      data-nav-item
+      style={`--i:${primaryNav.length + 2}`}
+      class:list={[pillBase, pillTicketOnDark, 'px-6 py-3 text-lg']}
+    >
+      {t.actions.tickets}
+      <span class="sr-only">({t.a11y.externalLink})</span>
+    </a>
   </div>
 </div>
 

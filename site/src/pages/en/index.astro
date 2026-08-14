@@ -18,11 +18,13 @@ import LageplanTeaser from '@blocks/LageplanTeaser.astro';
 import AwarenessTeaser from '@blocks/AwarenessTeaser.astro';
 import FoerdererBlock from '@blocks/FoerdererBlock.astro';
 import { texte, pick } from '@content/texte';
-import { localeFromPath } from '@lib/i18n';
+import { localeFromPath, useTranslations } from '@lib/i18n';
+import { ticketUrl } from '@lib/site';
 
 import texGruen from '@assets/demo/tex-gruen.jpg';
 
 const locale = localeFromPath(Astro.url.pathname);
+const t = useTranslations(locale);
 const tIntro = texte.home.intro;
 ---
 
@@ -53,7 +55,10 @@ const tIntro = texte.home.intro;
           {pick(tIntro.body, locale)}
         </p>
         <div class="mt-8 flex flex-wrap gap-4">
-          <Button href="/line-up">{pick(tIntro.ctaLineup, locale)}</Button>
+          <!-- Tickets = primärer CTA (extern, pretix); die übrigen Wege bleiben
+               als Outline-Buttons daneben stehen. -->
+          <Button href={ticketUrl} external>{t.actions.tickets}</Button>
+          <Button href="/line-up" variant="outline">{pick(tIntro.ctaLineup, locale)}</Button>
           <Button href="/awareness" variant="outline">{pick(tIntro.ctaAwareness, locale)}</Button>
         </div>
       </div>

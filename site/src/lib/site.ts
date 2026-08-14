@@ -29,6 +29,12 @@ export const primaryNav: NavItem[] = [
   { key: 'awareness', label: 'Awareness', href: '/awareness' },
 ];
 
+/**
+ * Ticket-Shop (pretix). Extern, öffnet in neuem Tab — bewusst hier zentral,
+ * damit Navbar und Startseite dieselbe Quelle nutzen.
+ */
+export const ticketUrl = 'https://pretix.eu/flintasialand/festival-2/';
+
 export interface FooterLink {
   label: string;
   href: string;

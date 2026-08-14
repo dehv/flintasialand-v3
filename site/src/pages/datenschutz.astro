@@ -5,7 +5,9 @@
  * Bewusst schlank gehalten: Die Seite setzt keine Cookies, nutzt kein
  * Tracking/Analytics, keine Kontaktformulare. Verarbeitet werden faktisch nur
  * Server-Logfiles (Hosting) sowie IP-Adressen beim Laden der OpenStreetMap-
- * Kartenkacheln auf /lageplan. Diese Erklärung deckt genau diese Punkte ab.
+ * Kartenkacheln auf /lageplan. Hinzu kommt der Ticketverkauf, der extern über
+ * pretix läuft (Ziffer 4) — auf dieser Website selbst werden dafür keine Daten
+ * erhoben. Diese Erklärung deckt genau diese Punkte ab.
  *
  * Hinweis: Entwurf — vor Live-Gang idealerweise juristisch prüfen lassen.
  */
@@ -26,7 +28,9 @@ import Heading from '@ui/Heading.astro';
         Der Schutz eurer personenbezogenen Daten ist uns wichtig. Diese Website
         setzt keine Cookies, nutzt kein Tracking und keine Analyse-Werkzeuge. Im
         Folgenden informieren wir euch darüber, welche Daten beim Besuch dieser
-        Seite dennoch verarbeitet werden und warum.
+        Seite dennoch verarbeitet werden und warum — und welche Daten wir
+        verarbeiten, wenn ihr über unseren externen Ticketshop ein Ticket kauft
+        (Ziffer 4).
       </p>
     </div>
   </Section>
@@ -121,7 +125,72 @@ import Heading from '@ui/Heading.astro';
 
       <div>
         <h2 class="font-display text-lg font-bold text-on-surface">
-          4. Kontaktaufnahme per E-Mail
+          4. Ticketverkauf (pretix)
+        </h2>
+        <div class="mt-3 space-y-4 text-on-surface-muted">
+          <p>
+            Für den Verkauf unserer Tickets nutzen wir die Ticketing-Plattform
+            <strong class="font-semibold text-on-surface">pretix</strong>, betrieben
+            von der rami.io GmbH, Zwenkauer Str. 3, 04279 Leipzig. Der Ticketshop
+            wird nicht auf dieser Website eingebettet: Der Ticket-Link führt euch
+            auf die Seiten von pretix. Erst dort — und nicht auf dieser Website —
+            werden für eine Bestellung Daten von euch erhoben.
+          </p>
+          <p>
+            Wenn ihr ein Ticket bestellt, verarbeiten und speichern wir
+            insbesondere folgende Daten:
+          </p>
+          <ul class="ml-5 list-disc space-y-1">
+            <li>euren Namen,</li>
+            <li>eure E-Mail-Adresse,</li>
+            <li>
+              Angaben zur Bestellung (Ticketart, Anzahl, Bestellnummer, Zeitpunkt
+              der Bestellung, Zahlungsstatus).
+            </li>
+          </ul>
+          <p>
+            Wir benötigen diese Daten, um eure Bestellung abzuwickeln, euch die
+            Tickets zuzusenden, sie am Einlass zu prüfen und euch bei wichtigen
+            Änderungen (z. B. einer Verlegung oder Absage) informieren zu können.
+            Rechtsgrundlage ist die Erfüllung des Vertrags über den Ticketkauf
+            gemäß Art. 6 Abs. 1 lit. b DSGVO.
+          </p>
+          <p>
+            Verantwortlich für diese Verarbeitung sind wir (siehe Ziffer 1);
+            rami.io verarbeitet die Daten als Auftragsverarbeiterin für uns, auf
+            Grundlage eines Vertrags zur Auftragsverarbeitung nach Art. 28 DSGVO.
+            Die Daten werden auf Servern in Deutschland gespeichert. Die
+            Zahlungsabwicklung erfolgt über die von euch gewählte Zahlungsart;
+            vollständige Zahlungsdaten (z. B. Kontodaten) erhalten wir dabei
+            nicht.
+          </p>
+          <p>
+            Wir löschen die Bestelldaten, sobald sie für die genannten Zwecke
+            nicht mehr erforderlich sind — also nach dem Festival und dem
+            Abschluss der Abrechnung. Soweit wir gesetzlich zur Aufbewahrung
+            verpflichtet sind (handels- und steuerrechtliche Aufbewahrungsfristen
+            von bis zu zehn Jahren, Art. 6 Abs. 1 lit. c DSGVO), bleiben die
+            betreffenden Belege bis zum Ablauf dieser Fristen gespeichert und
+            werden anschließend gelöscht.
+          </p>
+          <p>
+            Für die Verarbeitung, die pretix darüber hinaus in eigener
+            Verantwortung vornimmt (z. B. beim technischen Betrieb der
+            Shop-Seiten), gilt die Datenschutzerklärung von pretix:
+            <a
+              href="https://pretix.eu/about/de/privacy"
+              class="text-accent underline underline-offset-2"
+              rel="noopener noreferrer"
+              target="_blank"
+              >https://pretix.eu/about/de/privacy</a
+            >.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="font-display text-lg font-bold text-on-surface">
+          5. Kontaktaufnahme per E-Mail
         </h2>
         <div class="mt-3 space-y-4 text-on-surface-muted">
           <p>
@@ -139,20 +208,22 @@ import Heading from '@ui/Heading.astro';
 
       <div>
         <h2 class="font-display text-lg font-bold text-on-surface">
-          5. Keine Cookies, kein Tracking
+          6. Keine Cookies, kein Tracking
         </h2>
         <div class="mt-3 space-y-4 text-on-surface-muted">
           <p>
             Diese Website verwendet keine Cookies, kein Web-Analyse-Tool und
             keine Dienste zur Reichweitenmessung oder zum Nutzer-Tracking. Es
-            werden keine Profile über euer Verhalten erstellt.
+            werden keine Profile über euer Verhalten erstellt. Für den externen
+            Ticketshop (Ziffer 4) gelten die dortigen Bestimmungen; er wird erst
+            aufgerufen, wenn ihr den Ticket-Link anklickt.
           </p>
         </div>
       </div>
 
       <div>
         <h2 class="font-display text-lg font-bold text-on-surface">
-          6. Externe Links
+          7. Externe Links
         </h2>
         <div class="mt-3 space-y-4 text-on-surface-muted">
           <p>
@@ -167,7 +238,7 @@ import Heading from '@ui/Heading.astro';
 
       <div>
         <h2 class="font-display text-lg font-bold text-on-surface">
-          7. Eure Rechte
+          8. Eure Rechte
         </h2>
         <div class="mt-3 space-y-4 text-on-surface-muted">
           <p>
@@ -231,7 +302,7 @@ import Heading from '@ui/Heading.astro';
 
       <div>
         <h2 class="font-display text-lg font-bold text-on-surface">
-          8. Begriffsbestimmungen
+          9. Begriffsbestimmungen
         </h2>
         <div class="mt-3 space-y-4 text-on-surface-muted">
           <p>
